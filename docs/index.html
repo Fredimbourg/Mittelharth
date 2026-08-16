@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="3600">
+<title>Météo Colmar-Mittelharth</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;
+  --text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;
+  --border:rgba(11,11,11,.10);--radius:8px;
+  --accent:#2a78d6;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;
+    --text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;
+    --border:rgba(255,255,255,.10);}
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);padding:1.5rem 1rem;}
+.container{max-width:900px;margin:0 auto}
+header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}
+header h1{font-size:20px;font-weight:500}
+header p{font-size:13px;color:var(--text-muted)}
+.updated{font-size:12px;color:var(--text-muted);background:var(--surface-muted);padding:4px 10px;border-radius:99px;border:0.5px solid var(--border)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:1.5rem}
+.card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:1.25rem}
+.card-icon{font-size:22px;margin-bottom:8px}
+.card-label{font-size:12px;color:var(--text-muted);margin-bottom:4px}
+.card-value{font-size:28px;font-weight:500;line-height:1}
+.card-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+.card.highlight{border-color:var(--accent);background:rgba(42,120,214,0.04)}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+nav a{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);
+  background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}
+nav a:hover{color:var(--accent);border-color:rgba(42,120,214,.3)}
+.section{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1rem}
+.section-title{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.detail-item{padding:10px 12px;background:var(--surface-muted);border-radius:var(--radius)}
+.detail-label{font-size:11px;color:var(--text-muted);margin-bottom:2px}
+.detail-value{font-size:16px;font-weight:500}
+footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;padding-top:1rem;border-top:0.5px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <h1>🌤 Météo Colmar-Mittelharth</h1>
+    <p>Station personnelle · Colmar (68) · Alsace</p>
+  </div>
+  <span class="updated">Mis à jour : 16/08/2026 20:50</span>
+</header>
+
+<nav>
+  <a href="index.html">⚡ En direct</a>
+  <a href="dashboard.html">📊 Historique</a>
+  <a href="climate.html">🌍 Climatologie</a>
+</nav>
+
+<div class="grid">
+  <div class="card highlight">
+    <div class="card-icon">🌡</div>
+    <div class="card-label">Température</div>
+    <div class="card-value">24.0 °C</div>
+    <div class="card-sub">Ressenti : 24.0 °C</div>
+  </div>
+  <div class="card">
+    <div class="card-icon">💧</div>
+    <div class="card-label">Humidité</div>
+    <div class="card-value">71 %</div>
+    <div class="card-sub">Point de rosée : 18.4 °C</div>
+  </div>
+  <div class="card">
+    <div class="card-icon">📊</div>
+    <div class="card-label">Pression</div>
+    <div class="card-value">1016 hPa</div>
+  </div>
+  <div class="card">
+    <div class="card-icon">💨</div>
+    <div class="card-label">Vent</div>
+    <div class="card-value">0 km/h</div>
+    <div class="card-sub">Rafale : 0 km/h · ESE</div>
+  </div>
+  <div class="card">
+    <div class="card-icon">🌧</div>
+    <div class="card-label">Pluie aujourd'hui</div>
+    <div class="card-value">3.1 mm</div>
+    <div class="card-sub">Taux : 0.0 mm/h</div>
+  </div>
+  <div class="card">
+    <div class="card-icon">☀</div>
+    <div class="card-label">Rayonnement</div>
+    <div class="card-value">0 W/m²</div>
+    <div class="card-sub">Indice UV : 0</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Précipitations cumulées</div>
+  <div class="detail-grid">
+    <div class="detail-item"><div class="detail-label">Aujourd'hui</div><div class="detail-value">3.1 mm</div></div>
+    <div class="detail-item"><div class="detail-label">Ce mois</div><div class="detail-value">7.4 mm</div></div>
+    <div class="detail-item"><div class="detail-label">Cette année</div><div class="detail-value">224.0 mm</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Intérieur</div>
+  <div class="detail-grid">
+    <div class="detail-item"><div class="detail-label">Température</div><div class="detail-value">27.4 °C</div></div>
+    <div class="detail-item"><div class="detail-label">Humidité</div><div class="detail-value">43 %</div></div>
+  </div>
+</div>
+
+<footer>Station météo personnelle · Colmar-Mittelharth · Alsace<br>
+Données : <a href="https://www.ecowitt.net" style="color:var(--accent)">Ecowitt</a> · 
+Site généré automatiquement</footer>
+</div>
+</body>
+</html>

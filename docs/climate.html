@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climatologie · Météo Colmar-Mittelharth</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--radius:8px;--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}
+@media(prefers-color-scheme:dark){:root{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10)}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}
+.container{max-width:960px;margin:0 auto}
+header{margin-bottom:1.5rem}
+header h1{font-size:20px;font-weight:500;margin-bottom:4px}
+header p{font-size:13px;color:var(--text-muted)}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+nav a{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}
+nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}
+.section{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;overflow-x:auto}
+.section-title{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+th{font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;text-align:right;border-bottom:0.5px solid var(--border)}
+th:first-child{text-align:left}
+td{padding:8px 10px;text-align:right;border-bottom:0.5px solid var(--border);color:var(--text-secondary)}
+td:first-child{font-weight:500;color:var(--text);text-align:left}
+tr:hover td{background:var(--surface-muted)}
+tr:last-child td{border-bottom:none}
+footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;padding-top:1rem;border-top:0.5px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>🌍 Climatologie</h1>
+  <p>Station Colmar-Mittelharth · Statistiques mensuelles</p>
+</header>
+<nav>
+  <a href="index.html">⚡ En direct</a>
+  <a href="dashboard.html">📊 Historique</a>
+  <a href="climate.html" class="active">🌍 Climatologie</a>
+</nav>
+<div class="section">
+  <div class="section-title">Moyennes mensuelles — 12 derniers mois</div>
+  <table>
+    <thead><tr>
+      <th>Mois</th><th>T moy.</th><th>T max</th><th>T min</th>
+      <th>Pluie</th><th>Solaire</th><th>Humidité</th><th>Pression</th>
+    </tr></thead>
+    <tbody><tr>
+          <td>Jan</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Fév</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Mar</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Avr</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Mai</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Juin</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Juil</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Août</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Sep</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Oct</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Nov</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr><tr>
+          <td>Déc</td>
+          <td>—</td>
+          <td style="color:#d85a30">—</td>
+          <td style="color:#2a78d6">—</td>
+          <td>0.0 mm</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr></tbody>
+  </table>
+</div>
+<footer>Station météo personnelle · Colmar-Mittelharth · Alsace</footer>
+</div>
+</body>
+</html>
