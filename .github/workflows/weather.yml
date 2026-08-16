@@ -17,7 +17,7 @@ jobs:
           ECOWITT_APP_KEY: ${{ secrets.ECOWITT_APP_KEY }}
           ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
           ECOWITT_MAC: ${{ secrets.ECOWITT_MAC }}
-        run: python fetch_and_build.py
+        run: python fetch_and_build.py --full
       - name: Push
         run: |
           git config user.name "github-actions[bot]"
