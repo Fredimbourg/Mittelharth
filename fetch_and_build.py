@@ -130,6 +130,23 @@ def fetch_history():
     end   = datetime.datetime.now()
     start = end - datetime.timedelta(days=30)
 
+    # Test des valeurs cycle_type valides
+    for ct in ["day", "1d", "1440", "daily"]:
+        try:
+            test = api_get("device/history", {
+                "call_back": "outdoor",
+                "start_date": (end - datetime.timedelta(days=7)).strftime("%Y-%m-%d 00:00:00"),
+                "end_date":   end.strftime("%Y-%m-%d 23:59:59"),
+                "cycle_type": ct,
+                "temp_unitid": 1,
+            })
+            raw_test = test.get("data", {})
+            temps_test = raw_test.get("outdoor", {}).get("temperature", {}) if isinstance(raw_test, dict) else {}
+            n = len(temps_test) if isinstance(temps_test, dict) else (len(temps_test) if isinstance(temps_test, list) else 0)
+            print(f"  → cycle_type={ct!r}: code={test.get('code')} entrées={n}")
+        except Exception as e:
+            print(f"  → cycle_type={ct!r}: erreur {e}")
+
     data = api_get("device/history", {
         "call_back": CALL_BACK,
         "start_date": start.strftime("%Y-%m-%d 00:00:00"),
