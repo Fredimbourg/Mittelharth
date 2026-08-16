@@ -1,0 +1,27 @@
+name: Weather
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Run
+        env:
+          ECOWITT_APP_KEY: ${{ secrets.ECOWITT_APP_KEY }}
+          ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
+          ECOWITT_MAC: ${{ secrets.ECOWITT_MAC }}
+        run: python fetch_and_build.py
+      - name: Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git diff --staged --quiet || git commit -m "Update $(date +'%Y-%m-%d %H:%M')"
+          git push
