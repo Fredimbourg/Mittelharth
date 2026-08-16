@@ -47,7 +47,8 @@ def read_excel_history():
         print("  → openpyxl non disponible, skip Excel")
         return {}
 
-    excel_files = sorted(Path(".").glob("*.xlsx"))
+    excel_files = sorted(Path(".").glob("*.xlsx")) + sorted(Path(".").glob("**/*.xlsx"))
+    excel_files = list(dict.fromkeys(excel_files))  # dédoublonner
     if not excel_files:
         print("  → Aucun fichier Excel trouvé")
         return {}
@@ -286,6 +287,18 @@ def fetch_history():
 
     # Reconstruire la liste triée
     daily = [merged[k] for k in sorted(merged.keys())]
+    if not daily:
+        print("  → Aucune donnée journalière disponible")
+        daily = []
+        result = {
+            "daily": [], "monthly": {}, "heatmap": [[] * 31] * 12,
+            "gel": {}, "chaud": {}, "pluie": {},
+            "max_abs": None, "min_abs": None, "rain_total": 0,
+            "generated_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+        }
+        DATA_FILE.write_text(json.dumps(result, ensure_ascii=False, indent=2))
+        return result
+
     print(f"  → Total après fusion : {len(daily)} jours ({daily[0]['date']} → {daily[-1]['date']})")
 
     # Agréger par mois
