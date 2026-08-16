@@ -33,11 +33,57 @@ def safe(d, *keys, default=None):
     return d
 
 def fv(d, *keys):
-    """Extraire une valeur flottante depuis un dict imbriqué."""
     val = safe(d, *keys)
     if val is None: return None
     try: return float(val)
     except: return None
+
+# ── Lecture des fichiers Excel historiques ────────────────────────────────────
+def read_excel_history():
+    """Lit les fichiers xlsx et retourne un dict {date_str: données}."""
+    try:
+        import openpyxl
+    except ImportError:
+        print("  → openpyxl non disponible, skip Excel")
+        return {}
+
+    excel_files = sorted(Path(".").glob("*.xlsx"))
+    if not excel_files:
+        print("  → Aucun fichier Excel trouvé")
+        return {}
+
+    all_data = {}
+    for xlsx in excel_files:
+        print(f"  → Lecture {xlsx.name}...")
+        try:
+            wb = openpyxl.load_workbook(xlsx, read_only=True)
+            ws = wb.active
+            rows = list(ws.iter_rows(values_only=True))
+            for row in rows[2:]:
+                if row[0] is None: continue
+                def v(x):
+                    if x is None or x == '-': return None
+                    try: return float(x)
+                    except: return None
+                d = str(row[0])[:10]
+                if len(d) < 10: continue
+                all_data[d] = {
+                    "date":  d,
+                    "month": int(d[5:7]),
+                    "day":   int(d[8:10]),
+                    "avg":   v(row[1]),
+                    "lo":    v(row[2]),
+                    "hi":    v(row[3]),
+                    "hum":   v(row[6]),
+                    "rain":  v(row[21]),
+                    "solar": v(row[18]),
+                    "pres":  v(row[32]),
+                    "wind":  v(row[28]),
+                }
+        except Exception as e:
+            print(f"  → Erreur lecture {xlsx.name}: {e}")
+    print(f"  → {len(all_data)} jours lus depuis Excel")
+    return all_data
 
 # ── 1. Données temps réel ─────────────────────────────────────────────────────
 def fetch_realtime():
@@ -226,7 +272,21 @@ def fetch_history():
             "wind":  mean(bd["wind"]),
         })
 
-    print(f"  → {len(daily)} jours d'historique récupérés")
+    # Fusionner avec les données Excel (priorité à l'API pour les dates récentes)
+    excel_data = read_excel_history()
+    merged = {}
+
+    # D'abord les données Excel
+    for date_str, d in excel_data.items():
+        merged[date_str] = d
+
+    # Ensuite les données API (écrasent Excel pour les dates récentes)
+    for d in daily:
+        merged[d["date"]] = d
+
+    # Reconstruire la liste triée
+    daily = [merged[k] for k in sorted(merged.keys())]
+    print(f"  → Total après fusion : {len(daily)} jours ({daily[0]['date']} → {daily[-1]['date']})")
 
     # Agréger par mois
     monthly = defaultdict(lambda: {"t":[],"hi":[],"lo":[],"r":[],"s":[],"h":[],"p":[],"w":[]})
