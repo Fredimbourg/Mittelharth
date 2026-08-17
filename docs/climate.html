@@ -10,9 +10,12 @@
 @media(prefers-color-scheme:dark){:root{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10)}}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}
 .container{max-width:960px;margin:0 auto}
-header{margin-bottom:1.5rem}
+header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
 header h1{font-size:20px;font-weight:500;margin-bottom:4px}
 header p{font-size:13px;color:var(--text-muted)}
+.year-selector{display:flex;gap:8px;align-items:center}
+.year-selector label{font-size:13px;color:var(--text-muted)}
+.year-selector select{font-size:15px;font-weight:500;padding:6px 12px;border-radius:var(--radius);border:0.5px solid var(--accent-border);background:var(--accent-bg);color:var(--accent);font-family:inherit;cursor:pointer}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
 nav a{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}
 nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}
@@ -31,8 +34,14 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <body>
 <div class="container">
 <header>
-  <h1>🌍 Climatologie</h1>
-  <p>Station Colmar-Mittelharth · Statistiques mensuelles</p>
+  <div>
+    <h1>🌍 Climatologie</h1>
+    <p id="header-sub">Station Colmar-Mittelharth</p>
+  </div>
+  <div class="year-selector">
+    <label>Année :</label>
+    <select id="yearSelect" onchange="loadYear(+this.value)"></select>
+  </div>
 </header>
 <nav>
   <a href="index.html">⚡ En direct</a>
@@ -40,124 +49,57 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <a href="climate.html" class="active">🌍 Climatologie</a>
 </nav>
 <div class="section">
-  <div class="section-title">Moyennes mensuelles — 12 derniers mois</div>
+  <div class="section-title" id="table-title">Moyennes mensuelles</div>
   <table>
     <thead><tr>
       <th>Mois</th><th>T moy.</th><th>T max</th><th>T min</th>
       <th>Pluie</th><th>Solaire</th><th>Humidité</th><th>Pression</th>
     </tr></thead>
-    <tbody><tr>
-          <td>Jan</td>
-          <td>3.7 °C</td>
-          <td style="color:#d85a30">17.7 °C</td>
-          <td style="color:#2a78d6">-6.2 °C</td>
-          <td>43.9 mm</td>
-          <td>159 W/m²</td>
-          <td>71 %</td>
-          <td>1019 hPa</td>
-        </tr><tr>
-          <td>Fév</td>
-          <td>4.4 °C</td>
-          <td style="color:#d85a30">17.6 °C</td>
-          <td style="color:#2a78d6">-5.2 °C</td>
-          <td>32.0 mm</td>
-          <td>250 W/m²</td>
-          <td>72 %</td>
-          <td>1024 hPa</td>
-        </tr><tr>
-          <td>Mar</td>
-          <td>8.9 °C</td>
-          <td style="color:#d85a30">24.0 °C</td>
-          <td style="color:#2a78d6">-1.5 °C</td>
-          <td>27.4 mm</td>
-          <td>400 W/m²</td>
-          <td>58 %</td>
-          <td>1017 hPa</td>
-        </tr><tr>
-          <td>Avr</td>
-          <td>13.4 °C</td>
-          <td style="color:#d85a30">29.6 °C</td>
-          <td style="color:#2a78d6">-0.2 °C</td>
-          <td>37.9 mm</td>
-          <td>550 W/m²</td>
-          <td>52 %</td>
-          <td>1017 hPa</td>
-        </tr><tr>
-          <td>Mai</td>
-          <td>17.1 °C</td>
-          <td style="color:#d85a30">36.3 °C</td>
-          <td style="color:#2a78d6">6.4 °C</td>
-          <td>28.2 mm</td>
-          <td>683 W/m²</td>
-          <td>45 %</td>
-          <td>1017 hPa</td>
-        </tr><tr>
-          <td>Juin</td>
-          <td>23.4 °C</td>
-          <td style="color:#d85a30">38.5 °C</td>
-          <td style="color:#2a78d6">9.3 °C</td>
-          <td>54.6 mm</td>
-          <td>702 W/m²</td>
-          <td>50 %</td>
-          <td>1020 hPa</td>
-        </tr><tr>
-          <td>Juil</td>
-          <td>22.6 °C</td>
-          <td style="color:#d85a30">39.5 °C</td>
-          <td style="color:#2a78d6">11.0 °C</td>
-          <td>16.5 mm</td>
-          <td>714 W/m²</td>
-          <td>45 %</td>
-          <td>1018 hPa</td>
-        </tr><tr>
-          <td>Août</td>
-          <td>22.2 °C</td>
-          <td style="color:#d85a30">38.8 °C</td>
-          <td style="color:#2a78d6">10.9 °C</td>
-          <td>85.6 mm</td>
-          <td>563 W/m²</td>
-          <td>53 %</td>
-          <td>1018 hPa</td>
-        </tr><tr>
-          <td>Sep</td>
-          <td>16.6 °C</td>
-          <td style="color:#d85a30">33.3 °C</td>
-          <td style="color:#2a78d6">6.9 °C</td>
-          <td>158.0 mm</td>
-          <td>488 W/m²</td>
-          <td>68 %</td>
-          <td>1019 hPa</td>
-        </tr><tr>
-          <td>Oct</td>
-          <td>11.7 °C</td>
-          <td style="color:#d85a30">22.0 °C</td>
-          <td style="color:#2a78d6">3.7 °C</td>
-          <td>48.8 mm</td>
-          <td>357 W/m²</td>
-          <td>71 %</td>
-          <td>1018 hPa</td>
-        </tr><tr>
-          <td>Nov</td>
-          <td>6.1 °C</td>
-          <td style="color:#d85a30">19.7 °C</td>
-          <td style="color:#2a78d6">-8.0 °C</td>
-          <td>43.7 mm</td>
-          <td>157 W/m²</td>
-          <td>77 %</td>
-          <td>1016 hPa</td>
-        </tr><tr>
-          <td>Déc</td>
-          <td>3.8 °C</td>
-          <td style="color:#d85a30">15.2 °C</td>
-          <td style="color:#2a78d6">-6.2 °C</td>
-          <td>10.8 mm</td>
-          <td>96 W/m²</td>
-          <td>87 %</td>
-          <td>1020 hPa</td>
-        </tr></tbody>
+    <tbody id="climate-tbody"></tbody>
   </table>
 </div>
 <footer>Station météo personnelle · Colmar-Mittelharth · Alsace</footer>
 </div>
+<script>
+const YEARS = [2025, 2026];
+const DATA  = {"2025": {"1": {"name": "Jan", "avg_t": 3.7, "max_t": 17.7, "min_t": -6.2, "rain": 43.9, "solar": 159.2, "hum": 70.8, "pressure": 1018.6, "humidex": 1.6, "n": 31}, "2": {"name": "Fév", "avg_t": 4.4, "max_t": 17.6, "min_t": -5.2, "rain": 32.0, "solar": 249.6, "hum": 71.7, "pressure": 1024.3, "humidex": 2.4, "n": 28}, "3": {"name": "Mar", "avg_t": 8.9, "max_t": 24.0, "min_t": -1.5, "rain": 27.4, "solar": 400.0, "hum": 58.1, "pressure": 1016.7, "humidex": 7.1, "n": 31}, "4": {"name": "Avr", "avg_t": 13.4, "max_t": 29.6, "min_t": -0.2, "rain": 37.9, "solar": 549.7, "hum": 52.3, "pressure": 1017.2, "humidex": 12.0, "n": 30}, "5": {"name": "Mai", "avg_t": 17.1, "max_t": 36.3, "min_t": 6.4, "rain": 28.2, "solar": 682.7, "hum": 45.0, "pressure": 1017.3, "humidex": 16.0, "n": 31}, "6": {"name": "Juin", "avg_t": 23.4, "max_t": 38.5, "min_t": 9.3, "rain": 54.6, "solar": 701.7, "hum": 49.7, "pressure": 1019.8, "humidex": 24.1, "n": 30}, "7": {"name": "Juil", "avg_t": 22.6, "max_t": 39.5, "min_t": 11.0, "rain": 16.5, "solar": 713.5, "hum": 45.0, "pressure": 1018.5, "humidex": 22.7, "n": 11}, "8": {"name": "Août", "avg_t": 22.2, "max_t": 38.8, "min_t": 10.9, "rain": 85.6, "solar": 562.7, "hum": 53.2, "pressure": 1017.5, "humidex": 22.9, "n": 28}, "9": {"name": "Sep", "avg_t": 16.6, "max_t": 33.3, "min_t": 6.9, "rain": 158.0, "solar": 488.2, "hum": 68.2, "pressure": 1019.1, "humidex": 16.8, "n": 30}, "10": {"name": "Oct", "avg_t": 11.7, "max_t": 22.0, "min_t": 3.7, "rain": 48.8, "solar": 357.4, "hum": 70.8, "pressure": 1018.2, "humidex": 10.9, "n": 31}, "11": {"name": "Nov", "avg_t": 6.1, "max_t": 19.7, "min_t": -8.0, "rain": 43.7, "solar": 157.2, "hum": 77.3, "pressure": 1015.8, "humidex": 4.5, "n": 30}, "12": {"name": "Déc", "avg_t": 3.8, "max_t": 15.2, "min_t": -6.2, "rain": 10.8, "solar": 96.0, "hum": 86.7, "pressure": 1019.9, "humidex": 2.1, "n": 31}}, "2026": {"1": {"name": "Jan", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "2": {"name": "Fév", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "3": {"name": "Mar", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "4": {"name": "Avr", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "5": {"name": "Mai", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "6": {"name": "Juin", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "7": {"name": "Juil", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "8": {"name": "Août", "avg_t": 19.4, "max_t": 19.4, "min_t": 19.4, "rain": 15.5, "solar": 5.0, "hum": 93.0, "pressure": 1016.4, "humidex": 22.3, "n": 1}, "9": {"name": "Sep", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "10": {"name": "Oct", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "11": {"name": "Nov", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}, "12": {"name": "Déc", "avg_t": null, "max_t": null, "min_t": null, "rain": 0, "solar": null, "hum": null, "pressure": null, "humidex": null, "n": 0}}};
+const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
+
+const sel = document.getElementById('yearSelect');
+YEARS.forEach(y => {
+  const opt = document.createElement('option');
+  opt.value = y; opt.textContent = y;
+  if (y === YEARS[YEARS.length-1]) opt.selected = true;
+  sel.appendChild(opt);
+});
+
+function fmt(v, u='', dec=1) {
+  if (v === null || v === undefined) return '—';
+  return v.toFixed(dec) + u;
+}
+
+function loadYear(year) {
+  document.getElementById('header-sub').textContent = `Station Colmar-Mittelharth · Statistiques ${year}`;
+  document.getElementById('table-title').textContent = `Moyennes mensuelles — ${year}`;
+  const tbody = document.getElementById('climate-tbody');
+  tbody.innerHTML = '';
+  const m = DATA[String(year)];
+  MONTHS.forEach((mn, i) => {
+    const mv = m[String(i+1)] || {};
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${mn}</td>
+      <td>${fmt(mv.avg_t, ' °C')}</td>
+      <td style="color:#d85a30">${fmt(mv.max_t, ' °C')}</td>
+      <td style="color:#2a78d6">${fmt(mv.min_t, ' °C')}</td>
+      <td>${fmt(mv.rain, ' mm')}</td>
+      <td>${fmt(mv.solar, ' W/m²', 0)}</td>
+      <td>${fmt(mv.hum, ' %', 0)}</td>
+      <td>${fmt(mv.pressure, ' hPa', 0)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+loadYear(YEARS[YEARS.length-1]);
+</script>
 </body>
 </html>
