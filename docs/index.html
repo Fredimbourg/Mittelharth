@@ -81,7 +81,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <h1>🌤 Météo Colmar-Mittelharth</h1>
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
-  <span class="updated">Mis à jour : 18/08/2026 07:26</span>
+  <span class="updated">Mis à jour : 18/08/2026 09:33</span>
 </header>
 
 <nav>
@@ -94,14 +94,14 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <div class="hero">
   <div class="hero-icon">🌤</div>
   <div class="hero-main">
-    <div class="hero-temp">24.0 °C</div>
-    <div class="hero-cond">Peu nuageux · Ressenti 24.0 °C</div>
+    <div class="hero-temp">24.5 °C</div>
+    <div class="hero-cond">Peu nuageux · Ressenti 24.5 °C</div>
     <div class="hero-trend">
       <span class="trend-stable"></span>
       
     </div>
     <div class="hero-records">
-      <span>Aujourd'hui · Max <b>24.0 °C</b> · Min <b>24.0 °C</b></span>
+      <span>Aujourd'hui · Max <b>24.5 °C</b> · Min <b>24.0 °C</b></span>
     </div>
   </div>
   <div class="hero-chart">
@@ -120,8 +120,8 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">💧</div>
     <div class="card-label">Humidité</div>
-    <div class="card-value">65 %</div>
-    <div class="card-sub">Point de rosée : 17.0 °C</div>
+    <div class="card-value">64 %</div>
+    <div class="card-sub">Point de rosée : 17.3 °C</div>
   </div>
   <div class="card">
     <div class="card-icon">📊</div>
@@ -131,7 +131,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">💨</div>
     <div class="card-label">Vent</div>
-    <div class="card-value">1 km/h</div>
+    <div class="card-value">0 km/h</div>
     <div class="card-sub">Rafale : 2 km/h · ESE</div>
   </div>
   <div class="card">
@@ -143,7 +143,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">☀</div>
     <div class="card-label">Rayonnement</div>
-    <div class="card-value">124 W/m²</div>
+    <div class="card-value">135 W/m²</div>
     <div class="card-sub">Indice UV : 1</div>
   </div>
 </div>
@@ -157,19 +157,14 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   </div>
 </div>
 
-<div class="section">
-  <div class="section-title">Intérieur</div>
-  <div class="detail-grid">
-    <div class="detail-item"><div class="detail-label">Température</div><div class="detail-value">24.8 °C</div></div>
-    <div class="detail-item"><div class="detail-label">Humidité</div><div class="detail-value">48 %</div></div>
-  </div>
-</div>
-
-<footer>Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a></footer>
+<footer>
+  Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a><br>
+  <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ffredimbourg.github.io%2FMittelharth&count_bg=%232a78d6&title_bg=%23555&icon=&icon_color=%23E7E7E7&title=visites&edge_flat=true" style="margin-top:8px;vertical-align:middle" alt="compteur de visites">
+</footer>
 </div>
 
 <script>
-const hourly   = [{"time": "2026-08-18 07:26", "temp": 24.0, "hum": 65.0, "pres": 1015.2, "rain": 0.0, "solar": 123.7}];
+const hourly   = [{"time": "2026-08-18 07:26", "temp": 24.0, "hum": 65.0, "pres": 1015.2, "rain": 0.0, "solar": 123.7}, {"time": "2026-08-18 07:33", "temp": 24.5, "hum": 64.0, "pres": 1015.2, "rain": 0.0, "solar": 134.9}];
 const forecast = [{"date": "2026-08-18", "max_t": 27.9, "min_t": 18.4, "rain": 0.0, "code": 3, "wind": 13.9}, {"date": "2026-08-19", "max_t": 28.4, "min_t": 16.9, "rain": 0.45, "code": 3, "wind": 15.1}, {"date": "2026-08-20", "max_t": 23.6, "min_t": 15.8, "rain": 2.5, "code": 80, "wind": 8.0}, {"date": "2026-08-21", "max_t": 21.4, "min_t": 14.7, "rain": 12.3, "code": 80, "wind": 7.6}, {"date": "2026-08-22", "max_t": 24.3, "min_t": 12.1, "rain": 0.0, "code": 3, "wind": 10.1}, {"date": "2026-08-23", "max_t": 19.9, "min_t": 17.3, "rain": 28.5, "code": 80, "wind": 9.9}, {"date": "2026-08-24", "max_t": 24.2, "min_t": 18.0, "rain": 15.75, "code": 61, "wind": 6.5}];
 const WMO      = {"0": "\u2600", "1": "\ud83c\udf24", "2": "\u26c5", "3": "\u2601", "45": "\ud83c\udf2b", "48": "\ud83c\udf2b", "51": "\ud83c\udf26", "53": "\ud83c\udf26", "55": "\ud83c\udf27", "61": "\ud83c\udf27", "63": "\ud83c\udf27", "65": "\ud83c\udf27", "71": "\ud83c\udf28", "73": "\ud83c\udf28", "75": "\u2744", "80": "\ud83c\udf26", "81": "\ud83c\udf27", "82": "\u26c8", "95": "\u26c8", "96": "\u26c8", "99": "\u26c8"};
 const JOURS    = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
