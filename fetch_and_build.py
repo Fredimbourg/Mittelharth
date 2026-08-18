@@ -16,8 +16,11 @@ MAC     = os.environ["ECOWITT_MAC"]
 
 BASE_URL  = "https://api.ecowitt.net/api/v3"
 CALL_BACK = "outdoor,indoor,rainfall,wind,pressure,solar_and_uvi"
-HIST_FILE = Path("docs/history.json")   # accumulation journalière
-LIVE_FILE = Path("docs/live.json")
+HOURLY_FILE = Path("docs/hourly.json")  # données horaires (24 dernières heures)
+FORECAST_FILE = Path("docs/forecast.json")  # prévisions Open-Meteo
+
+# Coordonnées de Colmar
+LAT, LON = 48.08, 7.36
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def api_get(endpoint, params):
@@ -72,6 +75,65 @@ def fetch_realtime():
     LIVE_FILE.write_text(json.dumps(live, ensure_ascii=False, indent=2))
     print(f"  → Temp: {live['temp']}°C, Hum: {live['hum']}%, Pluie: {live['rain_daily']}mm")
     return live
+
+# ── 1b. Accumulation horaire (24h glissantes) ─────────────────────────────────
+def update_hourly(live):
+    """Garde les 24 dernières mesures horaires pour le mini graphique."""
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    if HOURLY_FILE.exists():
+        hourly = json.loads(HOURLY_FILE.read_text())
+    else:
+        hourly = []
+
+    hourly.append({
+        "time": now,
+        "temp": live.get("temp"),
+        "hum":  live.get("hum"),
+        "pres": live.get("pressure"),
+        "rain": live.get("rain_daily"),
+        "solar": live.get("solar"),
+    })
+    # Garder seulement les 24 dernières heures (24 points si run horaire)
+    hourly = hourly[-24:]
+    HOURLY_FILE.write_text(json.dumps(hourly, ensure_ascii=False))
+    print(f"  → Historique horaire : {len(hourly)} points")
+    return hourly
+
+# ── 1c. Prévisions Open-Meteo (gratuit, sans clé) ────────────────────────────
+def fetch_forecast():
+    """Récupère les prévisions 7 jours depuis Open-Meteo."""
+    print("Fetching forecast...")
+    try:
+        url = (
+            f"https://api.open-meteo.com/v1/forecast"
+            f"?latitude={LAT}&longitude={LON}"
+            f"&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,"
+            f"weathercode,windspeed_10m_max"
+            f"&hourly=temperature_2m,precipitation_probability"
+            f"&timezone=Europe%2FParis"
+            f"&forecast_days=7"
+        )
+        r = requests.get(url, timeout=15)
+        r.raise_for_status()
+        data = r.json()
+        daily = data.get("daily", {})
+        forecast = []
+        dates = daily.get("time", [])
+        for i, date in enumerate(dates):
+            forecast.append({
+                "date":   date,
+                "max_t":  daily.get("temperature_2m_max", [None]*8)[i],
+                "min_t":  daily.get("temperature_2m_min", [None]*8)[i],
+                "rain":   daily.get("precipitation_sum",  [None]*8)[i],
+                "code":   daily.get("weathercode",        [None]*8)[i],
+                "wind":   daily.get("windspeed_10m_max",  [None]*8)[i],
+            })
+        FORECAST_FILE.write_text(json.dumps(forecast, ensure_ascii=False))
+        print(f"  → {len(forecast)} jours de prévisions")
+        return forecast
+    except Exception as e:
+        print(f"  → Erreur prévisions: {e}")
+        return []
 
 # ── 2. Lecture Excel ──────────────────────────────────────────────────────────
 def read_excel_files():
@@ -241,14 +303,69 @@ def aggregate_by_year(hist_dict):
     return years, result
 
 # ── 5. Génération HTML ────────────────────────────────────────────────────────
-def build_index(live):
+def build_index(live, hourly, forecast):
     def val(v, unit="", dec=1):
         if v is None: return "—"
         return f"{v:.{dec}f}{unit}"
+
     def wind_dir_str(deg):
         if deg is None: return "—"
         dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"]
         return dirs[round(deg/22.5) % 16]
+
+    def weather_icon(solar, rain_rate, hum, temp):
+        """Icône météo dynamique basée sur les capteurs."""
+        if solar is None: solar = 0
+        if rain_rate is None: rain_rate = 0
+        if hum is None: hum = 50
+        if temp is None: temp = 15
+        if rain_rate > 2:   return "🌧", "Pluie"
+        if rain_rate > 0.1: return "🌦", "Averses"
+        if solar > 500:     return "☀", "Ensoleillé"
+        if solar > 200:     return "⛅", "Partiellement nuageux"
+        if solar > 50:      return "🌤", "Peu nuageux"
+        if hum > 90:        return "🌫", "Brouillard"
+        if temp < 0:        return "❄", "Gel"
+        return "☁", "Nuageux"
+
+    def trend_arrow(hourly):
+        """Tendance température sur les 3 dernières heures."""
+        if len(hourly) < 3: return "", ""
+        temps = [h["temp"] for h in hourly[-3:] if h.get("temp") is not None]
+        if len(temps) < 2: return "", ""
+        diff = temps[-1] - temps[0]
+        if diff > 0.5:   return "↑", f"+{diff:.1f}°C en 3h"
+        if diff < -0.5:  return "↓", f"{diff:.1f}°C en 3h"
+        return "→", "Stable"
+
+    icon, condition = weather_icon(live.get("solar"), live.get("rain_rate"), live.get("hum"), live.get("temp"))
+    arrow, trend_txt = trend_arrow(hourly)
+
+    # Records du jour (min/max depuis les données horaires)
+    today_temps = [h["temp"] for h in hourly if h.get("temp") is not None]
+    today_max = f"{max(today_temps):.1f} °C" if today_temps else "—"
+    today_min = f"{min(today_temps):.1f} °C" if today_temps else "—"
+
+    # Données horaires JS
+    hourly_js = json.dumps(hourly)
+
+    # Prévisions JS
+    forecast_js = json.dumps(forecast)
+
+    # Codes météo WMO → icône
+    wmo_icons = {
+        0:"☀",1:"🌤",2:"⛅",3:"☁",
+        45:"🌫",48:"🌫",
+        51:"🌦",53:"🌦",55:"🌧",
+        61:"🌧",63:"🌧",65:"🌧",
+        71:"🌨",73:"🌨",75:"❄",
+        80:"🌦",81:"🌧",82:"⛈",
+        95:"⛈",96:"⛈",99:"⛈",
+    }
+    wmo_js = json.dumps(wmo_icons)
+
+    # Noms des jours
+    jours = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"]
 
     html = f"""<!DOCTYPE html>
 <html lang="fr">
@@ -257,12 +374,24 @@ def build_index(live):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="refresh" content="3600">
 <title>Météo Colmar-Mittelharth</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
-:root{{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--radius:8px;--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}}
-@media(prefers-color-scheme:dark){{:root{{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10)}}}}
-body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}}
-.container{{max-width:900px;margin:0 auto}}
+:root{{
+  --bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;
+  --text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;
+  --border:rgba(11,11,11,.10);--radius:8px;
+  --accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3);
+  --grid:#e1e0d9;
+}}
+@media(prefers-color-scheme:dark){{
+  :root{{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;
+    --text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;
+    --border:rgba(255,255,255,.10);--grid:#2c2c2a;
+    --accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4);}}
+}}
+body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem;min-height:100vh}}
+.container{{max-width:920px;margin:0 auto}}
 header{{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}}
 header h1{{font-size:20px;font-weight:500}}
 header p{{font-size:13px;color:var(--text-muted)}}
@@ -270,13 +399,40 @@ header p{{font-size:13px;color:var(--text-muted)}}
 nav{{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}}
 nav a{{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}}
 nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}}
-.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:1.5rem}}
-.card{{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:1.25rem}}
-.card-icon{{font-size:22px;margin-bottom:8px}}
+
+/* Hero météo */
+.hero{{background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}}
+.hero-icon{{font-size:64px;line-height:1;flex-shrink:0}}
+.hero-main{{flex:1;min-width:160px}}
+.hero-temp{{font-size:52px;font-weight:300;line-height:1;margin-bottom:4px}}
+.hero-cond{{font-size:16px;color:var(--text-secondary);margin-bottom:8px}}
+.hero-trend{{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px}}
+.trend-up{{color:#d85a30}} .trend-down{{color:#2a78d6}} .trend-stable{{color:var(--text-muted)}}
+.hero-records{{display:flex;gap:16px;font-size:13px;margin-top:8px}}
+.hero-records span{{color:var(--text-muted)}} .hero-records b{{color:var(--text)}}
+.hero-chart{{flex:2;min-width:200px;height:80px;position:relative}}
+
+/* Grille de cartes */
+.grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}}
+.card{{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:1rem 1.25rem}}
+.card-icon{{font-size:20px;margin-bottom:6px}}
 .card-label{{font-size:12px;color:var(--text-muted);margin-bottom:4px}}
-.card-value{{font-size:28px;font-weight:500;line-height:1}}
+.card-value{{font-size:24px;font-weight:500;line-height:1}}
 .card-sub{{font-size:12px;color:var(--text-muted);margin-top:4px}}
-.card.highlight{{border-color:var(--accent);background:rgba(42,120,214,0.04)}}
+
+/* Prévisions */
+.forecast{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.25rem;margin-bottom:1.5rem}}
+.forecast-title{{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}}
+.forecast-grid{{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}}
+@media(max-width:600px){{.forecast-grid{{grid-template-columns:repeat(4,1fr)}}}}
+.forecast-day{{text-align:center;padding:10px 4px;border-radius:var(--radius);background:var(--surface-muted)}}
+.forecast-day-name{{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-weight:500}}
+.forecast-icon{{font-size:22px;margin:4px 0}}
+.forecast-max{{font-size:13px;font-weight:600;color:#d85a30}}
+.forecast-min{{font-size:12px;color:#2a78d6}}
+.forecast-rain{{font-size:11px;color:var(--text-muted);margin-top:2px}}
+
+/* Sections */
 .section{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1rem}}
 .section-title{{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}}
 .detail-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}}
@@ -288,6 +444,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
 </head>
 <body>
 <div class="container">
+
 <header>
   <div>
     <h1>🌤 Météo Colmar-Mittelharth</h1>
@@ -295,18 +452,40 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   </div>
   <span class="updated">Mis à jour : {live['updated_at']}</span>
 </header>
+
 <nav>
   <a href="index.html" class="active">⚡ En direct</a>
   <a href="dashboard.html">📊 Historique</a>
   <a href="climate.html">🌍 Climatologie</a>
 </nav>
-<div class="grid">
-  <div class="card highlight">
-    <div class="card-icon">🌡</div>
-    <div class="card-label">Température</div>
-    <div class="card-value">{val(live['temp'],' °C')}</div>
-    <div class="card-sub">Ressenti : {val(live['temp_feels'],' °C')}</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-icon">{icon}</div>
+  <div class="hero-main">
+    <div class="hero-temp">{val(live['temp'])} °C</div>
+    <div class="hero-cond">{condition} · Ressenti {val(live['temp_feels'])} °C</div>
+    <div class="hero-trend">
+      <span class="trend-{'up' if arrow == '↑' else 'down' if arrow == '↓' else 'stable'}">{arrow}</span>
+      {trend_txt}
+    </div>
+    <div class="hero-records">
+      <span>Aujourd'hui · Max <b>{today_max}</b> · Min <b>{today_min}</b></span>
+    </div>
   </div>
+  <div class="hero-chart">
+    <canvas id="miniChart"></canvas>
+  </div>
+</div>
+
+<!-- Prévisions 7 jours -->
+<div class="forecast">
+  <div class="forecast-title">Prévisions 7 jours</div>
+  <div class="forecast-grid" id="forecastGrid"></div>
+</div>
+
+<!-- Cartes de données -->
+<div class="grid">
   <div class="card">
     <div class="card-icon">💧</div>
     <div class="card-label">Humidité</div>
@@ -328,7 +507,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <div class="card-icon">🌧</div>
     <div class="card-label">Pluie aujourd'hui</div>
     <div class="card-value">{val(live['rain_daily'],' mm')}</div>
-    <div class="card-sub">Ce mois : {val(live['rain_monthly'],' mm')}</div>
+    <div class="card-sub">Taux : {val(live['rain_rate'],' mm/h')}</div>
   </div>
   <div class="card">
     <div class="card-icon">☀</div>
@@ -337,6 +516,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <div class="card-sub">Indice UV : {val(live['uvi'],'',0)}</div>
   </div>
 </div>
+
 <div class="section">
   <div class="section-title">Précipitations cumulées</div>
   <div class="detail-grid">
@@ -345,6 +525,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <div class="detail-item"><div class="detail-label">Cette année</div><div class="detail-value">{val(live['rain_yearly'],' mm')}</div></div>
   </div>
 </div>
+
 <div class="section">
   <div class="section-title">Intérieur</div>
   <div class="detail-grid">
@@ -352,8 +533,65 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <div class="detail-item"><div class="detail-label">Humidité</div><div class="detail-value">{val(live['hum_in'],' %',0)}</div></div>
   </div>
 </div>
-<footer>Station météo personnelle · Colmar-Mittelharth · Alsace</footer>
+
+<footer>Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a></footer>
 </div>
+
+<script>
+const hourly   = {hourly_js};
+const forecast = {forecast_js};
+const WMO      = {wmo_js};
+const JOURS    = {json.dumps(jours)};
+
+// ── Mini graphique 24h ────────────────────────────────────────────────────────
+const dark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gc = () => dark ? '#2c2c2a' : '#e1e0d9';
+const tc = () => '#898781';
+
+if (hourly.length > 1) {{
+  new Chart(document.getElementById('miniChart'), {{
+    type: 'line',
+    data: {{
+      labels: hourly.map(h => h.time.slice(11,16)),
+      datasets: [{{
+        data:  hourly.map(h => h.temp),
+        borderColor: '#d85a30',
+        backgroundColor: 'rgba(216,90,48,0.08)',
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: true,
+        tension: 0.4,
+      }}]
+    }},
+    options: {{
+      responsive: true, maintainAspectRatio: false,
+      plugins: {{ legend: {{ display: false }}, tooltip: {{ callbacks: {{ label: c => c.parsed.y.toFixed(1) + ' °C' }} }} }},
+      scales: {{
+        x: {{ ticks: {{ color: tc(), maxTicksLimit: 6, maxRotation: 0 }}, grid: {{ color: gc() }} }},
+        y: {{ ticks: {{ color: tc(), callback: v => v + '°' }}, grid: {{ color: gc() }} }}
+      }}
+    }}
+  }});
+}}
+
+// ── Prévisions ────────────────────────────────────────────────────────────────
+const fg = document.getElementById('forecastGrid');
+forecast.forEach(day => {{
+  const dt   = new Date(day.date + 'T12:00:00');
+  const nom  = JOURS[dt.getDay()];
+  const icon = WMO[String(day.code)] || '🌡';
+  const div  = document.createElement('div');
+  div.className = 'forecast-day';
+  div.innerHTML = `
+    <div class="forecast-day-name">${{nom}}</div>
+    <div class="forecast-icon">${{icon}}</div>
+    <div class="forecast-max">${{day.max_t !== null ? day.max_t.toFixed(0) + '°' : '—'}}</div>
+    <div class="forecast-min">${{day.min_t !== null ? day.min_t.toFixed(0) + '°' : '—'}}</div>
+    <div class="forecast-rain">${{day.rain !== null && day.rain > 0 ? day.rain.toFixed(1) + ' mm' : ''}}</div>
+  `;
+  fg.appendChild(div);
+}});
+</script>
 </body>
 </html>"""
     Path("docs/index.html").write_text(html, encoding="utf-8")
@@ -454,7 +692,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 
 <header>
   <div>
-    <h1>📊 Historique de la station</h1>
+    <h1>📊 Dashboard météo</h1>
     <p id="header-sub">Station Colmar-Mittelharth</p>
   </div>
   <div class="year-selector">
@@ -920,20 +1158,14 @@ loadYear(YEARS[YEARS.length-1]);
 if __name__ == "__main__":
     Path("docs").mkdir(exist_ok=True)
 
-    # Toujours : temps réel + accumulation
+    # Toujours : temps réel + accumulation horaire + prévisions
     live = fetch_realtime()
-    build_index(live)
+    hourly = update_hourly(live)
+    forecast = fetch_forecast()
+    build_index(live, hourly, forecast)
 
     # Historique : charger ou mettre à jour
-    if "--full" in sys.argv or not HIST_FILE.exists():
-        hist_dict = update_history(live)
-    else:
-        if HIST_FILE.exists():
-            hist_dict = json.loads(HIST_FILE.read_text())
-            # Mettre à jour aujourd'hui
-            hist_dict = update_history(live)
-        else:
-            hist_dict = update_history(live)
+    hist_dict = update_history(live)
 
     years, data_by_year = aggregate_by_year(hist_dict)
     build_dashboard(years, data_by_year)
