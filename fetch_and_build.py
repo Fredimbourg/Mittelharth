@@ -16,7 +16,9 @@ MAC     = os.environ["ECOWITT_MAC"]
 
 BASE_URL  = "https://api.ecowitt.net/api/v3"
 CALL_BACK = "outdoor,indoor,rainfall,wind,pressure,solar_and_uvi"
-HOURLY_FILE = Path("docs/hourly.json")  # données horaires (24 dernières heures)
+HIST_FILE     = Path("docs/history.json")   # accumulation journalière
+LIVE_FILE     = Path("docs/live.json")      # données temps réel
+HOURLY_FILE   = Path("docs/hourly.json")    # données horaires (24 dernières heures)
 FORECAST_FILE = Path("docs/forecast.json")  # prévisions Open-Meteo
 
 # Coordonnées de Colmar
