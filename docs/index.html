@@ -5,12 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="refresh" content="3600">
 <title>Météo Colmar-Mittelharth</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--radius:8px;--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}
-@media(prefers-color-scheme:dark){:root{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10)}}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}
-.container{max-width:900px;margin:0 auto}
+:root{
+  --bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;
+  --text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;
+  --border:rgba(11,11,11,.10);--radius:8px;
+  --accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3);
+  --grid:#e1e0d9;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;
+    --text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;
+    --border:rgba(255,255,255,.10);--grid:#2c2c2a;
+    --accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4);}
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem;min-height:100vh}
+.container{max-width:920px;margin:0 auto}
 header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}
 header h1{font-size:20px;font-weight:500}
 header p{font-size:13px;color:var(--text-muted)}
@@ -18,13 +30,40 @@ header p{font-size:13px;color:var(--text-muted)}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
 nav a{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}
 nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:1.5rem}
-.card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:1.25rem}
-.card-icon{font-size:22px;margin-bottom:8px}
+
+/* Hero météo */
+.hero{background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
+.hero-icon{font-size:64px;line-height:1;flex-shrink:0}
+.hero-main{flex:1;min-width:160px}
+.hero-temp{font-size:52px;font-weight:300;line-height:1;margin-bottom:4px}
+.hero-cond{font-size:16px;color:var(--text-secondary);margin-bottom:8px}
+.hero-trend{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px}
+.trend-up{color:#d85a30} .trend-down{color:#2a78d6} .trend-stable{color:var(--text-muted)}
+.hero-records{display:flex;gap:16px;font-size:13px;margin-top:8px}
+.hero-records span{color:var(--text-muted)} .hero-records b{color:var(--text)}
+.hero-chart{flex:2;min-width:200px;height:80px;position:relative}
+
+/* Grille de cartes */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}
+.card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:1rem 1.25rem}
+.card-icon{font-size:20px;margin-bottom:6px}
 .card-label{font-size:12px;color:var(--text-muted);margin-bottom:4px}
-.card-value{font-size:28px;font-weight:500;line-height:1}
+.card-value{font-size:24px;font-weight:500;line-height:1}
 .card-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
-.card.highlight{border-color:var(--accent);background:rgba(42,120,214,0.04)}
+
+/* Prévisions */
+.forecast{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.25rem;margin-bottom:1.5rem}
+.forecast-title{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+.forecast-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+@media(max-width:600px){.forecast-grid{grid-template-columns:repeat(4,1fr)}}
+.forecast-day{text-align:center;padding:10px 4px;border-radius:var(--radius);background:var(--surface-muted)}
+.forecast-day-name{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-weight:500}
+.forecast-icon{font-size:22px;margin:4px 0}
+.forecast-max{font-size:13px;font-weight:600;color:#d85a30}
+.forecast-min{font-size:12px;color:#2a78d6}
+.forecast-rain{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+/* Sections */
 .section{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1rem}
 .section-title{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
 .detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
@@ -36,30 +75,53 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 </head>
 <body>
 <div class="container">
+
 <header>
   <div>
     <h1>🌤 Météo Colmar-Mittelharth</h1>
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
-  <span class="updated">Mis à jour : 18/08/2026 05:15</span>
+  <span class="updated">Mis à jour : 18/08/2026 07:26</span>
 </header>
+
 <nav>
   <a href="index.html" class="active">⚡ En direct</a>
   <a href="dashboard.html">📊 Historique</a>
   <a href="climate.html">🌍 Climatologie</a>
 </nav>
-<div class="grid">
-  <div class="card highlight">
-    <div class="card-icon">🌡</div>
-    <div class="card-label">Température</div>
-    <div class="card-value">18.3 °C</div>
-    <div class="card-sub">Ressenti : 18.3 °C</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-icon">🌤</div>
+  <div class="hero-main">
+    <div class="hero-temp">24.0 °C</div>
+    <div class="hero-cond">Peu nuageux · Ressenti 24.0 °C</div>
+    <div class="hero-trend">
+      <span class="trend-stable"></span>
+      
+    </div>
+    <div class="hero-records">
+      <span>Aujourd'hui · Max <b>24.0 °C</b> · Min <b>24.0 °C</b></span>
+    </div>
   </div>
+  <div class="hero-chart">
+    <canvas id="miniChart"></canvas>
+  </div>
+</div>
+
+<!-- Prévisions 7 jours -->
+<div class="forecast">
+  <div class="forecast-title">Prévisions 7 jours</div>
+  <div class="forecast-grid" id="forecastGrid"></div>
+</div>
+
+<!-- Cartes de données -->
+<div class="grid">
   <div class="card">
     <div class="card-icon">💧</div>
     <div class="card-label">Humidité</div>
-    <div class="card-value">84 %</div>
-    <div class="card-sub">Point de rosée : 15.6 °C</div>
+    <div class="card-value">65 %</div>
+    <div class="card-sub">Point de rosée : 17.0 °C</div>
   </div>
   <div class="card">
     <div class="card-icon">📊</div>
@@ -69,22 +131,23 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">💨</div>
     <div class="card-label">Vent</div>
-    <div class="card-value">0 km/h</div>
-    <div class="card-sub">Rafale : 0 km/h · SE</div>
+    <div class="card-value">1 km/h</div>
+    <div class="card-sub">Rafale : 2 km/h · ESE</div>
   </div>
   <div class="card">
     <div class="card-icon">🌧</div>
     <div class="card-label">Pluie aujourd'hui</div>
     <div class="card-value">0.0 mm</div>
-    <div class="card-sub">Ce mois : 24.9 mm</div>
+    <div class="card-sub">Taux : 0.0 mm/h</div>
   </div>
   <div class="card">
     <div class="card-icon">☀</div>
     <div class="card-label">Rayonnement</div>
-    <div class="card-value">31 W/m²</div>
-    <div class="card-sub">Indice UV : 0</div>
+    <div class="card-value">124 W/m²</div>
+    <div class="card-sub">Indice UV : 1</div>
   </div>
 </div>
+
 <div class="section">
   <div class="section-title">Précipitations cumulées</div>
   <div class="detail-grid">
@@ -93,14 +156,72 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <div class="detail-item"><div class="detail-label">Cette année</div><div class="detail-value">241.5 mm</div></div>
   </div>
 </div>
+
 <div class="section">
   <div class="section-title">Intérieur</div>
   <div class="detail-grid">
-    <div class="detail-item"><div class="detail-label">Température</div><div class="detail-value">25.0 °C</div></div>
-    <div class="detail-item"><div class="detail-label">Humidité</div><div class="detail-value">45 %</div></div>
+    <div class="detail-item"><div class="detail-label">Température</div><div class="detail-value">24.8 °C</div></div>
+    <div class="detail-item"><div class="detail-label">Humidité</div><div class="detail-value">48 %</div></div>
   </div>
 </div>
-<footer>Station météo personnelle · Colmar-Mittelharth · Alsace</footer>
+
+<footer>Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a></footer>
 </div>
+
+<script>
+const hourly   = [{"time": "2026-08-18 07:26", "temp": 24.0, "hum": 65.0, "pres": 1015.2, "rain": 0.0, "solar": 123.7}];
+const forecast = [{"date": "2026-08-18", "max_t": 27.9, "min_t": 18.4, "rain": 0.0, "code": 3, "wind": 13.9}, {"date": "2026-08-19", "max_t": 28.4, "min_t": 16.9, "rain": 0.45, "code": 3, "wind": 15.1}, {"date": "2026-08-20", "max_t": 23.6, "min_t": 15.8, "rain": 2.5, "code": 80, "wind": 8.0}, {"date": "2026-08-21", "max_t": 21.4, "min_t": 14.7, "rain": 12.3, "code": 80, "wind": 7.6}, {"date": "2026-08-22", "max_t": 24.3, "min_t": 12.1, "rain": 0.0, "code": 3, "wind": 10.1}, {"date": "2026-08-23", "max_t": 19.9, "min_t": 17.3, "rain": 28.5, "code": 80, "wind": 9.9}, {"date": "2026-08-24", "max_t": 24.2, "min_t": 18.0, "rain": 15.75, "code": 61, "wind": 6.5}];
+const WMO      = {"0": "\u2600", "1": "\ud83c\udf24", "2": "\u26c5", "3": "\u2601", "45": "\ud83c\udf2b", "48": "\ud83c\udf2b", "51": "\ud83c\udf26", "53": "\ud83c\udf26", "55": "\ud83c\udf27", "61": "\ud83c\udf27", "63": "\ud83c\udf27", "65": "\ud83c\udf27", "71": "\ud83c\udf28", "73": "\ud83c\udf28", "75": "\u2744", "80": "\ud83c\udf26", "81": "\ud83c\udf27", "82": "\u26c8", "95": "\u26c8", "96": "\u26c8", "99": "\u26c8"};
+const JOURS    = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+// ── Mini graphique 24h ────────────────────────────────────────────────────────
+const dark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gc = () => dark ? '#2c2c2a' : '#e1e0d9';
+const tc = () => '#898781';
+
+if (hourly.length > 1) {
+  new Chart(document.getElementById('miniChart'), {
+    type: 'line',
+    data: {
+      labels: hourly.map(h => h.time.slice(11,16)),
+      datasets: [{
+        data:  hourly.map(h => h.temp),
+        borderColor: '#d85a30',
+        backgroundColor: 'rgba(216,90,48,0.08)',
+        borderWidth: 2,
+        pointRadius: 0,
+        fill: true,
+        tension: 0.4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y.toFixed(1) + ' °C' } } },
+      scales: {
+        x: { ticks: { color: tc(), maxTicksLimit: 6, maxRotation: 0 }, grid: { color: gc() } },
+        y: { ticks: { color: tc(), callback: v => v + '°' }, grid: { color: gc() } }
+      }
+    }
+  });
+}
+
+// ── Prévisions ────────────────────────────────────────────────────────────────
+const fg = document.getElementById('forecastGrid');
+forecast.forEach(day => {
+  const dt   = new Date(day.date + 'T12:00:00');
+  const nom  = JOURS[dt.getDay()];
+  const icon = WMO[String(day.code)] || '🌡';
+  const div  = document.createElement('div');
+  div.className = 'forecast-day';
+  div.innerHTML = `
+    <div class="forecast-day-name">${nom}</div>
+    <div class="forecast-icon">${icon}</div>
+    <div class="forecast-max">${day.max_t !== null ? day.max_t.toFixed(0) + '°' : '—'}</div>
+    <div class="forecast-min">${day.min_t !== null ? day.min_t.toFixed(0) + '°' : '—'}</div>
+    <div class="forecast-rain">${day.rain !== null && day.rain > 0 ? day.rain.toFixed(1) + ' mm' : ''}</div>
+  `;
+  fg.appendChild(div);
+});
+</script>
 </body>
 </html>
