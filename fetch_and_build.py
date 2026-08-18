@@ -56,7 +56,7 @@ def fetch_realtime():
         except: return None
 
     live = {
-        "updated_at": datetime.datetime.now().strftime("%d/%m/%Y %H:%M"),
+        "updated_at": datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%d/%m/%Y %H:%M"),
         "temp":         safe("outdoor","temperature","value"),
         "temp_feels":   safe("outdoor","feels_like","value"),
         "hum":          safe("outdoor","humidity","value"),
@@ -528,15 +528,10 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   </div>
 </div>
 
-<div class="section">
-  <div class="section-title">Intérieur</div>
-  <div class="detail-grid">
-    <div class="detail-item"><div class="detail-label">Température</div><div class="detail-value">{val(live['temp_in'],' °C')}</div></div>
-    <div class="detail-item"><div class="detail-label">Humidité</div><div class="detail-value">{val(live['hum_in'],' %',0)}</div></div>
-  </div>
-</div>
-
-<footer>Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a></footer>
+<footer>
+  Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a><br>
+  <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ffredimbourg.github.io%2FMittelharth&count_bg=%232a78d6&title_bg=%23555&icon=&icon_color=%23E7E7E7&title=visites&edge_flat=true" style="margin-top:8px;vertical-align:middle" alt="compteur de visites">
+</footer>
 </div>
 
 <script>
