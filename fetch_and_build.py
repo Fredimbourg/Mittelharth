@@ -530,9 +530,18 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
 
 <footer>
   Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a><br>
-  <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ffredimbourg.github.io%2FMittelharth&count_bg=%232a78d6&title_bg=%23555&icon=&icon_color=%23E7E7E7&title=visites&edge_flat=true" style="margin-top:8px;vertical-align:middle" alt="compteur de visites">
+  <span style="margin-top:8px;display:inline-block;font-size:12px;color:var(--text-muted)">
+    👁 <span id="visit-count">...</span> visites
+  </span>
 </footer>
 </div>
+<script data-goatcounter="https://mittelharth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+fetch('https://mittelharth.goatcounter.com/counter/TOTAL.json')
+  .then(r => r.json())
+  .then(d => {{ document.getElementById('visit-count').textContent = d.count; }})
+  .catch(() => {{ document.getElementById('visit-count').textContent = '—'; }});
+</script>
 
 <script>
 const hourly   = {hourly_js};
