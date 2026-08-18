@@ -81,7 +81,7 @@ def fetch_realtime():
 # ── 1b. Accumulation horaire (24h glissantes) ─────────────────────────────────
 def update_hourly(live):
     """Garde les 24 dernières mesures horaires pour le mini graphique."""
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%Y-%m-%d %H:%M")
     if HOURLY_FILE.exists():
         hourly = json.loads(HOURLY_FILE.read_text())
     else:
@@ -558,7 +558,11 @@ if (hourly.length > 1) {{
   new Chart(document.getElementById('miniChart'), {{
     type: 'line',
     data: {{
-      labels: hourly.map(h => h.time.slice(11,16)),
+      labels: hourly.map(h => {{
+        // Convertir UTC → heure locale (Paris = UTC+1 ou +2)
+        const d = new Date(h.time.replace(' ', 'T') + ':00Z');
+        return d.toLocaleTimeString('fr-FR', {{hour:'2-digit', minute:'2-digit', timeZone:'Europe/Paris'}});
+      }}),
       datasets: [{{
         data:  hourly.map(h => h.temp),
         borderColor: '#d85a30',
