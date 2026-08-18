@@ -81,7 +81,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <h1>🌤 Météo Colmar-Mittelharth</h1>
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
-  <span class="updated">Mis à jour : 18/08/2026 09:47</span>
+  <span class="updated">Mis à jour : 18/08/2026 09:57</span>
 </header>
 
 <nav>
@@ -94,14 +94,14 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <div class="hero">
   <div class="hero-icon">⛅</div>
   <div class="hero-main">
-    <div class="hero-temp">25.4 °C</div>
-    <div class="hero-cond">Partiellement nuageux · Ressenti 25.4 °C</div>
+    <div class="hero-temp">26.0 °C</div>
+    <div class="hero-cond">Partiellement nuageux · Ressenti 26.0 °C</div>
     <div class="hero-trend">
       <span class="trend-up">↑</span>
-      +1.4°C en 3h
+      +1.5°C en 3h
     </div>
     <div class="hero-records">
-      <span>Aujourd'hui · Max <b>25.4 °C</b> · Min <b>24.0 °C</b></span>
+      <span>Aujourd'hui · Max <b>26.0 °C</b> · Min <b>24.0 °C</b></span>
     </div>
   </div>
   <div class="hero-chart">
@@ -120,7 +120,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">💧</div>
     <div class="card-label">Humidité</div>
-    <div class="card-value">59 %</div>
+    <div class="card-value">57 %</div>
     <div class="card-sub">Point de rosée : 16.8 °C</div>
   </div>
   <div class="card">
@@ -131,8 +131,8 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">💨</div>
     <div class="card-label">Vent</div>
-    <div class="card-value">3 km/h</div>
-    <div class="card-sub">Rafale : 5 km/h · NE</div>
+    <div class="card-value">0 km/h</div>
+    <div class="card-sub">Rafale : 2 km/h · ESE</div>
   </div>
   <div class="card">
     <div class="card-icon">🌧</div>
@@ -143,8 +143,8 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">☀</div>
     <div class="card-label">Rayonnement</div>
-    <div class="card-value">408 W/m²</div>
-    <div class="card-sub">Indice UV : 3</div>
+    <div class="card-value">262 W/m²</div>
+    <div class="card-sub">Indice UV : 2</div>
   </div>
 </div>
 
@@ -173,7 +173,7 @@ fetch('https://mittelharth.goatcounter.com/counter/TOTAL.json')
 </script>
 
 <script>
-const hourly   = [{"time": "2026-08-18 07:26", "temp": 24.0, "hum": 65.0, "pres": 1015.2, "rain": 0.0, "solar": 123.7}, {"time": "2026-08-18 07:33", "temp": 24.5, "hum": 64.0, "pres": 1015.2, "rain": 0.0, "solar": 134.9}, {"time": "2026-08-18 07:47", "temp": 25.4, "hum": 59.0, "pres": 1015.2, "rain": 0.0, "solar": 408.3}];
+const hourly   = [{"time": "2026-08-18 07:26", "temp": 24.0, "hum": 65.0, "pres": 1015.2, "rain": 0.0, "solar": 123.7}, {"time": "2026-08-18 07:33", "temp": 24.5, "hum": 64.0, "pres": 1015.2, "rain": 0.0, "solar": 134.9}, {"time": "2026-08-18 07:47", "temp": 25.4, "hum": 59.0, "pres": 1015.2, "rain": 0.0, "solar": 408.3}, {"time": "2026-08-18 09:57", "temp": 26.0, "hum": 57.0, "pres": 1015.1, "rain": 0.0, "solar": 261.6}];
 const forecast = [{"date": "2026-08-18", "max_t": 27.9, "min_t": 18.4, "rain": 0.0, "code": 3, "wind": 13.9}, {"date": "2026-08-19", "max_t": 28.4, "min_t": 16.9, "rain": 0.45, "code": 3, "wind": 15.1}, {"date": "2026-08-20", "max_t": 23.6, "min_t": 15.8, "rain": 2.5, "code": 80, "wind": 8.0}, {"date": "2026-08-21", "max_t": 21.4, "min_t": 14.7, "rain": 12.3, "code": 80, "wind": 7.6}, {"date": "2026-08-22", "max_t": 24.3, "min_t": 12.1, "rain": 0.0, "code": 3, "wind": 10.1}, {"date": "2026-08-23", "max_t": 19.9, "min_t": 17.3, "rain": 28.5, "code": 80, "wind": 9.9}, {"date": "2026-08-24", "max_t": 24.2, "min_t": 18.0, "rain": 15.75, "code": 61, "wind": 6.5}];
 const WMO      = {"0": "\u2600", "1": "\ud83c\udf24", "2": "\u26c5", "3": "\u2601", "45": "\ud83c\udf2b", "48": "\ud83c\udf2b", "51": "\ud83c\udf26", "53": "\ud83c\udf26", "55": "\ud83c\udf27", "61": "\ud83c\udf27", "63": "\ud83c\udf27", "65": "\ud83c\udf27", "71": "\ud83c\udf28", "73": "\ud83c\udf28", "75": "\u2744", "80": "\ud83c\udf26", "81": "\ud83c\udf27", "82": "\u26c8", "95": "\u26c8", "96": "\u26c8", "99": "\u26c8"};
 const JOURS    = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
@@ -187,7 +187,11 @@ if (hourly.length > 1) {
   new Chart(document.getElementById('miniChart'), {
     type: 'line',
     data: {
-      labels: hourly.map(h => h.time.slice(11,16)),
+      labels: hourly.map(h => {
+        // Convertir UTC → heure locale (Paris = UTC+1 ou +2)
+        const d = new Date(h.time.replace(' ', 'T') + ':00Z');
+        return d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', timeZone:'Europe/Paris'});
+      }),
       datasets: [{
         data:  hourly.map(h => h.temp),
         borderColor: '#d85a30',
