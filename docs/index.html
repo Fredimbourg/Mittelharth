@@ -81,7 +81,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <h1>🌤 Météo Colmar-Mittelharth</h1>
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
-  <span class="updated">Mis à jour : 18/08/2026 21:18</span>
+  <span class="updated">Mis à jour : 18/08/2026 22:53</span>
 </header>
 
 <nav>
@@ -94,11 +94,11 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <div class="hero">
   <div class="hero-icon">☁</div>
   <div class="hero-main">
-    <div class="hero-temp">26.4 °C</div>
-    <div class="hero-cond">Nuageux · Ressenti 26.4 °C</div>
+    <div class="hero-temp">25.6 °C</div>
+    <div class="hero-cond">Nuageux · Ressenti 25.6 °C</div>
     <div class="hero-trend">
       <span class="trend-down">↓</span>
-      -2.0°C en 3h
+      -2.3°C en 3h
     </div>
     <div class="hero-records">
       <span>Aujourd'hui · Max <b>30.0 °C</b> · Min <b>24.0 °C</b></span>
@@ -120,19 +120,19 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">💧</div>
     <div class="card-label">Humidité</div>
-    <div class="card-value">45 %</div>
-    <div class="card-sub">Point de rosée : 13.5 °C</div>
+    <div class="card-value">44 %</div>
+    <div class="card-sub">Point de rosée : 12.4 °C</div>
   </div>
   <div class="card">
     <div class="card-icon">📊</div>
     <div class="card-label">Pression</div>
-    <div class="card-value">1013 hPa</div>
+    <div class="card-value">1014 hPa</div>
   </div>
   <div class="card">
     <div class="card-icon">💨</div>
     <div class="card-label">Vent</div>
     <div class="card-value">3 km/h</div>
-    <div class="card-sub">Rafale : 4 km/h · SSO</div>
+    <div class="card-sub">Rafale : 5 km/h · ESE</div>
   </div>
   <div class="card">
     <div class="card-icon">🌧</div>
@@ -173,8 +173,8 @@ fetch('https://mittelharth.goatcounter.com/counter/TOTAL.json')
 </script>
 
 <script>
-const hourly   = [{"time": "2026-08-18 07:26", "temp": 24.0, "hum": 65.0, "pres": 1015.2, "rain": 0.0, "solar": 123.7}, {"time": "2026-08-18 07:33", "temp": 24.5, "hum": 64.0, "pres": 1015.2, "rain": 0.0, "solar": 134.9}, {"time": "2026-08-18 07:47", "temp": 25.4, "hum": 59.0, "pres": 1015.2, "rain": 0.0, "solar": 408.3}, {"time": "2026-08-18 09:57", "temp": 26.0, "hum": 57.0, "pres": 1015.1, "rain": 0.0, "solar": 261.6}, {"time": "2026-08-18 09:57", "temp": 26.0, "hum": 57.0, "pres": 1015.0, "rain": 0.0, "solar": 148.2}, {"time": "2026-08-18 11:18", "temp": 25.8, "hum": 50.0, "pres": 1015.3, "rain": 0.0, "solar": 208.2}, {"time": "2026-08-18 12:59", "temp": 28.3, "hum": 43.0, "pres": 1014.5, "rain": 0.0, "solar": 272.4}, {"time": "2026-08-18 13:55", "temp": 30.0, "hum": 40.0, "pres": 1014.0, "rain": 0.0, "solar": 780.8}, {"time": "2026-08-18 16:05", "temp": 29.2, "hum": 42.0, "pres": 1013.2, "rain": 0.0, "solar": 92.0}, {"time": "2026-08-18 18:01", "temp": 28.4, "hum": 45.0, "pres": 1012.7, "rain": 0.0, "solar": 71.3}, {"time": "2026-08-18 19:58", "temp": 27.9, "hum": 41.0, "pres": 1012.8, "rain": 0.0, "solar": 25.0}, {"time": "2026-08-18 21:18", "temp": 26.4, "hum": 45.0, "pres": 1013.3, "rain": 0.0, "solar": 0.0}];
-const forecast = [{"date": "2026-08-18", "max_t": 28.8, "min_t": 18.6, "rain": 0.0, "code": 3, "wind": 14.2}, {"date": "2026-08-19", "max_t": 32.1, "min_t": 19.9, "rain": 0.0, "code": 3, "wind": 16.9}, {"date": "2026-08-20", "max_t": 28.3, "min_t": 18.1, "rain": 0.48, "code": 61, "wind": 16.6}, {"date": "2026-08-21", "max_t": 26.5, "min_t": 13.6, "rain": 0.0, "code": 3, "wind": 16.4}, {"date": "2026-08-22", "max_t": 23.2, "min_t": 12.7, "rain": 0.0, "code": 3, "wind": 8.0}, {"date": "2026-08-23", "max_t": 21.5, "min_t": 16.2, "rain": 0.45, "code": 3, "wind": 8.2}, {"date": "2026-08-24", "max_t": 18.1, "min_t": 16.8, "rain": 10.5, "code": 81, "wind": 11.5}];
+const hourly   = [{"time": "2026-08-18 07:26", "temp": 24.0, "hum": 65.0, "pres": 1015.2, "rain": 0.0, "solar": 123.7}, {"time": "2026-08-18 07:33", "temp": 24.5, "hum": 64.0, "pres": 1015.2, "rain": 0.0, "solar": 134.9}, {"time": "2026-08-18 07:47", "temp": 25.4, "hum": 59.0, "pres": 1015.2, "rain": 0.0, "solar": 408.3}, {"time": "2026-08-18 09:57", "temp": 26.0, "hum": 57.0, "pres": 1015.1, "rain": 0.0, "solar": 261.6}, {"time": "2026-08-18 09:57", "temp": 26.0, "hum": 57.0, "pres": 1015.0, "rain": 0.0, "solar": 148.2}, {"time": "2026-08-18 11:18", "temp": 25.8, "hum": 50.0, "pres": 1015.3, "rain": 0.0, "solar": 208.2}, {"time": "2026-08-18 12:59", "temp": 28.3, "hum": 43.0, "pres": 1014.5, "rain": 0.0, "solar": 272.4}, {"time": "2026-08-18 13:55", "temp": 30.0, "hum": 40.0, "pres": 1014.0, "rain": 0.0, "solar": 780.8}, {"time": "2026-08-18 16:05", "temp": 29.2, "hum": 42.0, "pres": 1013.2, "rain": 0.0, "solar": 92.0}, {"time": "2026-08-18 18:01", "temp": 28.4, "hum": 45.0, "pres": 1012.7, "rain": 0.0, "solar": 71.3}, {"time": "2026-08-18 19:58", "temp": 27.9, "hum": 41.0, "pres": 1012.8, "rain": 0.0, "solar": 25.0}, {"time": "2026-08-18 21:18", "temp": 26.4, "hum": 45.0, "pres": 1013.3, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-18 22:53", "temp": 25.6, "hum": 44.0, "pres": 1013.6, "rain": 0.0, "solar": 0.0}];
+const forecast = [{"date": "2026-08-18", "max_t": 28.8, "min_t": 18.6, "rain": 0.0, "code": 3, "wind": 14.2}, {"date": "2026-08-19", "max_t": 32.6, "min_t": 19.0, "rain": 0.0, "code": 3, "wind": 16.3}, {"date": "2026-08-20", "max_t": 28.3, "min_t": 18.7, "rain": 0.2, "code": 3, "wind": 16.6}, {"date": "2026-08-21", "max_t": 26.5, "min_t": 13.6, "rain": 0.0, "code": 3, "wind": 16.4}, {"date": "2026-08-22", "max_t": 23.2, "min_t": 12.7, "rain": 0.0, "code": 3, "wind": 8.0}, {"date": "2026-08-23", "max_t": 21.5, "min_t": 16.2, "rain": 0.45, "code": 3, "wind": 8.2}, {"date": "2026-08-24", "max_t": 18.1, "min_t": 16.8, "rain": 10.5, "code": 81, "wind": 11.5}];
 const WMO      = {"0": "\u2600", "1": "\ud83c\udf24", "2": "\u26c5", "3": "\u2601", "45": "\ud83c\udf2b", "48": "\ud83c\udf2b", "51": "\ud83c\udf26", "53": "\ud83c\udf26", "55": "\ud83c\udf27", "61": "\ud83c\udf27", "63": "\ud83c\udf27", "65": "\ud83c\udf27", "71": "\ud83c\udf28", "73": "\ud83c\udf28", "75": "\u2744", "80": "\ud83c\udf26", "81": "\ud83c\udf27", "82": "\u26c8", "95": "\u26c8", "96": "\u26c8", "99": "\u26c8"};
 const JOURS    = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
 
