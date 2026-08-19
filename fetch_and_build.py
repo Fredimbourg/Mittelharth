@@ -634,6 +634,7 @@ def build_dashboard(years, data_by_year):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard · Météo Colmar-Mittelharth</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -702,7 +703,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 
 <header>
   <div>
-    <h1>📊 Historique de la station</h1>
+    <h1>📊 Dashboard météo</h1>
     <p id="header-sub">Station Colmar-Mittelharth</p>
   </div>
   <div class="year-selector">
@@ -905,7 +906,20 @@ function buildDailyChart() {
       {label:'Min',data:daily.map(d=>d.lo),borderColor:'rgba(27,175,122,.65)',backgroundColor:'rgba(27,175,122,.08)',borderWidth:1.5,pointRadius:0,fill:'-1',tension:0.2},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{title:c=>dates[c[0].dataIndex],label:c=>c.dataset.label+' : '+(c.parsed.y!==null?c.parsed.y.toFixed(1)+' °C':'—')}}},
+      plugins:{
+        legend:{display:false},
+        tooltip:{mode:'index',intersect:false,callbacks:{title:c=>dates[c[0].dataIndex],label:c=>c.dataset.label+' : '+(c.parsed.y!==null?c.parsed.y.toFixed(1)+' °C':'—')}},
+        annotation:{
+          annotations:{
+            canicule:{type:'line',yMin:35,yMax:35,borderColor:'rgba(216,90,48,0.6)',borderWidth:1.5,borderDash:[6,3],
+              label:{content:'Canicule 35°C',display:true,position:'end',backgroundColor:'rgba(216,90,48,0.15)',color:'#d85a30',font:{size:11}}},
+            gel:{type:'line',yMin:0,yMax:0,borderColor:'rgba(42,120,214,0.6)',borderWidth:1.5,borderDash:[6,3],
+              label:{content:'Gel 0°C',display:true,position:'end',backgroundColor:'rgba(42,120,214,0.15)',color:'#2a78d6',font:{size:11}}},
+            caniculeZone:{type:'box',yMin:35,yMax:50,backgroundColor:'rgba(216,90,48,0.06)',borderWidth:0},
+            gelZone:{type:'box',yMin:-20,yMax:0,backgroundColor:'rgba(42,120,214,0.06)',borderWidth:0},
+          }
+        }
+      },
       scales:{x:{ticks:{color:tc(),maxRotation:0,autoSkip:false,callback:(v,i)=>dlabels[i]},grid:{color:gc()}},y:{ticks:{color:tc(),callback:v=>v+' °C'},grid:{color:gc()}}}}
   });
 }
