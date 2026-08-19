@@ -402,6 +402,11 @@ nav{{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}}
 nav a{{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}}
 nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}}
 
+/* Alertes */
+.alert{{border-radius:var(--radius);padding:12px 16px;margin-bottom:1rem;font-size:14px;font-weight:500;border:0.5px solid}}
+.alert-canicule{{background:rgba(216,90,48,0.12);color:#d85a30;border-color:rgba(216,90,48,0.3)}}
+.alert-gel{{background:rgba(42,120,214,0.12);color:#2a78d6;border-color:rgba(42,120,214,0.3)}}
+
 /* Hero météo */
 .hero{{background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}}
 .hero-icon{{font-size:64px;line-height:1;flex-shrink:0}}
@@ -460,6 +465,9 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <a href="dashboard.html">📊 Historique</a>
   <a href="climate.html">🌍 Climatologie</a>
 </nav>
+
+{f'''<div class="alert alert-canicule">🌡 Alerte canicule — {val(live['temp'])} °C · Température extrême, hydratez-vous et évitez l'exposition au soleil</div>''' if (live.get('temp') or 0) >= 35 else ''}
+{f'''<div class="alert alert-gel">❄ Alerte gel — {val(live['temp'])} °C · Risque de verglas, protégez vos plantes et canalisations</div>''' if (live.get('temp') or 99) < 0 else ''}
 
 <!-- Hero -->
 <div class="hero">
@@ -530,18 +538,10 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
 
 <footer>
   Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a><br>
-  <span style="margin-top:8px;display:inline-block;font-size:12px;color:var(--text-muted)">
-    👁 <span id="visit-count">...</span> visites
-  </span>
+  <img src="https://mittelharth.goatcounter.com/counter/TOTAL.svg" alt="visites" style="margin-top:8px;vertical-align:middle;opacity:0.7">
 </footer>
 </div>
 <script data-goatcounter="https://mittelharth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<script>
-fetch('https://mittelharth.goatcounter.com/counter/TOTAL.json')
-  .then(r => r.json())
-  .then(d => {{ document.getElementById('visit-count').textContent = d.count; }})
-  .catch(() => {{ document.getElementById('visit-count').textContent = '—'; }});
-</script>
 
 <script>
 const hourly   = {hourly_js};
@@ -789,6 +789,15 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="section-title">Précipitations mensuelles</div>
   <div class="chart-wrap" style="height:200px"><canvas id="rainChart"></canvas></div>
 </div>
+
+<div class="section">
+  <div class="section-title">Cumul de pluie annuel</div>
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:#2a78d6"></span>Cumul journalier (mm)</span>
+  </div>
+  <div class="chart-wrap" style="height:220px"><canvas id="cumulChart"></canvas></div>
+  <div class="chart-note">Courbe en escalier — total cumulé depuis le 1er janvier</div>
+</div>
 <div class="two-col">
   <div class="section" style="margin-bottom:0">
     <div class="section-title">Ensoleillement</div>
@@ -809,6 +818,7 @@ const DATA  = """ + data_js  + """;
 const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
 
 let currentYear = YEARS[YEARS.length - 1];
+let cumulChart = null;
 let mainChart = null, dailyChart = null, rainChart = null, solarChart = null, humChart = null;
 let currentMode = 'temp';
 
@@ -1031,7 +1041,27 @@ function buildJours(){
 // ── Graphiques secondaires ────────────────────────────────────────────────────
 function buildSecondaryCharts(){
   const opts = (suf) => ({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y?.toFixed(1)+suf}}},scales:{x:{ticks:{color:tc(),autoSkip:false,maxRotation:0},grid:{color:gc()}},y:{ticks:{color:tc(),callback:v=>v+suf},grid:{color:gc()}}}});
-  if(rainChart)  rainChart.destroy();
+  if(cumulChart) cumulChart.destroy();
+  // Cumul de pluie journalier
+  const daily = DATA[currentYear].daily;
+  let cumul = 0;
+  const cumulData = daily.map(d => {
+    cumul += (d.rain || 0);
+    return { x: d.date.slice(5), y: Math.round(cumul * 10) / 10 };
+  });
+  cumulChart = new Chart(document.getElementById('cumulChart'), {
+    type: 'line',
+    data: { datasets: [{ label: 'Cumul pluie', data: cumulData, borderColor: '#2a78d6', backgroundColor: 'rgba(42,120,214,0.08)', borderWidth: 2, pointRadius: 0, fill: true, stepped: true }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => 'Cumul : ' + c.parsed.y.toFixed(1) + ' mm' } } },
+      scales: {
+        x: { ticks: { color: tc(), maxTicksLimit: 12, maxRotation: 0 }, grid: { color: gc() } },
+        y: { ticks: { color: tc(), callback: v => v + ' mm' }, grid: { color: gc() } }
+      }
+    }
+  });
   if(solarChart) solarChart.destroy();
   if(humChart)   humChart.destroy();
   rainChart  = new Chart(document.getElementById('rainChart'),  {type:'bar', data:{labels:MONTHS,datasets:[{label:'Pluie', data:getMnthArr('rain'), backgroundColor:'rgba(42,120,214,.7)',borderRadius:4}]},options:opts(' mm')});
