@@ -702,7 +702,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 
 <header>
   <div>
-    <h1>📊 Dashboard météo</h1>
+    <h1>📊 Historique de la station</h1>
     <p id="header-sub">Station Colmar-Mittelharth</p>
   </div>
   <div class="year-selector">
