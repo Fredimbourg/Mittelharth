@@ -538,7 +538,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
 
 <footer>
   Station météo personnelle · Colmar-Mittelharth · Alsace · <a href="https://open-meteo.com" style="color:var(--accent)">Prévisions Open-Meteo</a><br>
-  <img src="https://mittelharth.goatcounter.com/counter/TOTAL.svg" alt="visites" style="margin-top:8px;vertical-align:middle;opacity:0.7">
+  <img src="https://mittelharth.goatcounter.com/counter/TOTAL.svg?style=flat" alt="visites" style="margin-top:8px;vertical-align:middle;opacity:0.7">
 </footer>
 </div>
 <script data-goatcounter="https://mittelharth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -703,7 +703,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 
 <header>
   <div>
-    <h1>📊 Historique de la station</h1>
+    <h1>📊 Dashboard météo</h1>
     <p id="header-sub">Station Colmar-Mittelharth</p>
   </div>
   <div class="year-selector">
