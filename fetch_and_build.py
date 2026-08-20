@@ -182,7 +182,71 @@ def read_excel_files():
             print(f"  → Erreur {xlsx.name}: {e}")
     return all_data
 
-# ── 3. Accumulation journalière ───────────────────────────────────────────────
+# ── Calcul lever/coucher du soleil (algorithme astronomique) ─────────────────
+def sun_times(lat=48.08, lon=7.36):
+    """Calcule lever et coucher du soleil pour aujourd'hui à Colmar."""
+    import math
+    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2)))
+    day_of_year = now.timetuple().tm_yday
+
+    # Déclinaison solaire
+    decl = math.radians(23.45 * math.sin(math.radians(360/365 * (day_of_year - 81))))
+
+    # Angle horaire au lever/coucher
+    lat_r = math.radians(lat)
+    cos_ha = -math.tan(lat_r) * math.tan(decl)
+    if cos_ha < -1: return "00:00", "00:00", 24*60  # soleil de minuit
+    if cos_ha > 1:  return None, None, 0              # nuit polaire
+
+    ha = math.degrees(math.acos(cos_ha))
+
+    # Équation du temps (approximation)
+    B = math.radians(360/365 * (day_of_year - 81))
+    eot = 9.87*math.sin(2*B) - 7.53*math.cos(B) - 1.5*math.sin(B)
+
+    # Correction longitude (Colmar est à 7.36°E, fuseau UTC+1)
+    lon_corr = (lon - 15) * 4  # minutes
+
+    solar_noon = 720 - lon_corr - eot  # minutes depuis minuit UTC
+    # En heure Paris (UTC+2 en été, UTC+1 en hiver)
+    dst = 2 if 3 <= now.month <= 10 else 1
+    solar_noon_local = solar_noon + dst * 60
+
+    sunrise_min = solar_noon_local - ha * 4
+    sunset_min  = solar_noon_local + ha * 4
+    day_length  = int(sunset_min - sunrise_min)
+
+    def fmt(m):
+        h, mn = divmod(int(m), 60)
+        return f"{h:02d}:{mn:02d}"
+
+    return fmt(sunrise_min), fmt(sunset_min), day_length
+
+# ── Calcul des records de la station ─────────────────────────────────────────
+def get_records(hist_dict):
+    """Retourne les records absolus de la station."""
+    records = {
+        "max_t": {"val": None, "date": None},
+        "min_t": {"val": None, "date": None},
+        "max_rain": {"val": None, "date": None},
+        "max_wind": {"val": None, "date": None},
+    }
+    for date_str, d in hist_dict.items():
+        hi = d.get("hi")
+        lo = d.get("lo")
+        rain = d.get("rain")
+        wind = d.get("wind")
+        if hi is not None and (records["max_t"]["val"] is None or hi > records["max_t"]["val"]):
+            records["max_t"] = {"val": hi, "date": date_str}
+        if lo is not None and (records["min_t"]["val"] is None or lo < records["min_t"]["val"]):
+            records["min_t"] = {"val": lo, "date": date_str}
+        if rain is not None and (records["max_rain"]["val"] is None or rain > records["max_rain"]["val"]):
+            records["max_rain"] = {"val": rain, "date": date_str}
+        if wind is not None and (records["max_wind"]["val"] is None or wind > records["max_wind"]["val"]):
+            records["max_wind"] = {"val": wind, "date": date_str}
+    return records
+
+
 def update_history(live):
     """Ajoute/met à jour la journée d'aujourd'hui dans history.json."""
     today = datetime.date.today().strftime("%Y-%m-%d")
@@ -307,7 +371,7 @@ def aggregate_by_year(hist_dict):
     return years, result
 
 # ── 5. Génération HTML ────────────────────────────────────────────────────────
-def build_index(live, hourly, forecast):
+def build_index(live, hourly, forecast, records=None):
     def val(v, unit="", dec=1):
         if v is None: return "—"
         return f"{v:.{dec}f}{unit}"
@@ -316,6 +380,24 @@ def build_index(live, hourly, forecast):
         if deg is None: return "—"
         dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"]
         return dirs[round(deg/22.5) % 16]
+
+    # Lever/coucher du soleil
+    sunrise, sunset, day_len = sun_times()
+    day_h, day_m = divmod(day_len, 60)
+    day_str = f"{day_h}h{day_m:02d}min"
+
+    # Records
+    rec = records or {}
+    def rec_fmt(key, unit):
+        r = rec.get(key, {})
+        if not r or r.get("val") is None: return "—", "—"
+        d = r["date"]
+        dt = datetime.datetime.strptime(d, "%Y-%m-%d")
+        return f"{r['val']:.1f}{unit}", dt.strftime("%d/%m/%Y")
+    rec_max_t, rec_max_t_date = rec_fmt("max_t", " °C")
+    rec_min_t, rec_min_t_date = rec_fmt("min_t", " °C")
+    rec_rain,  rec_rain_date  = rec_fmt("max_rain", " mm")
+    rec_wind,  rec_wind_date  = rec_fmt("max_wind", " km/h")
 
     def weather_icon(solar, rain_rate, hum, temp):
         """Icône météo dynamique basée sur les capteurs."""
@@ -535,6 +617,41 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <div class="detail-item"><div class="detail-label">Aujourd'hui</div><div class="detail-value">{val(live['rain_daily'],' mm')}</div></div>
     <div class="detail-item"><div class="detail-label">Ce mois</div><div class="detail-value">{val(live['rain_monthly'],' mm')}</div></div>
     <div class="detail-item"><div class="detail-label">Cette année</div><div class="detail-value">{val(live['rain_yearly'],' mm')}</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">☀ Soleil aujourd'hui</div>
+  <div class="detail-grid">
+    <div class="detail-item"><div class="detail-label">🌅 Lever</div><div class="detail-value">{sunrise or '—'}</div></div>
+    <div class="detail-item"><div class="detail-label">🌇 Coucher</div><div class="detail-value">{sunset or '—'}</div></div>
+    <div class="detail-item"><div class="detail-label">⏱ Durée du jour</div><div class="detail-value">{day_str}</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">🏆 Records de la station (depuis jan. 2025)</div>
+  <div class="detail-grid">
+    <div class="detail-item" style="border-left:3px solid #d85a30">
+      <div class="detail-label">Température max</div>
+      <div class="detail-value" style="color:#d85a30">{rec_max_t}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{rec_max_t_date}</div>
+    </div>
+    <div class="detail-item" style="border-left:3px solid #2a78d6">
+      <div class="detail-label">Température min</div>
+      <div class="detail-value" style="color:#2a78d6">{rec_min_t}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{rec_min_t_date}</div>
+    </div>
+    <div class="detail-item" style="border-left:3px solid #1baf7a">
+      <div class="detail-label">Pluie max (jour)</div>
+      <div class="detail-value" style="color:#1baf7a">{rec_rain}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{rec_rain_date}</div>
+    </div>
+    <div class="detail-item" style="border-left:3px solid #eda100">
+      <div class="detail-label">Vent max</div>
+      <div class="detail-value" style="color:#eda100">{rec_wind}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{rec_wind_date}</div>
+    </div>
   </div>
 </div>
 
@@ -784,7 +901,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <div class="section">
   <div class="section-title">Jours remarquables par mois</div>
   <table class="jours-table">
-    <thead><tr><th>Mois</th><th>❄ Gel</th><th>🌡 Chauds</th><th>🌧 Pluie</th><th>🌙 Nuits tropicales</th></tr></thead>
+    <thead><tr><th>Mois</th><th>❄ Gel</th><th>🌡 Chauds</th><th>🌧 Pluie</th><th>🌙 Nuits trop.</th></tr></thead>
     <tbody id="jours-tbody"></tbody>
     <tfoot><tr class="totaux"><td>Total</td><td id="t-gel"></td><td id="t-chaud"></td><td id="t-pluie"></td><td id="t-nuits"></td></tr></tfoot>
   </table>
