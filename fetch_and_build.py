@@ -273,6 +273,7 @@ def aggregate_by_year(hist_dict):
         gel   = {m: sum(1 for d in daily if d["month"]==m and (d.get("lo") or 0) < 0)   for m in range(1,13)}
         chaud = {m: sum(1 for d in daily if d["month"]==m and (d.get("hi") or 0) >= 30) for m in range(1,13)}
         pluie = {m: sum(1 for d in daily if d["month"]==m and (d.get("rain") or 0) > 1) for m in range(1,13)}
+        nuits_trop = {m: sum(1 for d in daily if d["month"]==m and (d.get("lo") or 0) >= 20) for m in range(1,13)}
 
         # Heatmap [mois 0-11][jour 0-30]
         heatmap = []
@@ -295,6 +296,7 @@ def aggregate_by_year(hist_dict):
             "gel":     gel,
             "chaud":   chaud,
             "pluie":   pluie,
+            "nuits_trop": nuits_trop,
             "max_abs": round(max(all_hi),1)     if all_hi   else None,
             "min_abs": round(min(all_lo),1)      if all_lo   else None,
             "rain_total": round(sum(all_rain),1) if all_rain else 0,
@@ -621,6 +623,7 @@ def build_dashboard(years, data_by_year):
         "gel":     {str(k): v for k,v in data_by_year[y]["gel"].items()},
         "chaud":   {str(k): v for k,v in data_by_year[y]["chaud"].items()},
         "pluie":   {str(k): v for k,v in data_by_year[y]["pluie"].items()},
+        "nuits_trop": {str(k): v for k,v in data_by_year[y]["nuits_trop"].items()},
         "max_abs": data_by_year[y]["max_abs"],
         "min_abs": data_by_year[y]["min_abs"],
         "rain_total": data_by_year[y]["rain_total"],
@@ -687,6 +690,7 @@ nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--
 .badge-gel{background:rgba(42,120,214,.12);color:#2a78d6}
 .badge-chaud{background:rgba(216,90,48,.12);color:#d85a30}
 .badge-pluie{background:rgba(27,175,122,.12);color:#1baf7a}
+.badge-nuit{background:rgba(130,60,180,.12);color:#8a3cb4}
 .badge-zero{color:var(--text-muted)}
 .totaux td{font-weight:600;color:var(--text)!important;background:var(--surface-muted);border-top:1px solid var(--border)!important}
 .heatmap-wrap{overflow-x:auto}
@@ -780,9 +784,9 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <div class="section">
   <div class="section-title">Jours remarquables par mois</div>
   <table class="jours-table">
-    <thead><tr><th>Mois</th><th>❄ Gel</th><th>🌡 Chauds</th><th>🌧 Pluie</th></tr></thead>
+    <thead><tr><th>Mois</th><th>❄ Gel</th><th>🌡 Chauds</th><th>🌧 Pluie</th><th>🌙 Nuits trop.</th></tr></thead>
     <tbody id="jours-tbody"></tbody>
-    <tfoot><tr class="totaux"><td>Total</td><td id="t-gel"></td><td id="t-chaud"></td><td id="t-pluie"></td></tr></tfoot>
+    <tfoot><tr class="totaux"><td>Total</td><td id="t-gel"></td><td id="t-chaud"></td><td id="t-pluie"></td><td id="t-nuits"></td></tr></tfoot>
   </table>
 </div>
 
@@ -1043,13 +1047,15 @@ function buildJours(){
   MONTHS.forEach((m,i)=>{
     const tr=document.createElement('tr');
     const b=(v,cls)=>v>0?`<span class="badge ${cls}">${v}</span>`:'<span class="badge-zero">—</span>';
-    tr.innerHTML=`<td>${m}</td><td>${b(d.gel[i+1]||0,'badge-gel')}</td><td>${b(d.chaud[i+1]||0,'badge-chaud')}</td><td>${b(d.pluie[i+1]||0,'badge-pluie')}</td>`;
+    const nt = (d.nuits_trop || {})[i+1] || 0;
+    tr.innerHTML=`<td>${m}</td><td>${b(d.gel[i+1]||0,'badge-gel')}</td><td>${b(d.chaud[i+1]||0,'badge-chaud')}</td><td>${b(d.pluie[i+1]||0,'badge-pluie')}</td><td>${b(nt,'badge-nuit')}</td>`;
     tbody.appendChild(tr);
   });
   const sum = obj => Object.values(obj).reduce((a,b)=>a+b,0);
   document.getElementById('t-gel').innerHTML   = `<span class="badge badge-gel">${sum(d.gel)}</span>`;
   document.getElementById('t-chaud').innerHTML = `<span class="badge badge-chaud">${sum(d.chaud)}</span>`;
   document.getElementById('t-pluie').innerHTML = `<span class="badge badge-pluie">${sum(d.pluie)}</span>`;
+  document.getElementById('t-nuits').innerHTML = `<span class="badge badge-nuit">${sum(d.nuits_trop||{})}</span>`;
 }
 
 // ── Graphiques secondaires ────────────────────────────────────────────────────
