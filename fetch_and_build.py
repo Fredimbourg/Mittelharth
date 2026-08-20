@@ -784,7 +784,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <div class="section">
   <div class="section-title">Jours remarquables par mois</div>
   <table class="jours-table">
-    <thead><tr><th>Mois</th><th>❄ Gel</th><th>🌡 Chauds</th><th>🌧 Pluie</th><th>🌙 Nuits trop.</th></tr></thead>
+    <thead><tr><th>Mois</th><th>❄ Gel</th><th>🌡 Chauds</th><th>🌧 Pluie</th><th>🌙 Nuits tropicales</th></tr></thead>
     <tbody id="jours-tbody"></tbody>
     <tfoot><tr class="totaux"><td>Total</td><td id="t-gel"></td><td id="t-chaud"></td><td id="t-pluie"></td><td id="t-nuits"></td></tr></tfoot>
   </table>
