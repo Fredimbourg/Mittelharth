@@ -245,8 +245,9 @@ def get_records(hist_dict):
             records["min_t"] = {"val": lo, "date": date_str}
         if rain is not None and (records["max_rain"]["val"] is None or rain > records["max_rain"]["val"]):
             records["max_rain"] = {"val": rain, "date": date_str}
-        if wind is not None and (records["max_wind"]["val"] is None or wind > records["max_wind"]["val"]):
-            records["max_wind"] = {"val": wind, "date": date_str}
+        gust = d.get("wind_gust") or d.get("wind")
+        if gust is not None and (records["max_wind"]["val"] is None or gust > records["max_wind"]["val"]):
+            records["max_wind"] = {"val": gust, "date": date_str}
     return records
 
 
@@ -278,10 +279,11 @@ def update_history(live):
         "hi":    max(existing.get("hi") or t or 0, t or 0) if t else existing.get("hi"),
         "lo":    min(existing.get("lo") or t or 0, t or 0) if t else existing.get("lo"),
         "hum":   live.get("hum"),
-        "rain":  live.get("rain_daily"),
-        "solar": live.get("solar"),
-        "pres":  live.get("pressure"),
-        "wind":  live.get("wind_speed"),
+        "rain":      live.get("rain_daily"),
+        "solar":     live.get("solar"),
+        "pres":      live.get("pressure"),
+        "wind":      live.get("wind_speed"),
+        "wind_gust": live.get("wind_gust"),
     }
 
     HIST_FILE.write_text(json.dumps(hist, ensure_ascii=False, indent=2))
@@ -654,7 +656,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
       <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{rec_rain_date}</div>
     </div>
     <div class="detail-item" style="border-left:3px solid #eda100">
-      <div class="detail-label">Vent max</div>
+      <div class="detail-label">Rafale max</div>
       <div class="detail-value" style="color:#eda100">{rec_wind}</div>
       <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{rec_wind_date}</div>
     </div>
