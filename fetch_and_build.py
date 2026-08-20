@@ -195,22 +195,25 @@ def sun_times(lat=48.08, lon=7.36):
     # Angle horaire au lever/coucher
     lat_r = math.radians(lat)
     cos_ha = -math.tan(lat_r) * math.tan(decl)
-    if cos_ha < -1: return "00:00", "00:00", 24*60  # soleil de minuit
-    if cos_ha > 1:  return None, None, 0              # nuit polaire
+    if cos_ha < -1: return "00:00", "00:00", 24*60
+    if cos_ha > 1:  return None, None, 0
 
     ha = math.degrees(math.acos(cos_ha))
 
-    # Équation du temps (approximation)
+    # Équation du temps
     B = math.radians(360/365 * (day_of_year - 81))
     eot = 9.87*math.sin(2*B) - 7.53*math.cos(B) - 1.5*math.sin(B)
 
-    # Correction longitude (Colmar est à 7.36°E, fuseau UTC+1)
+    # Correction longitude (Colmar 7.36°E, méridien de référence UTC+1 = 15°E)
     lon_corr = (lon - 15) * 4  # minutes
 
-    solar_noon = 720 - lon_corr - eot  # minutes depuis minuit UTC
-    # En heure Paris (UTC+2 en été, UTC+1 en hiver)
-    dst = 2 if 3 <= now.month <= 10 else 1
-    solar_noon_local = solar_noon + dst * 60
+    # Midi solaire en UTC
+    solar_noon_utc = 720 - lon_corr - eot  # minutes depuis minuit UTC
+
+    # Heure d'été : UTC+2 du dernier dimanche de mars au dernier dimanche d'octobre
+    # Approximation : mois 4 à 10 = UTC+2, reste = UTC+1
+    dst = 2 if 3 < now.month < 11 else 1
+    solar_noon_local = solar_noon_utc + dst * 60
 
     sunrise_min = solar_noon_local - ha * 4
     sunset_min  = solar_noon_local + ha * 4
