@@ -427,8 +427,11 @@ def build_index(live, hourly, forecast, records=None):
     icon, condition = weather_icon(live.get("solar"), live.get("rain_rate"), live.get("hum"), live.get("temp"))
     arrow, trend_txt = trend_arrow(hourly)
 
-    # Records du jour (min/max depuis les données horaires)
-    today_temps = [h["temp"] for h in hourly if h.get("temp") is not None]
+    # Records du jour (min/max depuis les données horaires d'AUJOURD'HUI seulement)
+    today_str = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%Y-%m-%d")
+    today_temps = [h["temp"] for h in hourly if h.get("temp") is not None and h.get("time","").startswith(today_str)]
+    if not today_temps:  # fallback si pas encore de données aujourd'hui
+        today_temps = [h["temp"] for h in hourly if h.get("temp") is not None]
     today_max = f"{max(today_temps):.1f} °C" if today_temps else "—"
     today_min = f"{min(today_temps):.1f} °C" if today_temps else "—"
 
@@ -1339,10 +1342,12 @@ if __name__ == "__main__":
     live = fetch_realtime()
     hourly = update_hourly(live)
     forecast = fetch_forecast()
-    build_index(live, hourly, forecast)
 
-    # Historique : charger ou mettre à jour
+    # Historique (pour les records)
     hist_dict = update_history(live)
+    records = get_records(hist_dict)
+
+    build_index(live, hourly, forecast, records)
 
     years, data_by_year = aggregate_by_year(hist_dict)
     build_dashboard(years, data_by_year)
