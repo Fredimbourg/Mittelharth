@@ -163,18 +163,19 @@ def read_excel_files():
                 d = str(row[0])[:10]
                 if len(d) < 10: continue
                 all_data[d] = {
-                    "date":  d,
-                    "month": int(d[5:7]),
-                    "day":   int(d[8:10]),
-                    "year":  int(d[:4]),
-                    "avg":   fv(row[1]),
-                    "lo":    fv(row[2]),
-                    "hi":    fv(row[3]),
-                    "hum":   fv(row[6]),
-                    "rain":  fv(row[21]),
-                    "solar": fv(row[18]),
-                    "pres":  fv(row[32]),
-                    "wind":  fv(row[28]),
+                    "date":      d,
+                    "month":     int(d[5:7]),
+                    "day":       int(d[8:10]),
+                    "year":      int(d[:4]),
+                    "avg":       fv(row[1]),
+                    "lo":        fv(row[2]),
+                    "hi":        fv(row[3]),
+                    "hum":       fv(row[6]),
+                    "rain":      fv(row[21]),
+                    "solar":     fv(row[18]),
+                    "pres":      fv(row[32]),
+                    "wind":      fv(row[28]),
+                    "wind_gust": fv(row[29]),
                 }
                 count += 1
             print(f"     {count} jours lus")
@@ -681,30 +682,48 @@ const dark = window.matchMedia('(prefers-color-scheme:dark)').matches;
 const gc = () => dark ? '#2c2c2a' : '#e1e0d9';
 const tc = () => '#898781';
 
-if (hourly.length > 1) {{
+if (hourly.length > 0) {{
+  // Créer une grille fixe 24h avec les bonnes heures
+  const today_str = new Date().toLocaleDateString('fr-CA'); // YYYY-MM-DD
+  const labels24 = Array.from({{length:24}}, (_,h) => String(h).padStart(2,'0')+':00');
+  const data24   = new Array(24).fill(null);
+
+  hourly.forEach(h => {{
+    // Extraire l'heure depuis le timestamp
+    const time_part = h.time ? h.time.slice(11,16) : '';
+    const hour = parseInt(time_part.slice(0,2));
+    if (!isNaN(hour) && hour >= 0 && hour < 24 && h.temp !== null) {{
+      data24[hour] = h.temp;
+    }}
+  }});
+
   new Chart(document.getElementById('miniChart'), {{
     type: 'line',
     data: {{
-      labels: hourly.map(h => {{
-        // Convertir UTC → heure locale (Paris = UTC+1 ou +2)
-        const d = new Date(h.time.replace(' ', 'T') + ':00Z');
-        return d.toLocaleTimeString('fr-FR', {{hour:'2-digit', minute:'2-digit', timeZone:'Europe/Paris'}});
-      }}),
+      labels: labels24,
       datasets: [{{
-        data:  hourly.map(h => h.temp),
+        data:  data24,
         borderColor: '#d85a30',
         backgroundColor: 'rgba(216,90,48,0.08)',
         borderWidth: 2,
-        pointRadius: 0,
+        pointRadius: d => d.raw !== null ? 2 : 0,
+        spanGaps: true,
         fill: true,
         tension: 0.4,
       }}]
     }},
     options: {{
       responsive: true, maintainAspectRatio: false,
-      plugins: {{ legend: {{ display: false }}, tooltip: {{ callbacks: {{ label: c => c.parsed.y.toFixed(1) + ' °C' }} }} }},
+      plugins: {{ legend: {{ display: false }}, tooltip: {{ callbacks: {{ label: c => c.parsed.y !== null ? c.parsed.y.toFixed(1) + ' °C' : '—' }} }} }},
       scales: {{
-        x: {{ ticks: {{ color: tc(), maxTicksLimit: 6, maxRotation: 0 }}, grid: {{ color: gc() }} }},
+        x: {{
+          ticks: {{
+            color: tc(),
+            maxRotation: 0,
+            callback: (v, i) => i % 3 === 0 ? labels24[i] : ''
+          }},
+          grid: {{ color: gc() }}
+        }},
         y: {{ ticks: {{ color: tc(), callback: v => v + '°' }}, grid: {{ color: gc() }} }}
       }}
     }}
