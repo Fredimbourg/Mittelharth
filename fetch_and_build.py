@@ -183,48 +183,56 @@ def read_excel_files():
             print(f"  → Erreur {xlsx.name}: {e}")
     return all_data
 
-# ── Calcul lever/coucher du soleil (algorithme astronomique) ─────────────────
+# ── Calcul lever/coucher du soleil (algorithme NOAA) ─────────────────────────
 def sun_times(lat=48.08, lon=7.36):
-    """Calcule lever et coucher du soleil pour aujourd'hui à Colmar."""
     import math
-    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2)))
-    day_of_year = now.timetuple().tm_yday
+    date = datetime.date.today()
+    y, m, d = date.year, date.month, date.day
 
-    # Déclinaison solaire
-    decl = math.radians(23.45 * math.sin(math.radians(360/365 * (day_of_year - 81))))
+    # Jour julien
+    JD = 367*y - int(7*(y+int((m+9)/12))/4) + int(275*m/9) + d + 1721013.5
+    T = (JD - 2451545.0) / 36525.0
 
-    # Angle horaire au lever/coucher
+    # Anomalie moyenne
+    M = (357.52911 + T*(35999.05029 - 0.0001537*T)) % 360
+    # Centre de l'équation
+    C = (1.914602 - T*(0.004817 + 0.000014*T))*math.sin(math.radians(M))
+    C += (0.019993 - 0.000101*T)*math.sin(math.radians(2*M))
+    C += 0.000289*math.sin(math.radians(3*M))
+    L0 = 280.46646 + T*36000.76983
+    theta = (L0 + C) % 360
+
+    # Obliquité et déclinaison
+    e = 23.439291 - T*0.013004
+    decl = math.degrees(math.asin(math.sin(math.radians(e))*math.sin(math.radians(theta))))
+
+    # Équation du temps (minutes)
+    epsilon = math.radians(e)
+    y2 = math.tan(epsilon/2)**2
+    L0r, Mr = math.radians(L0), math.radians(M)
+    eot = 4*math.degrees(y2*math.sin(2*L0r) - 2*0.016708634*math.sin(Mr)
+          + 4*0.016708634*y2*math.sin(Mr)*math.cos(2*L0r)
+          - 0.5*y2**2*math.sin(4*L0r) - 1.25*0.016708634**2*math.sin(2*Mr))
+
+    # Angle horaire au lever (dépression 0.833° pour réfraction)
     lat_r = math.radians(lat)
-    cos_ha = -math.tan(lat_r) * math.tan(decl)
-    if cos_ha < -1: return "00:00", "00:00", 24*60
-    if cos_ha > 1:  return None, None, 0
-
+    decl_r = math.radians(decl)
+    cos_ha = (math.cos(math.radians(90.833)) - math.sin(lat_r)*math.sin(decl_r)) / (math.cos(lat_r)*math.cos(decl_r))
+    if cos_ha > 1 or cos_ha < -1:
+        return None, None, 0
     ha = math.degrees(math.acos(cos_ha))
 
-    # Équation du temps
-    B = math.radians(360/365 * (day_of_year - 81))
-    eot = 9.87*math.sin(2*B) - 7.53*math.cos(B) - 1.5*math.sin(B)
+    # Lever/coucher UTC → heure locale Paris
+    dst = 2 if 3 < date.month < 11 else 1
+    sunrise = 720 - 4*(lon + ha) - eot + dst*60
+    sunset  = 720 - 4*(lon - ha) - eot + dst*60
+    day_len = int(sunset - sunrise)
 
-    # Correction longitude (Colmar 7.36°E, méridien de référence UTC+1 = 15°E)
-    lon_corr = (lon - 15) * 4  # minutes
+    def fmt(mn):
+        h, mi = divmod(int(mn) % 1440, 60)
+        return f"{h:02d}:{mi:02d}"
 
-    # Midi solaire en UTC
-    solar_noon_utc = 720 - lon_corr - eot  # minutes depuis minuit UTC
-
-    # Heure d'été : UTC+2 du dernier dimanche de mars au dernier dimanche d'octobre
-    # Approximation : mois 4 à 10 = UTC+2, reste = UTC+1
-    dst = 2 if 3 < now.month < 11 else 1
-    solar_noon_local = solar_noon_utc + dst * 60
-
-    sunrise_min = solar_noon_local - ha * 4
-    sunset_min  = solar_noon_local + ha * 4
-    day_length  = int(sunset_min - sunrise_min)
-
-    def fmt(m):
-        h, mn = divmod(int(m), 60)
-        return f"{h:02d}:{mn:02d}"
-
-    return fmt(sunrise_min), fmt(sunset_min), day_length
+    return fmt(sunrise), fmt(sunset), day_len
 
 # ── Calcul des records de la station ─────────────────────────────────────────
 def get_records(hist_dict):
@@ -683,16 +691,22 @@ const gc = () => dark ? '#2c2c2a' : '#e1e0d9';
 const tc = () => '#898781';
 
 if (hourly.length > 0) {{
-  // Créer une grille fixe 24h avec les bonnes heures
-  const today_str = new Date().toLocaleDateString('fr-CA'); // YYYY-MM-DD
-  const labels24 = Array.from({{length:24}}, (_,h) => String(h).padStart(2,'0')+':00');
-  const data24   = new Array(24).fill(null);
+  // Heure actuelle Paris
+  const nowParis = new Date(new Date().toLocaleString('en-US', {{timeZone:'Europe/Paris'}}));
+  const currentHour = nowParis.getHours();
+  const todayStr = nowParis.toISOString().slice(0,10);
+
+  // Grille fixe de 00:00 à l'heure actuelle
+  const labels24 = Array.from({{length: currentHour + 1}}, (_,h) => String(h).padStart(2,'0')+':00');
+  const data24   = new Array(currentHour + 1).fill(null);
 
   hourly.forEach(h => {{
-    // Extraire l'heure depuis le timestamp
-    const time_part = h.time ? h.time.slice(11,16) : '';
-    const hour = parseInt(time_part.slice(0,2));
-    if (!isNaN(hour) && hour >= 0 && hour < 24 && h.temp !== null) {{
+    if (!h.time) return;
+    // Filtrer seulement les données d'aujourd'hui
+    const date_part = h.time.slice(0,10);
+    if (date_part !== todayStr) return;
+    const hour = parseInt(h.time.slice(11,13));
+    if (!isNaN(hour) && hour <= currentHour && h.temp !== null) {{
       data24[hour] = h.temp;
     }}
   }});
@@ -706,7 +720,7 @@ if (hourly.length > 0) {{
         borderColor: '#d85a30',
         backgroundColor: 'rgba(216,90,48,0.08)',
         borderWidth: 2,
-        pointRadius: d => d.raw !== null ? 2 : 0,
+        pointRadius: 2,
         spanGaps: true,
         fill: true,
         tension: 0.4,
@@ -717,11 +731,7 @@ if (hourly.length > 0) {{
       plugins: {{ legend: {{ display: false }}, tooltip: {{ callbacks: {{ label: c => c.parsed.y !== null ? c.parsed.y.toFixed(1) + ' °C' : '—' }} }} }},
       scales: {{
         x: {{
-          ticks: {{
-            color: tc(),
-            maxRotation: 0,
-            callback: (v, i) => i % 3 === 0 ? labels24[i] : ''
-          }},
+          ticks: {{ color: tc(), maxRotation: 0, callback: (v, i) => i % 3 === 0 ? labels24[i] : '' }},
           grid: {{ color: gc() }}
         }},
         y: {{ ticks: {{ color: tc(), callback: v => v + '°' }}, grid: {{ color: gc() }} }}
