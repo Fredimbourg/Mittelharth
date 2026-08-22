@@ -861,7 +861,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 
 <header>
   <div>
-    <h1>📊 Historique de la station</h1>
+    <h1>📊 Dashboard météo</h1>
     <p id="header-sub">Station Colmar-Mittelharth</p>
   </div>
   <div class="year-selector">
@@ -1215,23 +1215,35 @@ function buildJours(){
 // ── Graphiques secondaires ────────────────────────────────────────────────────
 function buildSecondaryCharts(){
   const opts = (suf) => ({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y?.toFixed(1)+suf}}},scales:{x:{ticks:{color:tc(),autoSkip:false,maxRotation:0},grid:{color:gc()}},y:{ticks:{color:tc(),callback:v=>v+suf},grid:{color:gc()}}}});
-  if(cumulChart) cumulChart.destroy();
-  // Cumul de pluie journalier
   const daily = DATA[currentYear].daily;
   let cumul = 0;
   const cumulData = daily.map(d => {
     cumul += (d.rain || 0);
-    return { x: d.date.slice(5), y: Math.round(cumul * 10) / 10 };
+    return Math.round(cumul * 10) / 10;
   });
+  // Labels : nom du mois uniquement le 1er de chaque mois
+  const cumulLabels = daily.map(d => {
+    if (parseInt(d.date.slice(8)) === 1) return MONTHS[parseInt(d.date.slice(5,7))-1];
+    return '';
+  });
+  if(cumulChart) cumulChart.destroy();
   cumulChart = new Chart(document.getElementById('cumulChart'), {
     type: 'line',
-    data: { datasets: [{ label: 'Cumul pluie', data: cumulData, borderColor: '#2a78d6', backgroundColor: 'rgba(42,120,214,0.08)', borderWidth: 2, pointRadius: 0, fill: true, stepped: true }] },
+    data: { labels: cumulLabels, datasets: [{ label: 'Cumul pluie', data: cumulData, borderColor: '#2a78d6', backgroundColor: 'rgba(42,120,214,0.08)', borderWidth: 2, pointRadius: 0, fill: true, stepped: true }] },
     options: {
       responsive: true, maintainAspectRatio: false,
-      parsing: { xAxisKey: 'x', yAxisKey: 'y' },
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => 'Cumul : ' + c.parsed.y.toFixed(1) + ' mm' } } },
+      plugins: { legend: { display: false }, tooltip: { callbacks: {
+        title: c => daily[c[0].dataIndex].date,
+        label: c => 'Cumul : ' + c.parsed.y.toFixed(1) + ' mm'
+      }}},
       scales: {
-        x: { ticks: { color: tc(), maxTicksLimit: 12, maxRotation: 0 }, grid: { color: gc() } },
+        x: {
+          ticks: {
+            color: tc(), maxRotation: 0, autoSkip: false,
+            callback: (v, i) => cumulLabels[i]
+          },
+          grid: { color: gc() }
+        },
         y: { ticks: { color: tc(), callback: v => v + ' mm' }, grid: { color: gc() } }
       }
     }
