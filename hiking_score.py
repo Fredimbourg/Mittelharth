@@ -27,8 +27,11 @@ from dataclasses import dataclass
 from datetime import datetime, time
 from pathlib import Path
 from typing import Optional
+from zoneinfo import ZoneInfo
 import json
 import requests
+
+PARIS_TZ = ZoneInfo("Europe/Paris")
 
 
 # ---------------------------------------------------------------------------
@@ -238,7 +241,7 @@ def score_hour(hour_data: dict, site: SiteProfile) -> float:
 # 4. MEILLEUR CRÉNEAU DU JOUR
 # ---------------------------------------------------------------------------
 def best_window_for_site(hourly_forecast: list[dict], site: SiteProfile) -> Optional[dict]:
-    today = datetime.now().date()
+    today = datetime.now(PARIS_TZ).date()
     today_hours = [
         h for h in hourly_forecast
         if h["datetime"].date() == today
