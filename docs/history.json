@@ -8644,14 +8644,14 @@
     "month": 8,
     "day": 23,
     "year": 2026,
-    "avg": 27.7,
+    "avg": 25.5,
     "hi": 27.7,
     "lo": 11.4,
-    "hum": 30.0,
+    "hum": 34.0,
     "rain": 0.0,
-    "solar": 292.4,
+    "solar": 89.5,
     "pres": 1021.3,
     "wind": 2.9,
-    "wind_gust": 3.6
+    "wind_gust": 5.4
   }
 }
