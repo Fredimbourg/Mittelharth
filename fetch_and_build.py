@@ -301,6 +301,43 @@ def update_history(live):
     return hist
 
 # ── 4. Agrégation par année ───────────────────────────────────────────────────
+# ── Jours de canicule (critère officiel Haut-Rhin) ────────────────────────────
+def compute_canicule_days(daily):
+    """
+    Critère officiel Haut-Rhin (préfecture / Météo-France) : la nuit ne
+    descend pas sous 19°C ET le jour atteint 35°C ou plus, pendant au moins
+    3 jours et 3 nuits consécutifs. Retourne {mois: nb_jours} pour les jours
+    qui appartiennent à un épisode qualifiant (dates calendaires réellement
+    consécutives, pas juste des lignes consécutives dans les données).
+    """
+    qualifying = sorted(
+        d["date"] for d in daily
+        if (d.get("hi") is not None and d["hi"] >= 35)
+        and (d.get("lo") is not None and d["lo"] >= 19)
+    )
+
+    canicule_dates = set()
+    i = 0
+    n = len(qualifying)
+    while i < n:
+        j = i
+        while j + 1 < n:
+            d1 = datetime.datetime.strptime(qualifying[j], "%Y-%m-%d")
+            d2 = datetime.datetime.strptime(qualifying[j + 1], "%Y-%m-%d")
+            if (d2 - d1).days == 1:
+                j += 1
+            else:
+                break
+        if (j - i + 1) >= 3:
+            canicule_dates.update(qualifying[i:j + 1])
+        i = j + 1
+
+    by_month = {m: 0 for m in range(1, 13)}
+    for date_str in canicule_dates:
+        by_month[int(date_str[5:7])] += 1
+    return by_month
+
+
 def aggregate_by_year(hist_dict):
     """Retourne {year: {monthly, daily, kpi, gel, chaud, pluie, heatmap}}."""
     years = sorted(set(d["year"] for d in hist_dict.values() if d.get("year")))
@@ -340,7 +377,7 @@ def aggregate_by_year(hist_dict):
                 "avg_t":    avg_t,
                 "max_t":    round(max(hi),1) if hi else None,
                 "min_t":    round(min(lo),1) if lo else None,
-                "rain":     round(sum(r),1)  if r  else 0,
+                "rain":     round(sum(r),1)  if r  else None,
                 "solar":    round(sum(s)/len(s),1) if s else None,
                 "hum":      hum_a,
                 "pressure": round(sum(p)/len(p),1) if p else None,
@@ -353,6 +390,7 @@ def aggregate_by_year(hist_dict):
         chaud = {m: sum(1 for d in daily if d["month"]==m and (d.get("hi") or 0) >= 30) for m in range(1,13)}
         pluie = {m: sum(1 for d in daily if d["month"]==m and (d.get("rain") or 0) > 1) for m in range(1,13)}
         nuits_trop = {m: sum(1 for d in daily if d["month"]==m and (d.get("lo") or 0) >= 20) for m in range(1,13)}
+        canicule = compute_canicule_days(daily)
 
         # Heatmap [mois 0-11][jour 0-30]
         heatmap = []
@@ -376,6 +414,7 @@ def aggregate_by_year(hist_dict):
             "chaud":   chaud,
             "pluie":   pluie,
             "nuits_trop": nuits_trop,
+            "canicule": canicule,
             "max_abs": round(max(all_hi),1)     if all_hi   else None,
             "min_abs": round(min(all_lo),1)      if all_lo   else None,
             "rain_total": round(sum(all_rain),1) if all_rain else 0,
@@ -561,6 +600,18 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
 .hiking-score{{font-size:14px;font-weight:500;margin-bottom:4px}}
 .hiking-window{{font-size:12px;color:var(--text-secondary);margin-bottom:4px}}
 .hiking-note{{font-size:11px;color:var(--text-muted);line-height:1.4}}
+.hiking-best{{display:flex;align-items:center;gap:14px;background:var(--accent-bg);border:0.5px solid var(--accent-border);border-radius:var(--radius);padding:12px 16px;margin-bottom:.75rem}}
+.hiking-best--unknown{{background:var(--surface-muted);border-color:var(--border)}}
+.hiking-best-emoji{{font-size:28px;line-height:1;flex-shrink:0}}
+.hiking-best-title{{font-size:14px;color:var(--text)}}
+.hiking-best-title b{{color:var(--accent)}}
+.hiking-best-sub{{font-size:12px;color:var(--text-secondary);margin-top:2px}}
+.hiking-details summary{{cursor:pointer;font-size:13px;color:var(--accent);font-weight:500;list-style:none;padding:4px 0;user-select:none}}
+.hiking-details summary::-webkit-details-marker{{display:none}}
+.hiking-details summary::before{{content:'▸ ';display:inline-block;transition:transform .15s}}
+.hiking-details[open] summary::before{{transform:rotate(90deg)}}
+.hiking-details .hiking-intro{{margin-top:.75rem}}
+.hiking-details .hiking-grid{{margin-top:.75rem}}
 </style>
 </head>
 <body>
@@ -793,6 +844,7 @@ def build_dashboard(years, data_by_year):
         "chaud":   {str(k): v for k,v in data_by_year[y]["chaud"].items()},
         "pluie":   {str(k): v for k,v in data_by_year[y]["pluie"].items()},
         "nuits_trop": {str(k): v for k,v in data_by_year[y]["nuits_trop"].items()},
+        "canicule": {str(k): v for k,v in data_by_year[y]["canicule"].items()},
         "max_abs": data_by_year[y]["max_abs"],
         "min_abs": data_by_year[y]["min_abs"],
         "rain_total": data_by_year[y]["rain_total"],
@@ -860,6 +912,7 @@ nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--
 .badge-chaud{background:rgba(216,90,48,.12);color:#d85a30}
 .badge-pluie{background:rgba(27,175,122,.12);color:#1baf7a}
 .badge-nuit{background:rgba(130,60,180,.12);color:#8a3cb4}
+.badge-canicule{background:rgba(216,30,30,.14);color:#d81e1e}
 .badge-zero{color:var(--text-muted)}
 .totaux td{font-weight:600;color:var(--text)!important;background:var(--surface-muted);border-top:1px solid var(--border)!important}
 .heatmap-wrap{overflow-x:auto}
@@ -953,9 +1006,9 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <div class="section">
   <div class="section-title">Jours remarquables par mois</div>
   <table class="jours-table">
-    <thead><tr><th>Mois</th><th>❄ Gel</th><th>🌡 Chauds</th><th>🌧 Pluie</th><th>🌙 Nuits trop.</th></tr></thead>
+    <thead><tr><th>Mois</th><th>❄ Gel</th><th>🌡 Chauds</th><th>🔥 Canicule</th><th>🌧 Pluie</th><th>🌙 Nuits trop.</th></tr></thead>
     <tbody id="jours-tbody"></tbody>
-    <tfoot><tr class="totaux"><td>Total</td><td id="t-gel"></td><td id="t-chaud"></td><td id="t-pluie"></td><td id="t-nuits"></td></tr></tfoot>
+    <tfoot><tr class="totaux"><td>Total</td><td id="t-gel"></td><td id="t-chaud"></td><td id="t-canicule"></td><td id="t-pluie"></td><td id="t-nuits"></td></tr></tfoot>
   </table>
 </div>
 
@@ -1084,11 +1137,11 @@ function buildDailyChart() {
         tooltip:{mode:'index',intersect:false,callbacks:{title:c=>dates[c[0].dataIndex],label:c=>c.dataset.label+' : '+(c.parsed.y!==null?c.parsed.y.toFixed(1)+' °C':'—')}},
         annotation:{
           annotations:{
-            canicule:{type:'line',yMin:35,yMax:35,borderColor:'rgba(216,90,48,0.6)',borderWidth:1.5,borderDash:[6,3],
-              label:{content:'Canicule 35°C',display:true,position:'end',backgroundColor:'rgba(216,90,48,0.15)',color:'#d85a30',font:{size:11}}},
+            canicule:{type:'line',yMin:26.5,yMax:26.5,borderColor:'rgba(216,90,48,0.6)',borderWidth:1.5,borderDash:[6,3],
+              label:{content:'Canicule 26,5°C (moy.)',display:true,position:'end',backgroundColor:'rgba(216,90,48,0.15)',color:'#d85a30',font:{size:11}}},
             gel:{type:'line',yMin:0,yMax:0,borderColor:'rgba(42,120,214,0.6)',borderWidth:1.5,borderDash:[6,3],
               label:{content:'Gel 0°C',display:true,position:'end',backgroundColor:'rgba(42,120,214,0.15)',color:'#2a78d6',font:{size:11}}},
-            caniculeZone:{type:'box',yMin:35,yMax:50,backgroundColor:'rgba(216,90,48,0.06)',borderWidth:0},
+            caniculeZone:{type:'box',yMin:26.5,yMax:50,backgroundColor:'rgba(216,90,48,0.06)',borderWidth:0},
             gelZone:{type:'box',yMin:-20,yMax:0,backgroundColor:'rgba(42,120,214,0.06)',borderWidth:0},
           }
         }
@@ -1155,7 +1208,9 @@ function drawWL() {
   MONTHS.forEach((_,i)=>{if(avgTemp[i]==null)return;ctx.beginPath();ctx.arc(xPx(i),yPxT(avgTemp[i]),3.5,0,Math.PI*2);ctx.fillStyle='#d85a30';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();});
   ctx.beginPath();ctx.strokeStyle='rgba(42,120,214,.5)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
   ctx.moveTo(ml,y100);ctx.lineTo(ml+cW,y100);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle='rgba(42,120,214,.8)';ctx.font='10px system-ui,sans-serif';ctx.textAlign='left';ctx.fillText('100 mm',ml+cW+4,y100+4);
+  ctx.fillStyle='rgba(42,120,214,.8)';ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';
+  ctx.beginPath();ctx.strokeStyle='#2a78d6';ctx.lineWidth=1;ctx.moveTo(ml+cW,y100);ctx.lineTo(ml+cW+4,y100);ctx.stroke();
+  ctx.fillText('100 mm',ml+cW+7,y100+4);
   const ac=dark?'#c3c2b7':'#52514e';
   ctx.strokeStyle=ac;ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(ml,mt);ctx.lineTo(ml,mt+cH);ctx.stroke();
@@ -1165,7 +1220,7 @@ function drawWL() {
   for(let t=Tmin;t<=Tmax;t+=10){const y=yPxT(t);ctx.beginPath();ctx.strokeStyle='#d85a30';ctx.lineWidth=1;ctx.moveTo(ml-4,y);ctx.lineTo(ml,y);ctx.stroke();ctx.fillText(t+' °C',ml-7,y+4);}
   ctx.save();ctx.translate(14,mt+cH/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.font='12px system-ui,sans-serif';ctx.fillText('Température (°C)',0,0);ctx.restore();
   ctx.fillStyle='#2a78d6';ctx.font='11px system-ui,sans-serif';ctx.textAlign='left';
-  for(let p=0;p<=100;p+=20){const y=yPxP(p);ctx.beginPath();ctx.strokeStyle='#2a78d6';ctx.lineWidth=1;ctx.moveTo(ml+cW,y);ctx.lineTo(ml+cW+4,y);ctx.stroke();ctx.fillText(p+' mm',ml+cW+7,y+4);}
+  for(let p=0;p<100;p+=20){const y=yPxP(p);ctx.beginPath();ctx.strokeStyle='#2a78d6';ctx.lineWidth=1;ctx.moveTo(ml+cW,y);ctx.lineTo(ml+cW+4,y);ctx.stroke();ctx.fillText(p+' mm',ml+cW+7,y+4);}
   if(rain.some(r=>r>100)){const y=yPxP(200);ctx.beginPath();ctx.strokeStyle='#2a78d6';ctx.lineWidth=1;ctx.moveTo(ml+cW,y);ctx.lineTo(ml+cW+4,y);ctx.stroke();ctx.fillText('200 mm',ml+cW+7,y+4);}
   ctx.save();ctx.translate(W-10,mt+cH/2);ctx.rotate(Math.PI/2);ctx.textAlign='center';ctx.font='12px system-ui,sans-serif';ctx.fillStyle='#2a78d6';ctx.fillText('Précipitations (mm)',0,0);ctx.restore();
   ctx.fillStyle=tc();ctx.font='12px system-ui,sans-serif';ctx.textAlign='center';
@@ -1217,12 +1272,14 @@ function buildJours(){
     const tr=document.createElement('tr');
     const b=(v,cls)=>v>0?`<span class="badge ${cls}">${v}</span>`:'<span class="badge-zero">—</span>';
     const nt = (d.nuits_trop || {})[i+1] || 0;
-    tr.innerHTML=`<td>${m}</td><td>${b(d.gel[i+1]||0,'badge-gel')}</td><td>${b(d.chaud[i+1]||0,'badge-chaud')}</td><td>${b(d.pluie[i+1]||0,'badge-pluie')}</td><td>${b(nt,'badge-nuit')}</td>`;
+    const can = (d.canicule || {})[i+1] || 0;
+    tr.innerHTML=`<td>${m}</td><td>${b(d.gel[i+1]||0,'badge-gel')}</td><td>${b(d.chaud[i+1]||0,'badge-chaud')}</td><td>${b(can,'badge-canicule')}</td><td>${b(d.pluie[i+1]||0,'badge-pluie')}</td><td>${b(nt,'badge-nuit')}</td>`;
     tbody.appendChild(tr);
   });
   const sum = obj => Object.values(obj).reduce((a,b)=>a+b,0);
   document.getElementById('t-gel').innerHTML   = `<span class="badge badge-gel">${sum(d.gel)}</span>`;
   document.getElementById('t-chaud').innerHTML = `<span class="badge badge-chaud">${sum(d.chaud)}</span>`;
+  document.getElementById('t-canicule').innerHTML = `<span class="badge badge-canicule">${sum(d.canicule||{})}</span>`;
   document.getElementById('t-pluie').innerHTML = `<span class="badge badge-pluie">${sum(d.pluie)}</span>`;
   document.getElementById('t-nuits').innerHTML = `<span class="badge badge-nuit">${sum(d.nuits_trop||{})}</span>`;
 }
