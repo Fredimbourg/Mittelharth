@@ -281,12 +281,44 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
     """
     forecasts_by_site : { site_key: [hour_dict, ...] } déjà normalisé
     (sortie directe de fetch_hiking_forecasts()).
+
+    Rendu condensé : un bandeau avec la meilleure sortie du jour, et le
+    détail des 6 sites dans un <details> repliable (pas de JS requis).
     """
-    cards = []
+    results = []  # (key, site, window|None)
     for key, site in SITES.items():
         hourly = forecasts_by_site.get(key, [])
         window = best_window_for_site(hourly, site) if hourly else None
+        results.append((key, site, window))
 
+    valid = [(key, site, w) for key, site, w in results if w is not None]
+
+    # ── Bandeau résumé (meilleure sortie du jour) ──────────────────────────
+    if not valid:
+        summary_html = """
+        <div class="hiking-best hiking-best--unknown">
+            <span class="hiking-best-emoji">🥾</span>
+            <div>
+                <div class="hiking-best-title">Prévisions indisponibles pour l'instant.</div>
+            </div>
+        </div>"""
+    else:
+        best_key, best_site, best_window = max(valid, key=lambda t: t[2]["score"])
+        label, badge = label_for_score(best_window["score"])
+        start_str = best_window["start"].strftime("%Hh%M")
+        end_str = best_window["end"].strftime("%Hh%M")
+        summary_html = f"""
+        <div class="hiking-best">
+            <span class="hiking-best-emoji">{best_site.emoji}</span>
+            <div>
+                <div class="hiking-best-title">Meilleure sortie aujourd'hui : <b>{best_site.name}</b></div>
+                <div class="hiking-best-sub">{badge} {label} — {best_window['score']}/100 · créneau {start_str}–{end_str}</div>
+            </div>
+        </div>"""
+
+    # ── Détail des 6 sites (repliable) ─────────────────────────────────────
+    cards = []
+    for key, site, window in results:
         if window is None:
             cards.append(f"""
             <div class="hiking-card hiking-card--unknown">
@@ -309,10 +341,14 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
 
     return f"""<section class="hiking-index">
     <h2>🥾 Indice Sortie Rando – Vosges</h2>
-    <p class="hiking-intro">Score sur le meilleur créneau du jour ({DAY_WINDOW_START.strftime('%Hh')}–{DAY_WINDOW_END.strftime('%Hh')}), basé sur le vent, la pluie, le risque d'orage, la visibilité et la température ressentie en altitude (Open-Meteo).</p>
-    <div class="hiking-grid">
-        {''.join(cards)}
-    </div>
+    {summary_html}
+    <details class="hiking-details">
+        <summary>Voir le détail des {len(results)} sites</summary>
+        <p class="hiking-intro">Score sur le meilleur créneau du jour ({DAY_WINDOW_START.strftime('%Hh')}–{DAY_WINDOW_END.strftime('%Hh')}), basé sur le vent, la pluie, le risque d'orage, la visibilité et la température ressentie en altitude (Open-Meteo).</p>
+        <div class="hiking-grid">
+            {''.join(cards)}
+        </div>
+    </details>
 </section>"""
 
 
