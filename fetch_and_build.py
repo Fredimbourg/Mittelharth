@@ -9,6 +9,7 @@ fetch_and_build.py — Station Colmar-Mittelharth
 import os, json, math, datetime, requests, sys
 from collections import defaultdict
 from pathlib import Path
+from hiking_score import fetch_hiking_forecasts, build_hiking_report
 
 APP_KEY = os.environ["ECOWITT_APP_KEY"]
 API_KEY = os.environ["ECOWITT_API_KEY"]
@@ -385,7 +386,7 @@ def aggregate_by_year(hist_dict):
     return years, result
 
 # ── 5. Génération HTML ────────────────────────────────────────────────────────
-def build_index(live, hourly, forecast, records=None):
+def build_index(live, hourly, forecast, records=None, hiking_html=""):
     def val(v, unit="", dec=1):
         if v is None: return "—"
         return f"{v:.{dec}f}{unit}"
@@ -548,6 +549,18 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .detail-label{{font-size:11px;color:var(--text-muted);margin-bottom:2px}}
 .detail-value{{font-size:16px;font-weight:500}}
 footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;padding-top:1rem;border-top:0.5px solid var(--border)}}
+
+/* Indice rando */
+.hiking-index{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
+.hiking-index h2{{font-size:16px;font-weight:500;margin-bottom:6px}}
+.hiking-intro{{font-size:12px;color:var(--text-muted);margin-bottom:1rem;line-height:1.5}}
+.hiking-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}}
+.hiking-card{{background:var(--surface-muted);border-radius:var(--radius);padding:1rem 1.1rem;border:0.5px solid var(--border)}}
+.hiking-card h3{{font-size:14px;font-weight:500;margin-bottom:6px}}
+.hiking-card .alt{{color:var(--text-muted);font-weight:400;font-size:12px}}
+.hiking-score{{font-size:14px;font-weight:500;margin-bottom:4px}}
+.hiking-window{{font-size:12px;color:var(--text-secondary);margin-bottom:4px}}
+.hiking-note{{font-size:11px;color:var(--text-muted);line-height:1.4}}
 </style>
 </head>
 <body>
@@ -594,6 +607,8 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <div class="forecast-title">Prévisions 7 jours</div>
   <div class="forecast-grid" id="forecastGrid"></div>
 </div>
+
+{hiking_html}
 
 <!-- Cartes de données -->
 <div class="grid">
@@ -1388,12 +1403,14 @@ if __name__ == "__main__":
     live = fetch_realtime()
     hourly = update_hourly(live)
     forecast = fetch_forecast()
+    hiking_forecasts = fetch_hiking_forecasts()
+    hiking_html = build_hiking_report(hiking_forecasts)
 
     # Historique (pour les records)
     hist_dict = update_history(live)
     records = get_records(hist_dict)
 
-    build_index(live, hourly, forecast, records)
+    build_index(live, hourly, forecast, records, hiking_html)
 
     years, data_by_year = aggregate_by_year(hist_dict)
     build_dashboard(years, data_by_year)
