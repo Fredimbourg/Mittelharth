@@ -302,18 +302,29 @@ def update_history(live):
 
 # ── 4. Agrégation par année ───────────────────────────────────────────────────
 # ── Jours de canicule (critère officiel Haut-Rhin) ────────────────────────────
-def compute_canicule_days(daily):
+def compute_canicule_days(daily, tolerance=1.0):
     """
     Critère officiel Haut-Rhin (préfecture / Météo-France) : la nuit ne
     descend pas sous 19°C ET le jour atteint 35°C ou plus, pendant au moins
-    3 jours et 3 nuits consécutifs. Retourne {mois: nb_jours} pour les jours
-    qui appartiennent à un épisode qualifiant (dates calendaires réellement
-    consécutives, pas juste des lignes consécutives dans les données).
+    3 jours et 3 nuits consécutifs.
+
+    Une marge de tolérance (par défaut 1°C) est appliquée aux deux seuils
+    pour absorber l'incertitude de mesure d'une station personnelle : un
+    capteur peut légitimement s'écarter de ±1°C d'une mesure de référence,
+    donc une nuit à 18,2°C est traitée comme atteignant le seuil de 19°C.
+    Seuils effectifs : max ≥ (35 - tolerance)°C et min ≥ (19 - tolerance)°C.
+
+    Retourne {mois: nb_jours} pour les jours qui appartiennent à un épisode
+    qualifiant (dates calendaires réellement consécutives, pas juste des
+    lignes consécutives dans les données).
     """
+    max_threshold = 35 - tolerance
+    min_threshold = 19 - tolerance
+
     qualifying = sorted(
         d["date"] for d in daily
-        if (d.get("hi") is not None and d["hi"] >= 35)
-        and (d.get("lo") is not None and d["lo"] >= 19)
+        if (d.get("hi") is not None and d["hi"] >= max_threshold)
+        and (d.get("lo") is not None and d["lo"] >= min_threshold)
     )
 
     canicule_dates = set()
@@ -1010,6 +1021,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <tbody id="jours-tbody"></tbody>
     <tfoot><tr class="totaux"><td>Total</td><td id="t-gel"></td><td id="t-chaud"></td><td id="t-canicule"></td><td id="t-pluie"></td><td id="t-nuits"></td></tr></tfoot>
   </table>
+  <div class="chart-note" style="text-align:left;margin-top:10px">🔥 Canicule : critère officiel Haut-Rhin (max ≥ 35°C et min ≥ 19°C, 3 jours consécutifs), avec une marge de ±1°C pour absorber l'incertitude de mesure de la station.</div>
 </div>
 
 <div class="section">
