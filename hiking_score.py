@@ -73,19 +73,19 @@ SITES: dict[str, SiteProfile] = {
         w_wind=0.30, w_rain=0.20, w_storm=0.25, w_visibility=0.20, w_temp=0.05,
         note="Vue panoramique : très sensible à la visibilité/nébulosité.",
     ),
-    "route_des_cretes": SiteProfile(
-        name="Route des Crêtes",
-        lat=48.0110, lon=7.0250, altitude_m=1200,
-        emoji="🚗",
-        w_wind=0.35, w_rain=0.15, w_storm=0.35, w_visibility=0.10, w_temp=0.05,
-        note="Route ouverte, l'orage et le vent latéral sont les vrais dangers.",
+    "wihr_au_val": SiteProfile(
+        name="Wihr-au-Val (centre équestre)",
+        lat=48.05104241311195, lon=7.184589328281641, altitude_m=300,
+        emoji="🐴",
+        w_wind=0.15, w_rain=0.30, w_storm=0.20, w_visibility=0.10, w_temp=0.25,
+        note="Centre équestre en léger retrait du village — abrité mais sensible à la pluie.",
     ),
     "markstein": SiteProfile(
         name="Markstein",
         lat=47.9080, lon=7.0280, altitude_m=1230,
         emoji="⛷️",
         w_wind=0.30, w_rain=0.20, w_storm=0.30, w_visibility=0.10, w_temp=0.10,
-        note="Col ouvert sur la Route des Crêtes, exposé au vent et à l'orage.",
+        note="Col ouvert et venteux, altitude proche des grands sommets vosgiens.",
     ),
     "lac_blanc": SiteProfile(
         name="Lac Blanc",
