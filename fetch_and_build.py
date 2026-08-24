@@ -570,8 +570,8 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .trend-up{{color:#d85a30}} .trend-down{{color:#2a78d6}} .trend-stable{{color:var(--text-muted)}}
 .hero-records{{display:flex;gap:16px;font-size:13px;margin-top:8px}}
 .hero-records span{{color:var(--text-muted)}} .hero-records b{{color:var(--text)}}
-.hero-chart{{width:100%;height:240px;position:relative}}
-@media(max-width:600px){{.hero-chart{{height:200px}}}}
+.hero-chart{{width:100%;height:180px;position:relative}}
+@media(max-width:600px){{.hero-chart{{height:150px}}}}
 
 /* Grille de cartes */
 .grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}}
