@@ -560,7 +560,8 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .alert-gel{{background:rgba(42,120,214,0.12);color:#2a78d6;border-color:rgba(42,120,214,0.3)}}
 
 /* Hero météo */
-.hero{{background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}}
+.hero{{background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
+.hero-top{{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem}}
 .hero-icon{{font-size:64px;line-height:1;flex-shrink:0}}
 .hero-main{{flex:1;min-width:160px}}
 .hero-temp{{font-size:52px;font-weight:300;line-height:1;margin-bottom:4px}}
@@ -569,7 +570,8 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .trend-up{{color:#d85a30}} .trend-down{{color:#2a78d6}} .trend-stable{{color:var(--text-muted)}}
 .hero-records{{display:flex;gap:16px;font-size:13px;margin-top:8px}}
 .hero-records span{{color:var(--text-muted)}} .hero-records b{{color:var(--text)}}
-.hero-chart{{flex:2;min-width:200px;height:80px;position:relative}}
+.hero-chart{{width:100%;height:240px;position:relative}}
+@media(max-width:600px){{.hero-chart{{height:200px}}}}
 
 /* Grille de cartes */
 .grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}}
@@ -647,16 +649,18 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
 
 <!-- Hero -->
 <div class="hero">
-  <div class="hero-icon">{icon}</div>
-  <div class="hero-main">
-    <div class="hero-temp">{val(live['temp'])} °C</div>
-    <div class="hero-cond">{condition} · Ressenti {val(live['temp_feels'])} °C</div>
-    <div class="hero-trend">
-      <span class="trend-{'up' if arrow == '↑' else 'down' if arrow == '↓' else 'stable'}">{arrow}</span>
-      {trend_txt}
-    </div>
-    <div class="hero-records">
-      <span>Aujourd'hui · Max <b>{today_max}</b> · Min <b>{today_min}</b></span>
+  <div class="hero-top">
+    <div class="hero-icon">{icon}</div>
+    <div class="hero-main">
+      <div class="hero-temp">{val(live['temp'])} °C</div>
+      <div class="hero-cond">{condition} · Ressenti {val(live['temp_feels'])} °C</div>
+      <div class="hero-trend">
+        <span class="trend-{'up' if arrow == '↑' else 'down' if arrow == '↓' else 'stable'}">{arrow}</span>
+        {trend_txt}
+      </div>
+      <div class="hero-records">
+        <span>Aujourd'hui · Max <b>{today_max}</b> · Min <b>{today_min}</b></span>
+      </div>
     </div>
   </div>
   <div class="hero-chart">
