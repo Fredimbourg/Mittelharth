@@ -8659,14 +8659,14 @@
     "month": 8,
     "day": 24,
     "year": 2026,
-    "avg": 21.6,
+    "avg": 21.0,
     "hi": 24.8,
     "lo": 13.1,
-    "hum": 52.0,
+    "hum": 53.0,
     "rain": 0.0,
-    "solar": 8.1,
-    "pres": 1013.5,
-    "wind": 2.2,
-    "wind_gust": 3.6
+    "solar": 1.7,
+    "pres": 1013.4,
+    "wind": 1.8,
+    "wind_gust": 1.8
   }
 }
