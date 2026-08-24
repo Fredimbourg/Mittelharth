@@ -97,6 +97,13 @@ SITES: dict[str, SiteProfile] = {
         w_wind=0.15, w_rain=0.30, w_storm=0.25, w_visibility=0.15, w_temp=0.15,
         note="Site forestier autour du lac, plus abrité mais sensible à la pluie.",
     ),
+    "wintersberg": SiteProfile(
+        name="Grand Wintersberg (Niederbronn)",
+        lat=48.97861, lon=7.61472, altitude_m=581,
+        emoji="🗼",
+        w_wind=0.15, w_rain=0.30, w_storm=0.20, w_visibility=0.20, w_temp=0.15,
+        note="Point culminant des Vosges du Nord, massif forestier avec tour panoramique — abrité du vent mais visibilité dépendante de la nébulosité depuis la tour.",
+    ),
 }
 
 DAY_WINDOW_START = time(8, 0)
@@ -286,7 +293,7 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
     (sortie directe de fetch_hiking_forecasts()).
 
     Rendu condensé : un bandeau avec la meilleure sortie du jour, et le
-    détail des 6 sites dans un <details> repliable (pas de JS requis).
+    détail des sites dans un <details> repliable (pas de JS requis).
     """
     results = []  # (key, site, window|None)
     for key, site in SITES.items():
@@ -319,7 +326,7 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
             </div>
         </div>"""
 
-    # ── Détail des 6 sites (repliable) ─────────────────────────────────────
+    # ── Détail des sites (repliable) ─────────────────────────────────────
     cards = []
     for key, site, window in results:
         if window is None:
@@ -347,7 +354,7 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
     {summary_html}
     <details class="hiking-details">
         <summary>Voir le détail des {len(results)} sites</summary>
-        <p class="hiking-intro">Score sur le meilleur créneau du jour ({DAY_WINDOW_START.strftime('%Hh')}–{DAY_WINDOW_END.strftime('%Hh')}), basé sur le vent, la pluie, le risque d'orage, la visibilité et la température ressentie en altitude (Open-Meteo).</p>
+        <p class="hiking-intro">Score sur le meilleur créneau du jour ({DAY_WINDOW_START.strftime('%Hh')}–{DAY_WINDOW_END.strftime('%Hh')}), basé sur le vent, la pluie, le risque d'orage, la visibilité et la température ressentie en altitude (Open-Meteo). {len(results)} sites suivis, des Vosges du Sud (Grand Ballon, Hohneck…) aux Vosges du Nord (Grand Wintersberg).</p>
         <div class="hiking-grid">
             {''.join(cards)}
         </div>
