@@ -270,6 +270,61 @@ def best_window_for_site(hourly_forecast: list[dict], site: SiteProfile) -> Opti
 
 
 # ---------------------------------------------------------------------------
+# 4b. RÉSUMÉ MÉTÉO DU JOUR (temp / pluie / vent)
+# ---------------------------------------------------------------------------
+def day_weather_summary(hourly_forecast: list[dict]) -> Optional[dict]:
+    """
+    Résume la journée en cours pour un site : plage de température,
+    probabilité de pluie max + cumul, vent moyen/rafale max, risque d'orage.
+    Utilisé pour remplacer la note statique par les prévisions du jour.
+    """
+    today = datetime.now(PARIS_TZ).date()
+    today_hours = [h for h in hourly_forecast if h["datetime"].date() == today]
+    if not today_hours:
+        return None
+
+    temps = [h["temp_c"] for h in today_hours]
+    rain_total = sum(h.get("rain_mm", 0) or 0 for h in today_hours)
+    rain_proba_max = max((h.get("rain_proba_pct", 0) or 0 for h in today_hours), default=0)
+    wind_max = max((h.get("wind_kmh", 0) or 0 for h in today_hours), default=0)
+    gust_max = max((h.get("gust_kmh", 0) or 0 for h in today_hours), default=0)
+    storm = any(h.get("storm_risk") for h in today_hours)
+
+    return {
+        "temp_min": round(min(temps)),
+        "temp_max": round(max(temps)),
+        "rain_total_mm": round(rain_total, 1),
+        "rain_proba_max_pct": round(rain_proba_max),
+        "wind_max_kmh": round(wind_max),
+        "gust_max_kmh": round(gust_max),
+        "storm_risk": storm,
+    }
+
+
+def render_day_weather_note(summary: Optional[dict]) -> str:
+    """Formate le résumé météo du jour en une ligne compacte pour la carte du site."""
+    if summary is None:
+        return "Prévisions du jour indisponibles."
+
+    parts = [f"🌡️ {summary['temp_min']}–{summary['temp_max']}°C"]
+
+    if summary["rain_total_mm"] > 0.1:
+        parts.append(f"🌧️ {summary['rain_proba_max_pct']}% ({summary['rain_total_mm']} mm)")
+    else:
+        parts.append(f"🌧️ {summary['rain_proba_max_pct']}%")
+
+    wind_str = f"💨 {summary['wind_max_kmh']} km/h"
+    if summary["gust_max_kmh"] > summary["wind_max_kmh"] + 5:
+        wind_str += f" (raf. {summary['gust_max_kmh']})"
+    parts.append(wind_str)
+
+    if summary["storm_risk"]:
+        parts.append("⛈️ Risque d'orage")
+
+    return " · ".join(parts)
+
+
+# ---------------------------------------------------------------------------
 # 5. LABEL / EMOJI
 # ---------------------------------------------------------------------------
 def label_for_score(score: float) -> tuple[str, str]:
@@ -295,13 +350,13 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
     Rendu condensé : un bandeau avec la meilleure sortie du jour, et le
     détail des sites dans un <details> repliable (pas de JS requis).
     """
-    results = []  # (key, site, window|None)
+    results = []  # (key, site, window|None, hourly)
     for key, site in SITES.items():
         hourly = forecasts_by_site.get(key, [])
         window = best_window_for_site(hourly, site) if hourly else None
-        results.append((key, site, window))
+        results.append((key, site, window, hourly))
 
-    valid = [(key, site, w) for key, site, w in results if w is not None]
+    valid = [(key, site, w, hourly) for key, site, w, hourly in results if w is not None]
 
     # ── Bandeau résumé (meilleure sortie du jour) ──────────────────────────
     if not valid:
@@ -313,7 +368,7 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
             </div>
         </div>"""
     else:
-        best_key, best_site, best_window = max(valid, key=lambda t: t[2]["score"])
+        best_key, best_site, best_window, _ = max(valid, key=lambda t: t[2]["score"])
         label, badge = label_for_score(best_window["score"])
         start_str = best_window["start"].strftime("%Hh%M")
         end_str = best_window["end"].strftime("%Hh%M")
@@ -328,12 +383,14 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
 
     # ── Détail des sites (repliable) ─────────────────────────────────────
     cards = []
-    for key, site, window in results:
+    for key, site, window, hourly in results:
+        weather_note = render_day_weather_note(day_weather_summary(hourly))
+
         if window is None:
             cards.append(f"""
             <div class="hiking-card hiking-card--unknown">
                 <h3>{site.emoji} {site.name}</h3>
-                <p class="hiking-note">Prévisions indisponibles pour l'instant.</p>
+                <p class="hiking-note">{weather_note}</p>
             </div>""")
             continue
 
@@ -346,7 +403,7 @@ def build_hiking_report(forecasts_by_site: dict[str, list[dict]]) -> str:
                 <h3>{site.emoji} {site.name} <span class="alt">({site.altitude_m} m)</span></h3>
                 <p class="hiking-score">{badge} {label} — {window['score']}/100</p>
                 <p class="hiking-window">Meilleur créneau : {start_str} – {end_str}</p>
-                <p class="hiking-note">{site.note}</p>
+                <p class="hiking-note">{weather_note}</p>
             </div>""")
 
     return f"""<section class="hiking-index">
