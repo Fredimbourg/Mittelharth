@@ -38,6 +38,11 @@ nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--
 .alert-orage{background:rgba(216,30,30,0.12);color:#d81e1e;border-color:rgba(216,30,30,0.3)}
 .alert-vent{background:rgba(130,60,180,0.12);color:#8a3cb4;border-color:rgba(130,60,180,0.3)}
 
+/* Encart de vigilance dans le hero, à droite de la température */
+.hero-alerts{display:flex;flex-direction:column;gap:8px;margin-left:auto;flex-shrink:0}
+.hero-alert-box{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--radius);border:0.5px solid;font-size:13px;font-weight:500;white-space:nowrap}
+@media(max-width:600px){.hero-alerts{margin-left:0;width:100%} .hero-alert-box{white-space:normal}}
+
 /* Badges d'alerte à côté de la température */
 .alert-badges{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
 .alert-badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;border:0.5px solid;white-space:nowrap}
@@ -121,7 +126,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <h1>🌤 Météo Colmar-Mittelharth</h1>
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
-  <span class="updated">Mis à jour : 25/08/2026 09:06</span>
+  <span class="updated">Mis à jour : 25/08/2026 09:13</span>
 </header>
 
 <nav>
@@ -129,8 +134,6 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <a href="dashboard.html">📊 Historique</a>
   <a href="climate.html">🌍 Climatologie</a>
 </nav>
-
-<div class="alert alert-orage">⛈️ Orage — Restez vigilant</div>
 
 <!-- Hero -->
 <div class="hero">
@@ -141,13 +144,14 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
       <div class="alert-badges"><span class="alert-badge alert-badge--danger">⛈️ Orage</span></div>
       <div class="hero-cond">Brouillard · Ressenti 15.3 °C</div>
       <div class="hero-trend">
-        <span class="trend-down">↓</span>
-        -0.9°C en 3h
+        <span class="trend-stable">→</span>
+        Stable
       </div>
       <div class="hero-records">
         <span>Aujourd'hui · Max <b>16.2 °C</b> · Min <b>15.3 °C</b></span>
       </div>
     </div>
+    <div class="hero-alerts"><div class="hero-alert-box alert-orage">⛈️ Orage — Restez vigilant</div></div>
   </div>
   <div class="hero-chart">
     <canvas id="miniChart"></canvas>
@@ -249,7 +253,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">☀</div>
     <div class="card-label">Rayonnement</div>
-    <div class="card-value">40 W/m²</div>
+    <div class="card-value">48 W/m²</div>
     <div class="card-sub">Indice UV : 0</div>
   </div>
 </div>
@@ -306,7 +310,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <script data-goatcounter="https://mittelharth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 <script>
-const hourly   = [{"time": "2026-08-24 00:06", "temp": 17.9, "hum": 52.0, "pres": 1021.8, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 00:11", "temp": 17.9, "hum": 52.0, "pres": 1021.8, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 00:27", "temp": 17.7, "hum": 52.0, "pres": 1021.7, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 00:35", "temp": 17.6, "hum": 52.0, "pres": 1021.7, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 00:49", "temp": 17.6, "hum": 52.0, "pres": 1021.7, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 01:41", "temp": 16.9, "hum": 54.0, "pres": 1021.4, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 05:32", "temp": 13.1, "hum": 74.0, "pres": 1020.8, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 07:57", "temp": 14.5, "hum": 69.0, "pres": 1020.8, "rain": 0.0, "solar": 34.7}, {"time": "2026-08-24 10:26", "temp": 19.6, "hum": 51.0, "pres": 1019.9, "rain": 0.0, "solar": 165.9}, {"time": "2026-08-24 12:57", "temp": 24.6, "hum": 41.0, "pres": 1018.1, "rain": 0.0, "solar": 278.4}, {"time": "2026-08-24 13:58", "temp": 24.8, "hum": 41.0, "pres": 1017.6, "rain": 0.0, "solar": 234.5}, {"time": "2026-08-24 16:26", "temp": 22.6, "hum": 50.0, "pres": 1016.1, "rain": 0.0, "solar": 91.8}, {"time": "2026-08-24 18:19", "temp": 24.0, "hum": 47.0, "pres": 1014.4, "rain": 0.0, "solar": 107.9}, {"time": "2026-08-24 20:02", "temp": 21.6, "hum": 52.0, "pres": 1013.5, "rain": 0.0, "solar": 8.1}, {"time": "2026-08-24 20:28", "temp": 21.0, "hum": 53.0, "pres": 1013.4, "rain": 0.0, "solar": 1.7}, {"time": "2026-08-24 21:59", "temp": 19.8, "hum": 54.0, "pres": 1012.8, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 23:05", "temp": 19.2, "hum": 56.0, "pres": 1012.7, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 23:32", "temp": 17.9, "hum": 61.0, "pres": 1012.3, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 23:42", "temp": 18.0, "hum": 61.0, "pres": 1012.2, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-25 00:57", "temp": 16.0, "hum": 88.0, "pres": 1013.4, "rain": 4.3, "solar": 0.0}, {"time": "2026-08-25 01:46", "temp": 15.6, "hum": 93.0, "pres": 1011.1, "rain": 6.6, "solar": 0.0}, {"time": "2026-08-25 05:15", "temp": 16.2, "hum": 96.0, "pres": 1012.2, "rain": 7.4, "solar": 0.0}, {"time": "2026-08-25 07:20", "temp": 15.4, "hum": 93.0, "pres": 1013.2, "rain": 8.9, "solar": 4.1}, {"time": "2026-08-25 09:06", "temp": 15.3, "hum": 95.0, "pres": 1013.8, "rain": 9.9, "solar": 40.1}];
+const hourly   = [{"time": "2026-08-24 00:11", "temp": 17.9, "hum": 52.0, "pres": 1021.8, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 00:27", "temp": 17.7, "hum": 52.0, "pres": 1021.7, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 00:35", "temp": 17.6, "hum": 52.0, "pres": 1021.7, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 00:49", "temp": 17.6, "hum": 52.0, "pres": 1021.7, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 01:41", "temp": 16.9, "hum": 54.0, "pres": 1021.4, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 05:32", "temp": 13.1, "hum": 74.0, "pres": 1020.8, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 07:57", "temp": 14.5, "hum": 69.0, "pres": 1020.8, "rain": 0.0, "solar": 34.7}, {"time": "2026-08-24 10:26", "temp": 19.6, "hum": 51.0, "pres": 1019.9, "rain": 0.0, "solar": 165.9}, {"time": "2026-08-24 12:57", "temp": 24.6, "hum": 41.0, "pres": 1018.1, "rain": 0.0, "solar": 278.4}, {"time": "2026-08-24 13:58", "temp": 24.8, "hum": 41.0, "pres": 1017.6, "rain": 0.0, "solar": 234.5}, {"time": "2026-08-24 16:26", "temp": 22.6, "hum": 50.0, "pres": 1016.1, "rain": 0.0, "solar": 91.8}, {"time": "2026-08-24 18:19", "temp": 24.0, "hum": 47.0, "pres": 1014.4, "rain": 0.0, "solar": 107.9}, {"time": "2026-08-24 20:02", "temp": 21.6, "hum": 52.0, "pres": 1013.5, "rain": 0.0, "solar": 8.1}, {"time": "2026-08-24 20:28", "temp": 21.0, "hum": 53.0, "pres": 1013.4, "rain": 0.0, "solar": 1.7}, {"time": "2026-08-24 21:59", "temp": 19.8, "hum": 54.0, "pres": 1012.8, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 23:05", "temp": 19.2, "hum": 56.0, "pres": 1012.7, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 23:32", "temp": 17.9, "hum": 61.0, "pres": 1012.3, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-24 23:42", "temp": 18.0, "hum": 61.0, "pres": 1012.2, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-25 00:57", "temp": 16.0, "hum": 88.0, "pres": 1013.4, "rain": 4.3, "solar": 0.0}, {"time": "2026-08-25 01:46", "temp": 15.6, "hum": 93.0, "pres": 1011.1, "rain": 6.6, "solar": 0.0}, {"time": "2026-08-25 05:15", "temp": 16.2, "hum": 96.0, "pres": 1012.2, "rain": 7.4, "solar": 0.0}, {"time": "2026-08-25 07:20", "temp": 15.4, "hum": 93.0, "pres": 1013.2, "rain": 8.9, "solar": 4.1}, {"time": "2026-08-25 09:06", "temp": 15.3, "hum": 95.0, "pres": 1013.8, "rain": 9.9, "solar": 40.1}, {"time": "2026-08-25 09:13", "temp": 15.3, "hum": 95.0, "pres": 1013.7, "rain": 9.9, "solar": 47.8}];
 const forecast = [{"date": "2026-08-25", "max_t": 22.5, "min_t": 15.7, "rain": 12.6, "code": 95, "wind": 11.1}, {"date": "2026-08-26", "max_t": 26.9, "min_t": 15.3, "rain": 0.1, "code": 80, "wind": 10.3}, {"date": "2026-08-27", "max_t": 30.6, "min_t": 17.1, "rain": 1.4, "code": 80, "wind": 9.8}, {"date": "2026-08-28", "max_t": 24.8, "min_t": 16.8, "rain": 2.0, "code": 80, "wind": 16.5}, {"date": "2026-08-29", "max_t": 24.2, "min_t": 15.1, "rain": 0.3, "code": 3, "wind": 17.7}, {"date": "2026-08-30", "max_t": 25.1, "min_t": 18.0, "rain": 0.0, "code": 3, "wind": 19.2}, {"date": "2026-08-31", "max_t": 24.6, "min_t": 17.1, "rain": 0.0, "code": 3, "wind": 18.2}];
 const WMO      = {"0": "\u2600", "1": "\ud83c\udf24", "2": "\u26c5", "3": "\u2601", "45": "\ud83c\udf2b", "48": "\ud83c\udf2b", "51": "\ud83c\udf26", "53": "\ud83c\udf26", "55": "\ud83c\udf27", "61": "\ud83c\udf27", "63": "\ud83c\udf27", "65": "\ud83c\udf27", "71": "\ud83c\udf28", "73": "\ud83c\udf28", "75": "\u2744", "80": "\ud83c\udf26", "81": "\ud83c\udf27", "82": "\u26c8", "95": "\u26c8", "96": "\u26c8", "99": "\u26c8"};
 const JOURS    = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
