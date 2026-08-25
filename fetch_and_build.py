@@ -520,6 +520,36 @@ def _format_alert_window(window, now):
     return f"{start_lbl} – {end_lbl}"
 
 
+def _fallback_today_window(hourly_fc, now, value_fn):
+    """
+    Dernier repli quand aucune heure ne vérifie exactement la condition
+    recherchée — par exemple un code météo horaire (pluie forte, etc.) qui
+    ne reprend pas le code journalier agrégé annonçant un orage. Plutôt que
+    de n'afficher aucun détail, on renvoie les heures d'aujourd'hui avec
+    leur valeur, pour laisser voir la tendance de la journée.
+    """
+    if not hourly_fc:
+        return None
+    today = now.date()
+    todays = []
+    for h in hourly_fc:
+        t = h.get("time")
+        if not t:
+            continue
+        try:
+            dt = datetime.datetime.fromisoformat(t)
+        except ValueError:
+            continue
+        if dt.date() != today or dt < now - datetime.timedelta(hours=1):
+            continue
+        todays.append((dt, h))
+    todays.sort(key=lambda x: x[0])
+    if not todays:
+        return None
+    points = [(dt, value_fn(h)) for dt, h in todays]
+    return todays[0][0], todays[-1][0], points
+
+
 def _format_hourly_detail(points, unit="", dec=0, max_points=5):
     """
     Formate une liste [(dt, valeur), ...] en ligne compacte du type
@@ -610,12 +640,26 @@ def compute_alerts(live, forecast, hourly_fc=None):
     if today_fc:
         code = today_fc.get("code")
         if code in (95, 96, 99):
+            rain_proba_fn = lambda h: h.get("rain_proba")
             w = _find_condition_window(hourly_fc, lambda h: h.get("code") in (95, 96, 99), now,
-                                        value_fn=lambda h: h.get("rain_proba"))
+                                        value_fn=rain_proba_fn)
+            if w is None:
+                # Repli : le code horaire ne reprend pas toujours exactement
+                # le code journalier agrégé (ex: orage annoncé au niveau du
+                # jour mais restitué en averses fortes heure par heure).
+                w = _find_condition_window(hourly_fc, lambda h: h.get("code") in (80, 81, 82, 95, 96, 99), now,
+                                            value_fn=rain_proba_fn)
+            if w is None:
+                # Dernier repli : on affiche la tendance de pluie du jour
+                # plutôt que rien, pour toujours donner un détail utile.
+                w = _fallback_today_window(hourly_fc, now, rain_proba_fn)
             add_alert("⛈️", "Orage", "danger", "orage", w, "% pluie", 0)
         elif code in (71, 73, 75, 77, 85, 86):
+            temp_fn = lambda h: h.get("temp")
             w = _find_condition_window(hourly_fc, lambda h: h.get("code") in (71, 73, 75, 77, 85, 86), now,
-                                        value_fn=lambda h: h.get("temp"))
+                                        value_fn=temp_fn)
+            if w is None:
+                w = _fallback_today_window(hourly_fc, now, temp_fn)
             add_alert("🌨️", "Neige", "info", "neige", w, " °C", 1)
 
     # Canicule à venir dans les 3 prochains jours (si pas déjà en cours)
