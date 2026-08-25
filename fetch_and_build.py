@@ -782,12 +782,15 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
 
     # Alertes météo (orage, canicule, neige, vent, gel...) à côté de la température
     alerts = compute_alerts(live, forecast, hourly_fc)
-    banner_class_map = {
-        "canicule": "alert-canicule", "gel": "alert-gel",
-        "orage": "alert-orage", "vent": "alert-vent", "pluie": "alert-orage",
+    # Couleur de vigilance (jaune/orange/rouge, façon Météo-France) selon la
+    # gravité de l'alerte (level), indépendamment de son type.
+    vigilance_class_map = {
+        "danger":  "vigilance-rouge",
+        "warning": "vigilance-orange",
+        "info":    "vigilance-jaune",
     }
     def _render_hero_alert(a):
-        cls = banner_class_map.get(a["kind"], "alert-canicule")
+        cls = vigilance_class_map.get(a["level"], "vigilance-jaune")
         sub = f'{a["window_label"]} · Restez vigilant' if a.get("window_label") else "Restez vigilant"
         detail_html = ""
         if a.get("detail_label"):
@@ -871,6 +874,17 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .alert-gel{{background:rgba(42,120,214,0.12);color:#2a78d6;border-color:rgba(42,120,214,0.3)}}
 .alert-orage{{background:rgba(216,30,30,0.12);color:#d81e1e;border-color:rgba(216,30,30,0.3)}}
 .alert-vent{{background:rgba(130,60,180,0.12);color:#8a3cb4;border-color:rgba(130,60,180,0.3)}}
+
+/* Couleurs de vigilance (Météo-France : jaune / orange / rouge) selon la
+   gravité de l'alerte (level), indépendamment de son type (kind) */
+.vigilance-jaune{{background:rgba(237,193,0,0.16);color:#8a6d00;border-color:rgba(237,193,0,0.45)}}
+.vigilance-orange{{background:rgba(237,140,0,0.16);color:#c26a00;border-color:rgba(237,140,0,0.45)}}
+.vigilance-rouge{{background:rgba(216,30,30,0.16);color:#d81e1e;border-color:rgba(216,30,30,0.45)}}
+@media(prefers-color-scheme:dark){{
+  .vigilance-jaune{{color:#edc100}}
+  .vigilance-orange{{color:#ed8c00}}
+  .vigilance-rouge{{color:#ff5c5c}}
+}}
 
 /* Encart de vigilance dans le hero, à droite de la température */
 .hero-alerts{{display:flex;flex-direction:column;gap:10px;margin-left:auto;flex-shrink:0;max-width:320px}}
