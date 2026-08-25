@@ -435,6 +435,73 @@ def aggregate_by_year(hist_dict):
 
     return years, result
 
+# ── 4b. Alertes météo ─────────────────────────────────────────────────────────
+def compute_alerts(live, forecast):
+    """
+    Détecte les alertes météo actives à afficher à côté de la température.
+    Combine les mesures en direct (temp, vent, pluie) et les prévisions
+    Open-Meteo du jour / des prochains jours (orage, neige, canicule à venir).
+    Retourne une liste de dicts {icon, label, level, kind} triée par gravité.
+    """
+    alerts = []
+    temp      = live.get("temp")
+    wind_gust = live.get("wind_gust")
+    rain_rate = live.get("rain_rate")
+
+    # Canicule / forte chaleur (mesure en direct)
+    if temp is not None and temp >= 35:
+        alerts.append({"icon": "🌡️", "label": "Canicule", "level": "danger", "kind": "canicule"})
+    elif temp is not None and temp >= 32:
+        alerts.append({"icon": "🌡️", "label": "Forte chaleur", "level": "warning", "kind": "canicule"})
+
+    # Grand froid / gel (mesure en direct)
+    if temp is not None and temp <= -5:
+        alerts.append({"icon": "🥶", "label": "Grand froid", "level": "danger", "kind": "gel"})
+    elif temp is not None and temp < 0:
+        alerts.append({"icon": "❄️", "label": "Gel", "level": "info", "kind": "gel"})
+
+    # Vent (rafales en direct)
+    if wind_gust is not None and wind_gust >= 90:
+        alerts.append({"icon": "💨", "label": "Vent violent", "level": "danger", "kind": "vent"})
+    elif wind_gust is not None and wind_gust >= 60:
+        alerts.append({"icon": "💨", "label": "Vent fort", "level": "warning", "kind": "vent"})
+
+    # Pluie intense (mesure en direct)
+    if rain_rate is not None and rain_rate >= 15:
+        alerts.append({"icon": "🌧️", "label": "Pluie intense", "level": "warning", "kind": "pluie"})
+
+    # Conditions du jour d'après les prévisions (code WMO Open-Meteo)
+    today_fc = forecast[0] if forecast else None
+    if today_fc:
+        code = today_fc.get("code")
+        if code in (95, 96, 99):
+            alerts.append({"icon": "⛈️", "label": "Orage", "level": "danger", "kind": "orage"})
+        elif code in (71, 73, 75, 77, 85, 86):
+            alerts.append({"icon": "🌨️", "label": "Neige", "level": "info", "kind": "neige"})
+
+    # Canicule à venir dans les 3 prochains jours (si pas déjà en cours)
+    if not any(a["kind"] == "canicule" and a["level"] == "danger" for a in alerts):
+        upcoming_hot = next((d for d in forecast[:3] if d.get("max_t") is not None and d["max_t"] >= 35), None)
+        if upcoming_hot:
+            dt = datetime.datetime.strptime(upcoming_hot["date"], "%Y-%m-%d")
+            alerts.append({"icon": "🌡️", "label": f"Canicule prévue {dt.strftime('%d/%m')}", "level": "warning", "kind": "canicule"})
+
+    # Ordre de gravité : danger > warning > info
+    order = {"danger": 0, "warning": 1, "info": 2}
+    alerts.sort(key=lambda a: order.get(a["level"], 3))
+    return alerts
+
+
+def render_alert_badges(alerts):
+    """Petits badges d'alerte affichés juste sous la température."""
+    if not alerts:
+        return ""
+    badges = "".join(
+        f'<span class="alert-badge alert-badge--{a["level"]}">{a["icon"]} {a["label"]}</span>'
+        for a in alerts
+    )
+    return f'<div class="alert-badges">{badges}</div>'
+
 # ── 5. Génération HTML ────────────────────────────────────────────────────────
 def build_index(live, hourly, forecast, records=None, hiking_html=""):
     def val(v, unit="", dec=1):
@@ -491,6 +558,21 @@ def build_index(live, hourly, forecast, records=None, hiking_html=""):
 
     icon, condition = weather_icon(live.get("solar"), live.get("rain_rate"), live.get("hum"), live.get("temp"))
     arrow, trend_txt = trend_arrow(hourly)
+
+    # Alertes météo (orage, canicule, neige, vent, gel...) à côté de la température
+    alerts = compute_alerts(live, forecast)
+    alert_badges_html = render_alert_badges(alerts)
+    danger_alerts = [a for a in alerts if a["level"] == "danger"]
+    banner_class_map = {
+        "canicule": "alert-canicule", "gel": "alert-gel",
+        "orage": "alert-orage", "vent": "alert-vent", "pluie": "alert-orage",
+    }
+    banner_html = "".join(
+        f'<div class="alert {banner_class_map.get(a["kind"], "alert-canicule")}">'
+        f'{a["icon"]} {a["label"]} — Restez vigilant'
+        f'</div>'
+        for a in danger_alerts
+    )
 
     # Records du jour (min/max depuis les données horaires d'AUJOURD'HUI seulement)
     today_str = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%Y-%m-%d")
@@ -558,6 +640,15 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .alert{{border-radius:var(--radius);padding:12px 16px;margin-bottom:1rem;font-size:14px;font-weight:500;border:0.5px solid}}
 .alert-canicule{{background:rgba(216,90,48,0.12);color:#d85a30;border-color:rgba(216,90,48,0.3)}}
 .alert-gel{{background:rgba(42,120,214,0.12);color:#2a78d6;border-color:rgba(42,120,214,0.3)}}
+.alert-orage{{background:rgba(216,30,30,0.12);color:#d81e1e;border-color:rgba(216,30,30,0.3)}}
+.alert-vent{{background:rgba(130,60,180,0.12);color:#8a3cb4;border-color:rgba(130,60,180,0.3)}}
+
+/* Badges d'alerte à côté de la température */
+.alert-badges{{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}}
+.alert-badge{{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;border:0.5px solid;white-space:nowrap}}
+.alert-badge--danger{{background:rgba(216,30,30,0.12);color:#d81e1e;border-color:rgba(216,30,30,0.3)}}
+.alert-badge--warning{{background:rgba(216,90,48,0.12);color:#d85a30;border-color:rgba(216,90,48,0.3)}}
+.alert-badge--info{{background:rgba(42,120,214,0.12);color:#2a78d6;border-color:rgba(42,120,214,0.3)}}
 
 /* Hero météo */
 .hero{{background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
@@ -644,8 +735,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <a href="climate.html">🌍 Climatologie</a>
 </nav>
 
-{f'''<div class="alert alert-canicule">🌡 Alerte canicule — {val(live['temp'])} °C · Température extrême, hydratez-vous et évitez l'exposition au soleil</div>''' if (live.get('temp') or 0) >= 35 else ''}
-{f'''<div class="alert alert-gel">❄ Alerte gel — {val(live['temp'])} °C · Risque de verglas, protégez vos plantes et canalisations</div>''' if (live.get('temp') or 99) < 0 else ''}
+{banner_html}
 
 <!-- Hero -->
 <div class="hero">
@@ -653,6 +743,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <div class="hero-icon">{icon}</div>
     <div class="hero-main">
       <div class="hero-temp">{val(live['temp'])} °C</div>
+      {alert_badges_html}
       <div class="hero-cond">{condition} · Ressenti {val(live['temp_feels'])} °C</div>
       <div class="hero-trend">
         <span class="trend-{'up' if arrow == '↑' else 'down' if arrow == '↓' else 'stable'}">{arrow}</span>
