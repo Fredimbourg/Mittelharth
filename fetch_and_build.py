@@ -508,13 +508,25 @@ def _find_condition_window(hourly_fc, cond, now, limit_hours=168, value_fn=None)
     return start, end, points
 
 
+_JOURS_ABBR_FR = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]  # indexé sur date.weekday()
+
+
 def _format_alert_window(window, now):
     """Formate (start_dt, end_dt) en 'jusqu'à HHhMM' ou 'HHhMM – HHhMM'."""
     if not window:
         return ""
     start, end = window
-    start_lbl = start.strftime("%Hh%M") if start.date() == now.date() else start.strftime("%a %Hh%M")
-    end_lbl   = end.strftime("%Hh%M")   if end.date()   == now.date() else end.strftime("%a %Hh%M")
+
+    def fmt(dt):
+        if dt.date() == now.date():
+            return dt.strftime("%Hh%M")
+        # strftime('%a') dépend de la locale du système (anglais sur les
+        # runners GitHub Actions) : on formate donc le jour nous-mêmes
+        # pour rester en français, cohérent avec le reste du site.
+        return f"{_JOURS_ABBR_FR[dt.weekday()]} {dt.strftime('%Hh%M')}"
+
+    start_lbl = fmt(start)
+    end_lbl   = fmt(end)
     if start <= now:
         return f"jusqu'à {end_lbl}"
     return f"{start_lbl} – {end_lbl}"
@@ -711,6 +723,16 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
     rec_min_t, rec_min_t_date = rec_fmt("min_t", " °C")
     rec_rain,  rec_rain_date  = rec_fmt("max_rain", " mm")
     rec_wind,  rec_wind_date  = rec_fmt("max_wind", " km/h")
+
+    # Pluie prévue aujourd'hui (cumul journalier Open-Meteo)
+    today_fc = forecast[0] if forecast else None
+    rain_forecast_today = today_fc.get("rain") if today_fc else None
+    if rain_forecast_today is None:
+        rain_forecast_str = "—"
+    elif rain_forecast_today < 0.1:
+        rain_forecast_str = "0 mm"
+    else:
+        rain_forecast_str = f"{rain_forecast_today:.1f} mm"
 
     def weather_icon(solar, rain_rate, hum, temp):
         """Icône météo dynamique basée sur les capteurs."""
