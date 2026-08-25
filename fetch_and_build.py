@@ -21,6 +21,7 @@ HIST_FILE     = Path("docs/history.json")   # accumulation journalière
 LIVE_FILE     = Path("docs/live.json")      # données temps réel
 HOURLY_FILE   = Path("docs/hourly.json")    # données horaires (24 dernières heures)
 FORECAST_FILE = Path("docs/forecast.json")  # prévisions Open-Meteo
+HOURLY_FC_FILE = Path("docs/hourly_forecast.json")  # prévisions horaires (pour la durée des alertes)
 
 # Coordonnées de Colmar
 LAT, LON = 48.08, 7.36
@@ -104,7 +105,12 @@ def update_hourly(live):
 
 # ── 1c. Prévisions Open-Meteo (gratuit, sans clé) ────────────────────────────
 def fetch_forecast():
-    """Récupère les prévisions 7 jours depuis Open-Meteo."""
+    """
+    Récupère les prévisions journalières (7 jours) et horaires depuis
+    Open-Meteo. Les données horaires servent à estimer la plage horaire /
+    durée des alertes météo (compute_alerts).
+    Retourne (forecast_journalier, forecast_horaire).
+    """
     print("Fetching forecast...")
     try:
         url = (
@@ -112,13 +118,15 @@ def fetch_forecast():
             f"?latitude={LAT}&longitude={LON}"
             f"&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,"
             f"weathercode,windspeed_10m_max"
-            f"&hourly=temperature_2m,precipitation_probability"
+            f"&hourly=temperature_2m,precipitation_probability,precipitation,"
+            f"windspeed_10m,windgusts_10m,weathercode"
             f"&timezone=Europe%2FParis"
             f"&forecast_days=7"
         )
         r = requests.get(url, timeout=15)
         r.raise_for_status()
         data = r.json()
+
         daily = data.get("daily", {})
         forecast = []
         dates = daily.get("time", [])
@@ -132,11 +140,33 @@ def fetch_forecast():
                 "wind":   daily.get("windspeed_10m_max",  [None]*8)[i],
             })
         FORECAST_FILE.write_text(json.dumps(forecast, ensure_ascii=False))
-        print(f"  → {len(forecast)} jours de prévisions")
-        return forecast
+
+        hourly_data = data.get("hourly", {})
+        h_times  = hourly_data.get("time", [])
+        h_temp   = hourly_data.get("temperature_2m", [])
+        h_rproba = hourly_data.get("precipitation_probability", [])
+        h_rain   = hourly_data.get("precipitation", [])
+        h_wind   = hourly_data.get("windspeed_10m", [])
+        h_gust   = hourly_data.get("windgusts_10m", [])
+        h_code   = hourly_data.get("weathercode", [])
+        hourly_forecast = []
+        for i, t in enumerate(h_times):
+            hourly_forecast.append({
+                "time":       t,
+                "temp":       h_temp[i]   if i < len(h_temp)   else None,
+                "rain_proba": h_rproba[i] if i < len(h_rproba) else None,
+                "rain_mm":    h_rain[i]   if i < len(h_rain)   else None,
+                "wind":       h_wind[i]   if i < len(h_wind)   else None,
+                "gust":       h_gust[i]   if i < len(h_gust)   else None,
+                "code":       h_code[i]   if i < len(h_code)   else None,
+            })
+        HOURLY_FC_FILE.write_text(json.dumps(hourly_forecast, ensure_ascii=False))
+
+        print(f"  → {len(forecast)} jours de prévisions, {len(hourly_forecast)} heures")
+        return forecast, hourly_forecast
     except Exception as e:
         print(f"  → Erreur prévisions: {e}")
-        return []
+        return [], []
 
 # ── 2. Lecture Excel ──────────────────────────────────────────────────────────
 def read_excel_files():
@@ -436,74 +466,131 @@ def aggregate_by_year(hist_dict):
     return years, result
 
 # ── 4b. Alertes météo ─────────────────────────────────────────────────────────
-def compute_alerts(live, forecast):
+def _find_condition_window(hourly_fc, cond, now, limit_hours=168):
+    """
+    Cherche, dans les prévisions horaires à venir (jusqu'à limit_hours),
+    le premier bloc continu d'heures qui vérifie cond(heure). Retourne
+    (start_dt, end_dt) ou None si aucune heure ne correspond.
+    """
+    if not hourly_fc:
+        return None
+    upcoming = []
+    for h in hourly_fc:
+        t = h.get("time")
+        if not t:
+            continue
+        try:
+            dt = datetime.datetime.fromisoformat(t)
+        except ValueError:
+            continue
+        if dt < now - datetime.timedelta(hours=1) or dt > now + datetime.timedelta(hours=limit_hours):
+            continue
+        upcoming.append((dt, h))
+    upcoming.sort(key=lambda x: x[0])
+
+    start = end = None
+    for dt, h in upcoming:
+        if cond(h):
+            if start is None:
+                start = dt
+            end = dt
+        elif start is not None:
+            break  # le bloc continu est terminé
+    if start is None:
+        return None
+    return start, end
+
+
+def _format_alert_window(window, now):
+    """Formate (start_dt, end_dt) en 'jusqu'à HHhMM' ou 'HHhMM – HHhMM'."""
+    if not window:
+        return ""
+    start, end = window
+    start_lbl = start.strftime("%Hh%M") if start.date() == now.date() else start.strftime("%a %Hh%M")
+    end_lbl   = end.strftime("%Hh%M")   if end.date()   == now.date() else end.strftime("%a %Hh%M")
+    if start <= now:
+        return f"jusqu'à {end_lbl}"
+    return f"{start_lbl} – {end_lbl}"
+
+
+def compute_alerts(live, forecast, hourly_fc=None):
     """
     Détecte les alertes météo actives à afficher à côté de la température.
     Combine les mesures en direct (temp, vent, pluie) et les prévisions
     Open-Meteo du jour / des prochains jours (orage, neige, canicule à venir).
-    Retourne une liste de dicts {icon, label, level, kind} triée par gravité.
+    Quand des prévisions horaires (hourly_fc) sont fournies, chaque alerte
+    reçoit en plus une estimation de sa plage horaire ou de sa durée
+    (window / window_label), calculée en cherchant le premier bloc continu
+    d'heures à venir qui vérifie la même condition que l'alerte.
+    Retourne une liste de dicts {icon, label, level, kind, window_label}
+    triée par gravité.
     """
     alerts = []
     temp      = live.get("temp")
     wind_gust = live.get("wind_gust")
     rain_rate = live.get("rain_rate")
+    hourly_fc = hourly_fc or []
+    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).replace(tzinfo=None)
 
     # Canicule / forte chaleur (mesure en direct)
     if temp is not None and temp >= 35:
-        alerts.append({"icon": "🌡️", "label": "Canicule", "level": "danger", "kind": "canicule"})
+        w = _find_condition_window(hourly_fc, lambda h: h.get("temp") is not None and h["temp"] >= 35, now)
+        alerts.append({"icon": "🌡️", "label": "Canicule", "level": "danger", "kind": "canicule", "window": w})
     elif temp is not None and temp >= 32:
-        alerts.append({"icon": "🌡️", "label": "Forte chaleur", "level": "warning", "kind": "canicule"})
+        w = _find_condition_window(hourly_fc, lambda h: h.get("temp") is not None and h["temp"] >= 32, now)
+        alerts.append({"icon": "🌡️", "label": "Forte chaleur", "level": "warning", "kind": "canicule", "window": w})
 
     # Grand froid / gel (mesure en direct)
     if temp is not None and temp <= -5:
-        alerts.append({"icon": "🥶", "label": "Grand froid", "level": "danger", "kind": "gel"})
+        w = _find_condition_window(hourly_fc, lambda h: h.get("temp") is not None and h["temp"] <= -5, now)
+        alerts.append({"icon": "🥶", "label": "Grand froid", "level": "danger", "kind": "gel", "window": w})
     elif temp is not None and temp < 0:
-        alerts.append({"icon": "❄️", "label": "Gel", "level": "info", "kind": "gel"})
+        w = _find_condition_window(hourly_fc, lambda h: h.get("temp") is not None and h["temp"] < 0, now)
+        alerts.append({"icon": "❄️", "label": "Gel", "level": "info", "kind": "gel", "window": w})
 
     # Vent (rafales en direct)
     if wind_gust is not None and wind_gust >= 90:
-        alerts.append({"icon": "💨", "label": "Vent violent", "level": "danger", "kind": "vent"})
+        w = _find_condition_window(hourly_fc, lambda h: h.get("gust") is not None and h["gust"] >= 90, now)
+        alerts.append({"icon": "💨", "label": "Vent violent", "level": "danger", "kind": "vent", "window": w})
     elif wind_gust is not None and wind_gust >= 60:
-        alerts.append({"icon": "💨", "label": "Vent fort", "level": "warning", "kind": "vent"})
+        w = _find_condition_window(hourly_fc, lambda h: h.get("gust") is not None and h["gust"] >= 60, now)
+        alerts.append({"icon": "💨", "label": "Vent fort", "level": "warning", "kind": "vent", "window": w})
 
-    # Pluie intense (mesure en direct)
+    # Pluie intense (mesure en direct) — seuil horaire approximatif (mm/h)
     if rain_rate is not None and rain_rate >= 15:
-        alerts.append({"icon": "🌧️", "label": "Pluie intense", "level": "warning", "kind": "pluie"})
+        w = _find_condition_window(hourly_fc, lambda h: h.get("rain_mm") is not None and h["rain_mm"] >= 3, now)
+        alerts.append({"icon": "🌧️", "label": "Pluie intense", "level": "warning", "kind": "pluie", "window": w})
 
     # Conditions du jour d'après les prévisions (code WMO Open-Meteo)
     today_fc = forecast[0] if forecast else None
     if today_fc:
         code = today_fc.get("code")
         if code in (95, 96, 99):
-            alerts.append({"icon": "⛈️", "label": "Orage", "level": "danger", "kind": "orage"})
+            w = _find_condition_window(hourly_fc, lambda h: h.get("code") in (95, 96, 99), now)
+            alerts.append({"icon": "⛈️", "label": "Orage", "level": "danger", "kind": "orage", "window": w})
         elif code in (71, 73, 75, 77, 85, 86):
-            alerts.append({"icon": "🌨️", "label": "Neige", "level": "info", "kind": "neige"})
+            w = _find_condition_window(hourly_fc, lambda h: h.get("code") in (71, 73, 75, 77, 85, 86), now)
+            alerts.append({"icon": "🌨️", "label": "Neige", "level": "info", "kind": "neige", "window": w})
 
     # Canicule à venir dans les 3 prochains jours (si pas déjà en cours)
     if not any(a["kind"] == "canicule" and a["level"] == "danger" for a in alerts):
         upcoming_hot = next((d for d in forecast[:3] if d.get("max_t") is not None and d["max_t"] >= 35), None)
         if upcoming_hot:
             dt = datetime.datetime.strptime(upcoming_hot["date"], "%Y-%m-%d")
-            alerts.append({"icon": "🌡️", "label": f"Canicule prévue {dt.strftime('%d/%m')}", "level": "warning", "kind": "canicule"})
+            w = _find_condition_window(hourly_fc, lambda h: h.get("temp") is not None and h["temp"] >= 35, now)
+            alerts.append({"icon": "🌡️", "label": f"Canicule prévue {dt.strftime('%d/%m')}", "level": "warning", "kind": "canicule", "window": w})
 
     # Ordre de gravité : danger > warning > info
     order = {"danger": 0, "warning": 1, "info": 2}
     alerts.sort(key=lambda a: order.get(a["level"], 3))
+
+    for a in alerts:
+        a["window_label"] = _format_alert_window(a.get("window"), now)
+
     return alerts
 
-
-def render_alert_badges(alerts):
-    """Petits badges d'alerte affichés juste sous la température."""
-    if not alerts:
-        return ""
-    badges = "".join(
-        f'<span class="alert-badge alert-badge--{a["level"]}">{a["icon"]} {a["label"]}</span>'
-        for a in alerts
-    )
-    return f'<div class="alert-badges">{badges}</div>'
-
 # ── 5. Génération HTML ────────────────────────────────────────────────────────
-def build_index(live, hourly, forecast, records=None, hiking_html=""):
+def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_html=""):
     def val(v, unit="", dec=1):
         if v is None: return "—"
         return f"{v:.{dec}f}{unit}"
@@ -560,19 +647,21 @@ def build_index(live, hourly, forecast, records=None, hiking_html=""):
     arrow, trend_txt = trend_arrow(hourly)
 
     # Alertes météo (orage, canicule, neige, vent, gel...) à côté de la température
-    alerts = compute_alerts(live, forecast)
-    alert_badges_html = render_alert_badges(alerts)
-    danger_alerts = [a for a in alerts if a["level"] == "danger"]
+    alerts = compute_alerts(live, forecast, hourly_fc)
     banner_class_map = {
         "canicule": "alert-canicule", "gel": "alert-gel",
         "orage": "alert-orage", "vent": "alert-vent", "pluie": "alert-orage",
     }
-    hero_alerts_html = "".join(
-        f'<div class="hero-alert-box {banner_class_map.get(a["kind"], "alert-canicule")}">'
-        f'{a["icon"]} {a["label"]} — Restez vigilant'
-        f'</div>'
-        for a in danger_alerts
-    )
+    def _render_hero_alert(a):
+        cls = banner_class_map.get(a["kind"], "alert-canicule")
+        sub = f'{a["window_label"]} · Restez vigilant' if a.get("window_label") else "Restez vigilant"
+        return (
+            f'<div class="hero-alert-box {cls}">'
+            f'<div class="hero-alert-title">{a["icon"]} {a["label"]}</div>'
+            f'<div class="hero-alert-sub">{sub}</div>'
+            f'</div>'
+        )
+    hero_alerts_html = "".join(_render_hero_alert(a) for a in alerts)
     if hero_alerts_html:
         hero_alerts_html = f'<div class="hero-alerts">{hero_alerts_html}</div>'
 
@@ -646,16 +735,11 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .alert-vent{{background:rgba(130,60,180,0.12);color:#8a3cb4;border-color:rgba(130,60,180,0.3)}}
 
 /* Encart de vigilance dans le hero, à droite de la température */
-.hero-alerts{{display:flex;flex-direction:column;gap:8px;margin-left:auto;flex-shrink:0}}
-.hero-alert-box{{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--radius);border:0.5px solid;font-size:13px;font-weight:500;white-space:nowrap}}
-@media(max-width:600px){{.hero-alerts{{margin-left:0;width:100%}} .hero-alert-box{{white-space:normal}}}}
-
-/* Badges d'alerte à côté de la température */
-.alert-badges{{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}}
-.alert-badge{{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:99px;border:0.5px solid;white-space:nowrap}}
-.alert-badge--danger{{background:rgba(216,30,30,0.12);color:#d81e1e;border-color:rgba(216,30,30,0.3)}}
-.alert-badge--warning{{background:rgba(216,90,48,0.12);color:#d85a30;border-color:rgba(216,90,48,0.3)}}
-.alert-badge--info{{background:rgba(42,120,214,0.12);color:#2a78d6;border-color:rgba(42,120,214,0.3)}}
+.hero-alerts{{display:flex;flex-direction:column;gap:8px;margin-left:auto;flex-shrink:0;max-width:260px}}
+.hero-alert-box{{display:flex;flex-direction:column;gap:2px;padding:10px 16px;border-radius:var(--radius);border:0.5px solid}}
+.hero-alert-title{{font-size:13px;font-weight:600;white-space:nowrap}}
+.hero-alert-sub{{font-size:11px;font-weight:400;opacity:.85}}
+@media(max-width:600px){{.hero-alerts{{margin-left:0;width:100%;max-width:none}} .hero-alert-title{{white-space:normal}}}}
 
 /* Hero météo */
 .hero{{background:var(--surface);border-radius:16px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
@@ -748,7 +832,6 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <div class="hero-icon">{icon}</div>
     <div class="hero-main">
       <div class="hero-temp">{val(live['temp'])} °C</div>
-      {alert_badges_html}
       <div class="hero-cond">{condition} · Ressenti {val(live['temp_feels'])} °C</div>
       <div class="hero-trend">
         <span class="trend-{'up' if arrow == '↑' else 'down' if arrow == '↓' else 'stable'}">{arrow}</span>
@@ -1572,7 +1655,7 @@ if __name__ == "__main__":
     # Toujours : temps réel + accumulation horaire + prévisions
     live = fetch_realtime()
     hourly = update_hourly(live)
-    forecast = fetch_forecast()
+    forecast, hourly_fc = fetch_forecast()
     hiking_forecasts = fetch_hiking_forecasts()
     hiking_html = build_hiking_report(hiking_forecasts)
 
@@ -1580,7 +1663,7 @@ if __name__ == "__main__":
     hist_dict = update_history(live)
     records = get_records(hist_dict)
 
-    build_index(live, hourly, forecast, records, hiking_html)
+    build_index(live, hourly, forecast, hourly_fc, records, hiking_html)
 
     years, data_by_year = aggregate_by_year(hist_dict)
     build_dashboard(years, data_by_year)
