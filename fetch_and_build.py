@@ -508,6 +508,17 @@ def _find_condition_window(hourly_fc, cond, now, limit_hours=168, value_fn=None)
     return start, end, points
 
 
+def _hours_left_today(now):
+    """
+    Nombre d'heures avant minuit (arrondi au supérieur, minimum 1) — utilisé
+    pour cantonner l'alerte pluie/orage du jour (⛈️ Orage) à la seule
+    journée en cours, au lieu de la limite par défaut de 7 jours de
+    _find_condition_window.
+    """
+    midnight = (now + datetime.timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+    return max(1, math.ceil((midnight - now).total_seconds() / 3600))
+
+
 _JOURS_ABBR_FR = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]  # indexé sur date.weekday()
 
 
@@ -592,6 +603,11 @@ def compute_alerts(live, forecast, hourly_fc=None):
     et un détail heure par heure de la grandeur concernée (hourly_detail /
     detail_label), calculés en cherchant le premier bloc continu d'heures à
     venir qui vérifie la même condition que l'alerte.
+
+    L'alerte ⛈️ Orage (pluie/orage du jour) est volontairement cantonnée à
+    la journée en cours (voir _hours_left_today) : elle ne doit annoncer
+    qu'un risque du jour même, pas un créneau à plusieurs jours d'écart.
+
     Retourne une liste de dicts {icon, label, level, kind, window_label,
     detail_label} triée par gravité.
     """
@@ -653,14 +669,16 @@ def compute_alerts(live, forecast, hourly_fc=None):
         code = today_fc.get("code")
         if code in (95, 96, 99):
             rain_proba_fn = lambda h: h.get("rain_proba")
+            # Alerte orage/pluie cantonnée à la journée en cours uniquement.
+            today_limit = _hours_left_today(now)
             w = _find_condition_window(hourly_fc, lambda h: h.get("code") in (95, 96, 99), now,
-                                        value_fn=rain_proba_fn)
+                                        limit_hours=today_limit, value_fn=rain_proba_fn)
             if w is None:
                 # Repli : le code horaire ne reprend pas toujours exactement
                 # le code journalier agrégé (ex: orage annoncé au niveau du
                 # jour mais restitué en averses fortes heure par heure).
                 w = _find_condition_window(hourly_fc, lambda h: h.get("code") in (80, 81, 82, 95, 96, 99), now,
-                                            value_fn=rain_proba_fn)
+                                            limit_hours=today_limit, value_fn=rain_proba_fn)
             if w is None:
                 # Dernier repli : on affiche la tendance de pluie du jour
                 # plutôt que rien, pour toujours donner un détail utile.
