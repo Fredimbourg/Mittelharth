@@ -1571,6 +1571,7 @@ function buildSecondaryCharts(){
       }
     }
   });
+  if(rainChart)  rainChart.destroy();
   if(solarChart) solarChart.destroy();
   if(humChart)   humChart.destroy();
   rainChart  = new Chart(document.getElementById('rainChart'),  {type:'bar', data:{labels:MONTHS,datasets:[{label:'Pluie', data:getMnthArr('rain'), backgroundColor:'rgba(42,120,214,.7)',borderRadius:4}]},options:opts(' mm')});
