@@ -875,9 +875,9 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 /* Encart de vigilance dans le hero, à droite de la température */
 .hero-alerts{{display:flex;flex-direction:column;gap:8px;margin-left:auto;flex-shrink:0;max-width:260px}}
 .hero-alert-box{{display:flex;flex-direction:column;gap:2px;padding:10px 16px;border-radius:var(--radius);border:0.5px solid}}
-.hero-alert-title{{font-size:13px;font-weight:600;white-space:nowrap}}
-.hero-alert-sub{{font-size:11px;font-weight:400;opacity:.85}}
-.hero-alert-detail{{font-size:10.5px;font-weight:400;opacity:.7;margin-top:2px;font-variant-numeric:tabular-nums}}
+.hero-alert-title{{font-size:16px;font-weight:600;white-space:nowrap}}
+.hero-alert-sub{{font-size:13px;font-weight:400;opacity:.85}}
+.hero-alert-detail{{font-size:12.5px;font-weight:400;opacity:.7;margin-top:2px;font-variant-numeric:tabular-nums}}
 @media(max-width:600px){{.hero-alerts{{margin-left:0;width:100%;max-width:none}} .hero-alert-title{{white-space:normal}}}}
 
 /* Hero météo */
