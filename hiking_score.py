@@ -50,6 +50,12 @@ class SiteProfile:
     w_visibility: float
     w_temp: float
     note: str = ""
+    # Facteur d'atténuation du vent (1.0 = site exposé, sans correction).
+    # Un couvert forestier coupe une bonne partie des rafales ressenties au
+    # sol par rapport à la prévision Open-Meteo (calculée à ~10 m en zone
+    # dégagée) : on applique donc gust_kmh * wind_shelter avant de scorer,
+    # pour un site où l'itinéraire est réellement en sous-bois.
+    wind_shelter: float = 1.0
 
 
 # NB : coordonnées approximatives, à affiner si besoin (ex: point de départ
@@ -77,11 +83,12 @@ SITES: dict[str, SiteProfile] = {
         note="Vue panoramique : très sensible à la visibilité/nébulosité.",
     ),
     "wihr_au_val": SiteProfile(
-        name="Wihr-au-Val (centre équestre)",
-        lat=48.05104241311195, lon=7.184589328281641, altitude_m=300,
+        name="Wihr-au-Val (sentiers forestiers)",
+        lat=48.045944908707554, lon=7.167098450291576, altitude_m=300,
         emoji="🐴",
         w_wind=0.15, w_rain=0.30, w_storm=0.20, w_visibility=0.10, w_temp=0.25,
-        note="Centre équestre en léger retrait du village — abrité mais sensible à la pluie.",
+        note="Randonnée en forêt au départ du centre équestre — bien abritée du vent, mais sensible à la pluie.",
+        wind_shelter=0.45,
     ),
     "markstein": SiteProfile(
         name="Markstein",
@@ -96,6 +103,7 @@ SITES: dict[str, SiteProfile] = {
         emoji="🏞️",
         w_wind=0.15, w_rain=0.30, w_storm=0.25, w_visibility=0.15, w_temp=0.15,
         note="Site forestier autour du lac, plus abrité mais sensible à la pluie.",
+        wind_shelter=0.65,
     ),
     "wintersberg": SiteProfile(
         name="Grand Wintersberg (Niederbronn)",
@@ -103,6 +111,7 @@ SITES: dict[str, SiteProfile] = {
         emoji="🗼",
         w_wind=0.15, w_rain=0.30, w_storm=0.20, w_visibility=0.20, w_temp=0.15,
         note="Point culminant des Vosges du Nord, massif forestier avec tour panoramique — abrité du vent mais visibilité dépendante de la nébulosité depuis la tour.",
+        wind_shelter=0.55,
     ),
 }
 
@@ -228,7 +237,8 @@ def _score_temp(temp_c: float, altitude_m: int) -> float:
 
 
 def score_hour(hour_data: dict, site: SiteProfile) -> float:
-    s_wind = _score_wind(hour_data["gust_kmh"])
+    effective_gust = hour_data["gust_kmh"] * site.wind_shelter
+    s_wind = _score_wind(effective_gust)
     s_rain = _score_rain(hour_data["rain_mm"], hour_data.get("rain_proba_pct", 0))
     s_storm = _score_storm(hour_data.get("storm_risk", False))
     s_vis = _score_visibility(hour_data.get("cloud_cover_pct", 50))
