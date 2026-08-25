@@ -567,12 +567,14 @@ def build_index(live, hourly, forecast, records=None, hiking_html=""):
         "canicule": "alert-canicule", "gel": "alert-gel",
         "orage": "alert-orage", "vent": "alert-vent", "pluie": "alert-orage",
     }
-    banner_html = "".join(
-        f'<div class="alert {banner_class_map.get(a["kind"], "alert-canicule")}">'
+    hero_alerts_html = "".join(
+        f'<div class="hero-alert-box {banner_class_map.get(a["kind"], "alert-canicule")}">'
         f'{a["icon"]} {a["label"]} — Restez vigilant'
         f'</div>'
         for a in danger_alerts
     )
+    if hero_alerts_html:
+        hero_alerts_html = f'<div class="hero-alerts">{hero_alerts_html}</div>'
 
     # Records du jour (min/max depuis les données horaires d'AUJOURD'HUI seulement)
     today_str = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%Y-%m-%d")
@@ -642,6 +644,11 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .alert-gel{{background:rgba(42,120,214,0.12);color:#2a78d6;border-color:rgba(42,120,214,0.3)}}
 .alert-orage{{background:rgba(216,30,30,0.12);color:#d81e1e;border-color:rgba(216,30,30,0.3)}}
 .alert-vent{{background:rgba(130,60,180,0.12);color:#8a3cb4;border-color:rgba(130,60,180,0.3)}}
+
+/* Encart de vigilance dans le hero, à droite de la température */
+.hero-alerts{{display:flex;flex-direction:column;gap:8px;margin-left:auto;flex-shrink:0}}
+.hero-alert-box{{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--radius);border:0.5px solid;font-size:13px;font-weight:500;white-space:nowrap}}
+@media(max-width:600px){{.hero-alerts{{margin-left:0;width:100%}} .hero-alert-box{{white-space:normal}}}}
 
 /* Badges d'alerte à côté de la température */
 .alert-badges{{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}}
@@ -735,8 +742,6 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <a href="climate.html">🌍 Climatologie</a>
 </nav>
 
-{banner_html}
-
 <!-- Hero -->
 <div class="hero">
   <div class="hero-top">
@@ -753,6 +758,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
         <span>Aujourd'hui · Max <b>{today_max}</b> · Min <b>{today_min}</b></span>
       </div>
     </div>
+    {hero_alerts_html}
   </div>
   <div class="hero-chart">
     <canvas id="miniChart"></canvas>
