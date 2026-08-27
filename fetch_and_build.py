@@ -785,14 +785,14 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
         if rain_rate is None: rain_rate = 0
         if hum is None: hum = 50
         if temp is None: temp = 15
-        if rain_rate > 2:   return "🌧", "Pluie"
-        if rain_rate > 0.1: return "🌦", "Averses"
-        if solar > 500:     return "☀", "Ensoleillé"
+        if rain_rate > 2:   return "🌧️", "Pluie"
+        if rain_rate > 0.1: return "🌦️", "Averses"
+        if solar > 500:     return "☀️", "Ensoleillé"
         if solar > 200:     return "⛅", "Partiellement nuageux"
-        if solar > 50:      return "🌤", "Peu nuageux"
-        if hum > 90:        return "🌫", "Brouillard"
-        if temp < 0:        return "❄", "Gel"
-        return "☁", "Nuageux"
+        if solar > 50:      return "🌤️", "Peu nuageux"
+        if hum > 90:        return "🌫️", "Brouillard"
+        if temp < 0:        return "❄️", "Gel"
+        return "☁️", "Nuageux"
 
     def trend_arrow(hourly):
         """Tendance température sur les 3 dernières heures."""
@@ -853,13 +853,20 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
 
     # Codes météo WMO → icône
     wmo_icons = {
-        0:"☀",1:"🌤",2:"⛅",3:"☁",
-        45:"🌫",48:"🌫",
-        51:"🌦",53:"🌦",55:"🌧",
-        61:"🌧",63:"🌧",65:"🌧",
-        71:"🌨",73:"🌨",75:"❄",
-        80:"🌦",81:"🌧",82:"⛈",
-        95:"⛈",96:"⛈",99:"⛈",
+        0:"☀️",                    # Ciel dégagé
+        1:"🌤️",                    # Principalement clair
+        2:"⛅",                     # Partiellement nuageux
+        3:"☁️",                    # Couvert
+        45:"🌫️",48:"🌫️",           # Brouillard
+        51:"🌦️",53:"🌦️",55:"🌦️",  # Bruine légère à dense
+        56:"🌧️",57:"🌧️",          # Bruine verglaçante
+        61:"🌦️",63:"🌧️",65:"🌧️",  # Pluie légère → forte
+        66:"🌨️",67:"🌨️",          # Pluie verglaçante
+        71:"🌨️",73:"🌨️",75:"❄️",  # Neige légère → forte
+        77:"❄️",                   # Grains de neige
+        80:"🌦️",81:"🌧️",82:"⛈️",  # Averses légères → violentes
+        85:"🌨️",86:"❄️",          # Averses de neige
+        95:"⛈️",96:"⛈️",99:"⛈️",  # Orages
     }
     wmo_js = json.dumps(wmo_icons)
 
