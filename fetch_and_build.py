@@ -915,7 +915,7 @@ header{{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-it
 header h1{{font-size:20px;font-weight:500}}
 header p{{font-size:13px;color:var(--text-muted)}}
 .updated{{font-size:12px;color:var(--text-muted);background:var(--surface-muted);padding:4px 10px;border-radius:99px;border:0.5px solid var(--border)}}
-.live-clock{{font-size:15px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;background:var(--surface-muted);padding:4px 12px;border-radius:99px;border:0.5px solid var(--border)}}
+.live-clock{{font-size:22px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;background:var(--surface-muted);padding:6px 16px;border-radius:99px;border:0.5px solid var(--border)}}
 nav{{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}}
 nav a{{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}}
 nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}}
@@ -1035,6 +1035,12 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <a href="climate.html">🌍 Climatologie</a>
 </nav>
 
+<!-- Prévisions 7 jours -->
+<div class="forecast">
+  <div class="forecast-title">Prévisions 7 jours</div>
+  <div class="forecast-grid" id="forecastGrid"></div>
+</div>
+
 <!-- Hero -->
 <div class="hero">
   <div class="hero-top">
@@ -1055,12 +1061,6 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <div class="hero-chart">
     <canvas id="miniChart"></canvas>
   </div>
-</div>
-
-<!-- Prévisions 7 jours -->
-<div class="forecast">
-  <div class="forecast-title">Prévisions 7 jours</div>
-  <div class="forecast-grid" id="forecastGrid"></div>
 </div>
 
 {hiking_html}
