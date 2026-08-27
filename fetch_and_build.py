@@ -1035,12 +1035,6 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <a href="climate.html">🌍 Climatologie</a>
 </nav>
 
-<!-- Prévisions 7 jours -->
-<div class="forecast">
-  <div class="forecast-title">Prévisions 7 jours</div>
-  <div class="forecast-grid" id="forecastGrid"></div>
-</div>
-
 <!-- Hero -->
 <div class="hero">
   <div class="hero-top">
@@ -1058,6 +1052,16 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     </div>
     {hero_alerts_html}
   </div>
+</div>
+
+<!-- Prévisions 7 jours -->
+<div class="forecast">
+  <div class="forecast-title">Prévisions 7 jours</div>
+  <div class="forecast-grid" id="forecastGrid"></div>
+</div>
+
+<!-- Graphique température 24h -->
+<div class="hero">
   <div class="hero-chart">
     <canvas id="miniChart"></canvas>
   </div>
