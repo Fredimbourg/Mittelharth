@@ -896,6 +896,19 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
     --border:rgba(255,255,255,.10);--grid:#2c2c2a;
     --accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4);}}
 }}
+html[data-theme="dark"]{{
+  --bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;
+  --text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;
+  --border:rgba(255,255,255,.10);--grid:#2c2c2a;
+  --accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4);
+}}
+html[data-theme="light"]{{
+  --bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;
+  --text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;
+  --border:rgba(11,11,11,.10);--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3);
+  --grid:#e1e0d9;
+}}
+.theme-toggle{{background:var(--surface-muted);border:0.5px solid var(--border);border-radius:99px;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}}
 body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem;min-height:100vh}}
 .container{{max-width:920px;margin:0 auto}}
 header{{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}}
@@ -1008,7 +1021,10 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <h1>🌤 Météo Colmar-Mittelharth</h1>
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
-  <span class="updated">Mis à jour : {live['updated_at']}</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="updated">Mis à jour : {live['updated_at']}</span>
+    <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
+  </div>
 </header>
 
 <nav>
@@ -1137,8 +1153,31 @@ const forecast = {forecast_js};
 const WMO      = {wmo_js};
 const JOURS    = {json.dumps(jours)};
 
+// ── Mode sombre / clair (bouton + mémorisation) ───────────────────────────────
+(function() {{
+  const stored = localStorage.getItem('mittelharth-theme');
+  if (stored) document.documentElement.setAttribute('data-theme', stored);
+  const btn = document.getElementById('themeToggle');
+  function isDark() {{
+    const attr = document.documentElement.getAttribute('data-theme');
+    if (attr) return attr === 'dark';
+    return window.matchMedia('(prefers-color-scheme:dark)').matches;
+  }}
+  function updateBtn() {{ btn.textContent = isDark() ? '☀️' : '🌙'; }}
+  updateBtn();
+  btn.addEventListener('click', () => {{
+    const next = isDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('mittelharth-theme', next);
+    updateBtn();
+    location.reload(); // recharge pour que les graphiques Chart.js reprennent les bonnes couleurs
+  }});
+}})();
+
 // ── Mini graphique 24h ────────────────────────────────────────────────────────
-const dark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+const dark = document.documentElement.getAttribute('data-theme')
+  ? document.documentElement.getAttribute('data-theme') === 'dark'
+  : window.matchMedia('(prefers-color-scheme:dark)').matches;
 const gc = () => dark ? '#2c2c2a' : '#e1e0d9';
 const tc = () => '#898781';
 
