@@ -968,16 +968,16 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .card-sub{{font-size:12px;color:var(--text-muted);margin-top:4px}}
 
 /* Prévisions */
-.forecast{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.25rem;margin-bottom:1.5rem}}
-.forecast-title{{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}}
-.forecast-grid{{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}}
+.forecast{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
+.forecast-title{{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem}}
+.forecast-grid{{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}}
 @media(max-width:600px){{.forecast-grid{{grid-template-columns:repeat(4,1fr)}}}}
-.forecast-day{{text-align:center;padding:10px 4px;border-radius:var(--radius);background:var(--surface-muted)}}
-.forecast-day-name{{font-size:11px;color:var(--text-muted);margin-bottom:4px;font-weight:500}}
-.forecast-icon{{font-size:22px;margin:4px 0}}
-.forecast-max{{font-size:13px;font-weight:600;color:#d85a30}}
-.forecast-min{{font-size:12px;color:#2a78d6}}
-.forecast-rain{{font-size:11px;color:var(--text-muted);margin-top:2px}}
+.forecast-day{{text-align:center;padding:16px 6px;border-radius:var(--radius);background:var(--surface-muted)}}
+.forecast-day-name{{font-size:15px;color:var(--text-secondary);margin-bottom:8px;font-weight:600}}
+.forecast-icon{{font-size:36px;margin:8px 0;line-height:1}}
+.forecast-max{{font-size:19px;font-weight:700;color:#d85a30}}
+.forecast-min{{font-size:16px;color:#2a78d6;margin-top:2px}}
+.forecast-rain{{font-size:14px;color:var(--text-muted);margin-top:6px;font-weight:500}}
 
 /* Sections */
 .section{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1rem}}
