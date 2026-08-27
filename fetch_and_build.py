@@ -915,6 +915,7 @@ header{{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-it
 header h1{{font-size:20px;font-weight:500}}
 header p{{font-size:13px;color:var(--text-muted)}}
 .updated{{font-size:12px;color:var(--text-muted);background:var(--surface-muted);padding:4px 10px;border-radius:99px;border:0.5px solid var(--border)}}
+.live-clock{{font-size:15px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;background:var(--surface-muted);padding:4px 12px;border-radius:99px;border:0.5px solid var(--border)}}
 nav{{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}}
 nav a{{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}}
 nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}}
@@ -1022,6 +1023,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
+    <span class="live-clock" id="liveClock">--:--:--</span>
     <span class="updated">Mis à jour : {live['updated_at']}</span>
     <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
   </div>
@@ -1152,6 +1154,18 @@ const hourly   = {hourly_js};
 const forecast = {forecast_js};
 const WMO      = {wmo_js};
 const JOURS    = {json.dumps(jours)};
+
+// ── Horloge en direct (header) ────────────────────────────────────────────────
+function updateLiveClock() {{
+  const el = document.getElementById('liveClock');
+  if (!el) return;
+  const now = new Date().toLocaleTimeString('fr-FR', {{
+    timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }});
+  el.textContent = now;
+}}
+updateLiveClock();
+setInterval(updateLiveClock, 1000);
 
 // ── Mode sombre / clair (bouton + mémorisation) ───────────────────────────────
 (function() {{
