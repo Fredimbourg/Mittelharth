@@ -713,6 +713,33 @@ def compute_alerts(live, forecast, hourly_fc=None):
 
     return alerts
 
+
+def next_rain_forecast(hourly_fc, now, threshold=50):
+    """
+    Cherche, dans les prévisions horaires à venir, la première heure où la
+    probabilité de pluie (rain_proba) atteint le seuil donné (50% par
+    défaut). Retourne une chaîne prête à afficher, ex. "Pluie prévue à
+    21h00" ou "Pluie prévue Ven à 14h00" si c'est un autre jour, ou un
+    message par défaut si rien n'est prévu dans les prochaines 168h
+    (limite des prévisions horaires Open-Meteo, 7 jours).
+    """
+    for h in hourly_fc or []:
+        t = h.get("time")
+        if not t:
+            continue
+        try:
+            dt = datetime.datetime.fromisoformat(t)
+        except ValueError:
+            continue
+        if dt <= now:
+            continue
+        proba = h.get("rain_proba")
+        if proba is not None and proba >= threshold:
+            if dt.date() == now.date():
+                return f"Pluie prévue à {dt.strftime('%Hh%M')}"
+            return f"Pluie prévue {_JOURS_ABBR_FR[dt.weekday()]} à {dt.strftime('%Hh%M')}"
+    return "Pas de pluie prévue"
+
 # ── 5. Génération HTML ────────────────────────────────────────────────────────
 def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_html=""):
     def val(v, unit="", dec=1):
@@ -779,6 +806,10 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
 
     icon, condition = weather_icon(live.get("solar"), live.get("rain_rate"), live.get("hum"), live.get("temp"))
     arrow, trend_txt = trend_arrow(hourly)
+
+    # Prochaine pluie prévue (affichée à côté de la tendance de température)
+    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).replace(tzinfo=None)
+    rain_forecast_txt = next_rain_forecast(hourly_fc, now)
 
     # Alertes météo (orage, canicule, neige, vent, gel...) à côté de la température
     alerts = compute_alerts(live, forecast, hourly_fc)
@@ -901,7 +932,7 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .hero-main{{flex:1;min-width:160px}}
 .hero-temp{{font-size:52px;font-weight:300;line-height:1;margin-bottom:4px}}
 .hero-cond{{font-size:16px;color:var(--text-secondary);margin-bottom:8px}}
-.hero-trend{{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px}}
+.hero-trend{{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap}}
 .trend-up{{color:#d85a30}} .trend-down{{color:#2a78d6}} .trend-stable{{color:var(--text-muted)}}
 .hero-records{{display:flex;gap:16px;font-size:13px;margin-top:8px}}
 .hero-records span{{color:var(--text-muted)}} .hero-records b{{color:var(--text)}}
@@ -988,7 +1019,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
       <div class="hero-cond">{condition} · Ressenti {val(live['temp_feels'])} °C</div>
       <div class="hero-trend">
         <span class="trend-{'up' if arrow == '↑' else 'down' if arrow == '↓' else 'stable'}">{arrow}</span>
-        {trend_txt}
+        {trend_txt} · 🌧 {rain_forecast_txt}
       </div>
       <div class="hero-records">
         <span>Aujourd'hui · Max <b>{today_max}</b> · Min <b>{today_min}</b></span>
