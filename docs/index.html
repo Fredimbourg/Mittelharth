@@ -40,6 +40,7 @@ header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-ite
 header h1{font-size:20px;font-weight:500}
 header p{font-size:13px;color:var(--text-muted)}
 .updated{font-size:12px;color:var(--text-muted);background:var(--surface-muted);padding:4px 10px;border-radius:99px;border:0.5px solid var(--border)}
+.live-clock{font-size:15px;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;background:var(--surface-muted);padding:4px 12px;border-radius:99px;border:0.5px solid var(--border)}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
 nav a{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}
 nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}
@@ -147,7 +148,8 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <span class="updated">Mis à jour : 27/08/2026 23:40</span>
+    <span class="live-clock" id="liveClock">--:--:--</span>
+    <span class="updated">Mis à jour : 28/08/2026 00:01</span>
     <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
   </div>
 </header>
@@ -163,17 +165,17 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="hero-top">
     <div class="hero-icon">☁️</div>
     <div class="hero-main">
-      <div class="hero-temp">25.1 °C</div>
-      <div class="hero-cond">Nuageux · Ressenti 25.1 °C</div>
+      <div class="hero-temp">24.7 °C</div>
+      <div class="hero-cond">Nuageux · Ressenti 24.7 °C</div>
       <div class="hero-trend">
-        <span class="trend-down">↓</span>
-        -0.7°C en 3h · 🌧 Pluie prévue Ven à 05h00
+        <span class="trend-stable">→</span>
+        Stable · 🌧 Pluie prévue à 05h00
       </div>
       <div class="hero-records">
-        <span>Aujourd'hui · Max <b>34.2 °C</b> · Min <b>17.2 °C</b></span>
+        <span>Aujourd'hui · Max <b>24.7 °C</b> · Min <b>24.7 °C</b></span>
       </div>
     </div>
-    
+    <div class="hero-alerts"><div class="hero-alert-box vigilance-rouge"><div class="hero-alert-title">⛈️ Orage</div><div class="hero-alert-sub">05h00 – 05h00 · Restez vigilant</div><div class="hero-alert-detail">05h 60% pluie</div></div></div>
   </div>
   <div class="hero-chart">
     <canvas id="miniChart"></canvas>
@@ -190,10 +192,10 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <h2>🥾 Indice Sortie Rando – Vosges</h2>
     
         <div class="hiking-best">
-            <span class="hiking-best-emoji">⛷️</span>
+            <span class="hiking-best-emoji">🐴</span>
             <div>
-                <div class="hiking-best-title">Meilleure sortie aujourd'hui : <b>Markstein</b></div>
-                <div class="hiking-best-sub">🟢 Excellent — 90.9/100 · créneau 08h00–10h00</div>
+                <div class="hiking-best-title">Meilleure sortie aujourd'hui : <b>Wihr-au-Val (sentiers forestiers)</b></div>
+                <div class="hiking-best-sub">🟢 Excellent — 89.8/100 · créneau 16h00–18h00</div>
             </div>
         </div>
     <details class="hiking-details">
@@ -201,47 +203,47 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
         <p class="hiking-intro">Score sur le meilleur créneau du jour (08h–18h), basé sur le vent, la pluie, le risque d'orage, la visibilité et la température ressentie en altitude (Open-Meteo). 7 sites suivis, des Vosges du Sud (Grand Ballon, Hohneck…) aux Vosges du Nord (Grand Wintersberg).</p>
         <div class="hiking-grid">
             
-            <div class="hiking-card" data-score="79.1">
+            <div class="hiking-card" data-score="67.0">
                 <h3>🥾 Petit Ballon <span class="alt">(1267 m)</span></h3>
-                <p class="hiking-score">🟢 Bonne journée — 79.1/100</p>
-                <p class="hiking-window">Meilleur créneau : 16h00 – 18h00</p>
-                <p class="hiking-note">🌡️ 17–25°C · 🌧️ 20% · 💨 20 km/h (raf. 72)</p>
+                <p class="hiking-score">🟢 Bonne journée — 67.0/100</p>
+                <p class="hiking-window">Meilleur créneau : 12h00 – 14h00</p>
+                <p class="hiking-note">🌡️ 12–21°C · 🌧️ 50% (27.3 mm) · 💨 24 km/h (raf. 87) · ⛈️ Risque d'orage</p>
             </div>
-            <div class="hiking-card" data-score="81.8">
+            <div class="hiking-card" data-score="59.1">
                 <h3>⛰️ Grand Ballon <span class="alt">(1424 m)</span></h3>
-                <p class="hiking-score">🟢 Excellent — 81.8/100</p>
-                <p class="hiking-window">Meilleur créneau : 16h00 – 18h00</p>
-                <p class="hiking-note">🌡️ 16–24°C · 🌧️ 25% · 💨 22 km/h (raf. 64)</p>
+                <p class="hiking-score">🟡 Correct, avec prudence — 59.1/100</p>
+                <p class="hiking-window">Meilleur créneau : 13h00 – 15h00</p>
+                <p class="hiking-note">🌡️ 11–19°C · 🌧️ 75% (28.9 mm) · 💨 30 km/h (raf. 90) · ⛈️ Risque d'orage</p>
             </div>
-            <div class="hiking-card" data-score="78.0">
+            <div class="hiking-card" data-score="64.4">
                 <h3>🏔️ Hohneck <span class="alt">(1362 m)</span></h3>
-                <p class="hiking-score">🟢 Bonne journée — 78.0/100</p>
-                <p class="hiking-window">Meilleur créneau : 16h00 – 18h00</p>
-                <p class="hiking-note">🌡️ 16–23°C · 🌧️ 43% · 💨 23 km/h (raf. 57) · ⛈️ Risque d'orage</p>
+                <p class="hiking-score">🟢 Bonne journée — 64.4/100</p>
+                <p class="hiking-window">Meilleur créneau : 13h00 – 15h00</p>
+                <p class="hiking-note">🌡️ 11–18°C · 🌧️ 65% (20.2 mm) · 💨 29 km/h (raf. 73) · ⛈️ Risque d'orage</p>
             </div>
-            <div class="hiking-card" data-score="89.1">
+            <div class="hiking-card" data-score="89.8">
                 <h3>🐴 Wihr-au-Val (sentiers forestiers) <span class="alt">(300 m)</span></h3>
-                <p class="hiking-score">🟢 Excellent — 89.1/100</p>
-                <p class="hiking-window">Meilleur créneau : 08h00 – 10h00</p>
-                <p class="hiking-note">🌡️ 16–31°C · 🌧️ 20% · 💨 13 km/h (raf. 26)</p>
-            </div>
-            <div class="hiking-card" data-score="90.9">
-                <h3>⛷️ Markstein <span class="alt">(1230 m)</span></h3>
-                <p class="hiking-score">🟢 Excellent — 90.9/100</p>
-                <p class="hiking-window">Meilleur créneau : 08h00 – 10h00</p>
-                <p class="hiking-note">🌡️ 18–27°C · 🌧️ 33% · 💨 12 km/h (raf. 25)</p>
-            </div>
-            <div class="hiking-card" data-score="85.0">
-                <h3>🏞️ Lac Blanc <span class="alt">(1054 m)</span></h3>
-                <p class="hiking-score">🟢 Excellent — 85.0/100</p>
+                <p class="hiking-score">🟢 Excellent — 89.8/100</p>
                 <p class="hiking-window">Meilleur créneau : 16h00 – 18h00</p>
-                <p class="hiking-note">🌡️ 16–24°C · 🌧️ 43% · 💨 20 km/h (raf. 64)</p>
+                <p class="hiking-note">🌡️ 15–23°C · 🌧️ 50% (20.5 mm) · 💨 19 km/h (raf. 35) · ⛈️ Risque d'orage</p>
             </div>
-            <div class="hiking-card" data-score="80.0">
+            <div class="hiking-card" data-score="87.1">
+                <h3>⛷️ Markstein <span class="alt">(1230 m)</span></h3>
+                <p class="hiking-score">🟢 Excellent — 87.1/100</p>
+                <p class="hiking-window">Meilleur créneau : 13h00 – 15h00</p>
+                <p class="hiking-note">🌡️ 14–22°C · 🌧️ 78% (28.8 mm) · 💨 20 km/h (raf. 40) · ⛈️ Risque d'orage</p>
+            </div>
+            <div class="hiking-card" data-score="82.8">
+                <h3>🏞️ Lac Blanc <span class="alt">(1054 m)</span></h3>
+                <p class="hiking-score">🟢 Excellent — 82.8/100</p>
+                <p class="hiking-window">Meilleur créneau : 13h00 – 15h00</p>
+                <p class="hiking-note">🌡️ 12–19°C · 🌧️ 65% (18.3 mm) · 💨 24 km/h (raf. 80) · ⛈️ Risque d'orage</p>
+            </div>
+            <div class="hiking-card" data-score="78.7">
                 <h3>🗼 Grand Wintersberg (Niederbronn) <span class="alt">(581 m)</span></h3>
-                <p class="hiking-score">🟢 Excellent — 80.0/100</p>
-                <p class="hiking-window">Meilleur créneau : 08h00 – 10h00</p>
-                <p class="hiking-note">🌡️ 18–28°C · 🌧️ 20% · 💨 9 km/h (raf. 35)</p>
+                <p class="hiking-score">🟢 Bonne journée — 78.7/100</p>
+                <p class="hiking-window">Meilleur créneau : 15h00 – 17h00</p>
+                <p class="hiking-note">🌡️ 15–23°C · 🌧️ 63% (5.9 mm) · 💨 23 km/h (raf. 60) · ⛈️ Risque d'orage</p>
             </div>
         </div>
     </details>
@@ -252,8 +254,8 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">💧</div>
     <div class="card-label">Humidité</div>
-    <div class="card-value">62 %</div>
-    <div class="card-sub">Point de rosée : 17.3 °C</div>
+    <div class="card-value">65 %</div>
+    <div class="card-sub">Point de rosée : 17.7 °C</div>
   </div>
   <div class="card">
     <div class="card-icon">📊</div>
@@ -263,8 +265,8 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <div class="card">
     <div class="card-icon">💨</div>
     <div class="card-label">Vent</div>
-    <div class="card-value">3 km/h</div>
-    <div class="card-sub">Rafale : 5 km/h · S</div>
+    <div class="card-value">0 km/h</div>
+    <div class="card-sub">Rafale : 0 km/h · SE</div>
   </div>
   <div class="card">
     <div class="card-icon">🌧</div>
@@ -332,10 +334,22 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <script data-goatcounter="https://mittelharth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 <script>
-const hourly   = [{"time": "2026-08-27 04:40", "temp": 18.4, "hum": 82.0, "pres": 1013.4, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-27 05:40", "temp": 18.0, "hum": 84.0, "pres": 1013.4, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-27 06:40", "temp": 17.2, "hum": 88.0, "pres": 1013.1, "rain": 0.0, "solar": 2.0}, {"time": "2026-08-27 07:40", "temp": 18.2, "hum": 84.0, "pres": 1013.8, "rain": 0.0, "solar": 23.4}, {"time": "2026-08-27 08:40", "temp": 21.1, "hum": 75.0, "pres": 1014.5, "rain": 0.0, "solar": 98.1}, {"time": "2026-08-27 09:40", "temp": 24.4, "hum": 63.0, "pres": 1014.2, "rain": 0.0, "solar": 251.8}, {"time": "2026-08-27 10:06", "temp": 25.0, "hum": 61.0, "pres": 1013.8, "rain": 0.0, "solar": 227.3}, {"time": "2026-08-27 10:40", "temp": 25.1, "hum": 63.0, "pres": 1013.8, "rain": 0.0, "solar": 302.7}, {"time": "2026-08-27 11:40", "temp": 27.8, "hum": 57.0, "pres": 1013.5, "rain": 0.0, "solar": 323.0}, {"time": "2026-08-27 12:40", "temp": 31.1, "hum": 48.0, "pres": 1013.1, "rain": 0.0, "solar": 360.3}, {"time": "2026-08-27 13:40", "temp": 30.7, "hum": 48.0, "pres": 1012.4, "rain": 0.0, "solar": 267.1}, {"time": "2026-08-27 14:40", "temp": 32.9, "hum": 43.0, "pres": 1012.2, "rain": 0.0, "solar": 253.7}, {"time": "2026-08-27 14:47", "temp": 32.8, "hum": 43.0, "pres": 1011.8, "rain": 0.0, "solar": 208.1}, {"time": "2026-08-27 14:55", "temp": 32.6, "hum": 45.0, "pres": 1011.9, "rain": 0.0, "solar": 276.0}, {"time": "2026-08-27 15:02", "temp": 32.7, "hum": 43.0, "pres": 1011.7, "rain": 0.0, "solar": 276.5}, {"time": "2026-08-27 15:40", "temp": 32.8, "hum": 44.0, "pres": 1011.5, "rain": 0.0, "solar": 249.5}, {"time": "2026-08-27 16:40", "temp": 34.2, "hum": 42.0, "pres": 1011.7, "rain": 0.0, "solar": 178.9}, {"time": "2026-08-27 17:40", "temp": 32.4, "hum": 45.0, "pres": 1011.6, "rain": 0.0, "solar": 87.7}, {"time": "2026-08-27 18:40", "temp": 30.6, "hum": 48.0, "pres": 1011.2, "rain": 0.0, "solar": 33.0}, {"time": "2026-08-27 19:40", "temp": 27.8, "hum": 64.0, "pres": 1010.7, "rain": 0.0, "solar": 3.0}, {"time": "2026-08-27 20:40", "temp": 26.5, "hum": 65.0, "pres": 1010.8, "rain": 0.0, "solar": 0.1}, {"time": "2026-08-27 21:40", "temp": 25.8, "hum": 63.0, "pres": 1010.2, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-27 22:40", "temp": 25.2, "hum": 63.0, "pres": 1010.4, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-27 23:40", "temp": 25.1, "hum": 62.0, "pres": 1010.6, "rain": 0.0, "solar": 0.0}];
-const forecast = [{"date": "2026-08-27", "max_t": 32.4, "min_t": 17.1, "rain": 0.0, "code": 3, "wind": 10.1}, {"date": "2026-08-28", "max_t": 26.0, "min_t": 18.5, "rain": 28.1, "code": 96, "wind": 14.5}, {"date": "2026-08-29", "max_t": 25.4, "min_t": 13.7, "rain": 1.28, "code": 61, "wind": 18.9}, {"date": "2026-08-30", "max_t": 26.4, "min_t": 15.7, "rain": 0.6, "code": 61, "wind": 14.2}, {"date": "2026-08-31", "max_t": 24.5, "min_t": 16.4, "rain": 6.6, "code": 61, "wind": 20.7}, {"date": "2026-09-01", "max_t": 25.2, "min_t": 13.4, "rain": 0.0, "code": 3, "wind": 4.6}, {"date": "2026-09-02", "max_t": 27.5, "min_t": 14.6, "rain": 0.0, "code": 3, "wind": 13.2}];
+const hourly   = [{"time": "2026-08-27 05:40", "temp": 18.0, "hum": 84.0, "pres": 1013.4, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-27 06:40", "temp": 17.2, "hum": 88.0, "pres": 1013.1, "rain": 0.0, "solar": 2.0}, {"time": "2026-08-27 07:40", "temp": 18.2, "hum": 84.0, "pres": 1013.8, "rain": 0.0, "solar": 23.4}, {"time": "2026-08-27 08:40", "temp": 21.1, "hum": 75.0, "pres": 1014.5, "rain": 0.0, "solar": 98.1}, {"time": "2026-08-27 09:40", "temp": 24.4, "hum": 63.0, "pres": 1014.2, "rain": 0.0, "solar": 251.8}, {"time": "2026-08-27 10:06", "temp": 25.0, "hum": 61.0, "pres": 1013.8, "rain": 0.0, "solar": 227.3}, {"time": "2026-08-27 10:40", "temp": 25.1, "hum": 63.0, "pres": 1013.8, "rain": 0.0, "solar": 302.7}, {"time": "2026-08-27 11:40", "temp": 27.8, "hum": 57.0, "pres": 1013.5, "rain": 0.0, "solar": 323.0}, {"time": "2026-08-27 12:40", "temp": 31.1, "hum": 48.0, "pres": 1013.1, "rain": 0.0, "solar": 360.3}, {"time": "2026-08-27 13:40", "temp": 30.7, "hum": 48.0, "pres": 1012.4, "rain": 0.0, "solar": 267.1}, {"time": "2026-08-27 14:40", "temp": 32.9, "hum": 43.0, "pres": 1012.2, "rain": 0.0, "solar": 253.7}, {"time": "2026-08-27 14:47", "temp": 32.8, "hum": 43.0, "pres": 1011.8, "rain": 0.0, "solar": 208.1}, {"time": "2026-08-27 14:55", "temp": 32.6, "hum": 45.0, "pres": 1011.9, "rain": 0.0, "solar": 276.0}, {"time": "2026-08-27 15:02", "temp": 32.7, "hum": 43.0, "pres": 1011.7, "rain": 0.0, "solar": 276.5}, {"time": "2026-08-27 15:40", "temp": 32.8, "hum": 44.0, "pres": 1011.5, "rain": 0.0, "solar": 249.5}, {"time": "2026-08-27 16:40", "temp": 34.2, "hum": 42.0, "pres": 1011.7, "rain": 0.0, "solar": 178.9}, {"time": "2026-08-27 17:40", "temp": 32.4, "hum": 45.0, "pres": 1011.6, "rain": 0.0, "solar": 87.7}, {"time": "2026-08-27 18:40", "temp": 30.6, "hum": 48.0, "pres": 1011.2, "rain": 0.0, "solar": 33.0}, {"time": "2026-08-27 19:40", "temp": 27.8, "hum": 64.0, "pres": 1010.7, "rain": 0.0, "solar": 3.0}, {"time": "2026-08-27 20:40", "temp": 26.5, "hum": 65.0, "pres": 1010.8, "rain": 0.0, "solar": 0.1}, {"time": "2026-08-27 21:40", "temp": 25.8, "hum": 63.0, "pres": 1010.2, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-27 22:40", "temp": 25.2, "hum": 63.0, "pres": 1010.4, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-27 23:40", "temp": 25.1, "hum": 62.0, "pres": 1010.6, "rain": 0.0, "solar": 0.0}, {"time": "2026-08-28 00:01", "temp": 24.7, "hum": 65.0, "pres": 1010.8, "rain": 0.0, "solar": 0.0}];
+const forecast = [{"date": "2026-08-28", "max_t": 26.0, "min_t": 18.5, "rain": 28.1, "code": 96, "wind": 14.5}, {"date": "2026-08-29", "max_t": 25.4, "min_t": 13.7, "rain": 0.43, "code": 61, "wind": 18.9}, {"date": "2026-08-30", "max_t": 25.8, "min_t": 16.6, "rain": 1.3, "code": 61, "wind": 14.0}, {"date": "2026-08-31", "max_t": 24.4, "min_t": 15.5, "rain": 0.0, "code": 3, "wind": 20.5}, {"date": "2026-09-01", "max_t": 24.7, "min_t": 11.4, "rain": 0.0, "code": 3, "wind": 5.1}, {"date": "2026-09-02", "max_t": 27.5, "min_t": 14.6, "rain": 0.0, "code": 3, "wind": 13.2}, {"date": "2026-09-03", "max_t": 25.4, "min_t": 15.7, "rain": 0.0, "code": 3, "wind": 22.7}];
 const WMO      = {"0": "\u2600\ufe0f", "1": "\ud83c\udf24\ufe0f", "2": "\u26c5", "3": "\u2601\ufe0f", "45": "\ud83c\udf2b\ufe0f", "48": "\ud83c\udf2b\ufe0f", "51": "\ud83c\udf26\ufe0f", "53": "\ud83c\udf26\ufe0f", "55": "\ud83c\udf26\ufe0f", "56": "\ud83c\udf27\ufe0f", "57": "\ud83c\udf27\ufe0f", "61": "\ud83c\udf26\ufe0f", "63": "\ud83c\udf27\ufe0f", "65": "\ud83c\udf27\ufe0f", "66": "\ud83c\udf28\ufe0f", "67": "\ud83c\udf28\ufe0f", "71": "\ud83c\udf28\ufe0f", "73": "\ud83c\udf28\ufe0f", "75": "\u2744\ufe0f", "77": "\u2744\ufe0f", "80": "\ud83c\udf26\ufe0f", "81": "\ud83c\udf27\ufe0f", "82": "\u26c8\ufe0f", "85": "\ud83c\udf28\ufe0f", "86": "\u2744\ufe0f", "95": "\u26c8\ufe0f", "96": "\u26c8\ufe0f", "99": "\u26c8\ufe0f"};
 const JOURS    = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+
+// ── Horloge en direct (header) ────────────────────────────────────────────────
+function updateLiveClock() {
+  const el = document.getElementById('liveClock');
+  if (!el) return;
+  const now = new Date().toLocaleTimeString('fr-FR', {
+    timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+  el.textContent = now;
+}
+updateLiveClock();
+setInterval(updateLiveClock, 1000);
 
 // ── Mode sombre / clair (bouton + mémorisation) ───────────────────────────────
 (function() {
