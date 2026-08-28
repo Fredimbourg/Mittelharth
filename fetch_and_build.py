@@ -951,7 +951,8 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .hero-top{{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem}}
 .hero-icon{{font-size:64px;line-height:1;flex-shrink:0}}
 .hero-main{{flex:1;min-width:160px}}
-.hero-temp{{font-size:52px;font-weight:300;line-height:1;margin-bottom:4px}}
+.hero-temp{{font-size:52px;font-weight:300;line-height:1;margin-bottom:4px;display:flex;align-items:baseline;gap:14px}}
+.hero-rain-today{{font-size:24px;font-weight:600;color:var(--text-secondary);display:flex;align-items:center;gap:6px}}
 .hero-cond{{font-size:16px;color:var(--text-secondary);margin-bottom:8px}}
 .hero-trend{{font-size:13px;color:var(--text-muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap}}
 .trend-up{{color:#d85a30}} .trend-down{{color:#2a78d6}} .trend-stable{{color:var(--text-muted)}}
@@ -1040,7 +1041,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <div class="hero-top">
     <div class="hero-icon">{icon}</div>
     <div class="hero-main">
-      <div class="hero-temp">{val(live['temp'])} °C</div>
+      <div class="hero-temp">{val(live['temp'])} °C <span class="hero-rain-today">🌧 {val(live['rain_daily'],' mm')}</span></div>
       <div class="hero-cond">{condition} · Ressenti {val(live['temp_feels'])} °C</div>
       <div class="hero-trend">
         <span class="trend-{'up' if arrow == '↑' else 'down' if arrow == '↓' else 'stable'}">{arrow}</span>
