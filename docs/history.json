@@ -9294,15 +9294,15 @@
     "month": 8,
     "day": 28,
     "year": 2026,
-    "avg": 21.1,
-    "hi": 22.3,
+    "avg": 22.4,
+    "hi": 22.4,
     "lo": 19.7,
-    "hum": 93.0,
+    "hum": 87.0,
     "rain": 5.8,
     "rain_rate_max": 0,
-    "solar": 134.6,
-    "pres": 1012.8,
-    "wind": 2.5,
-    "wind_gust": 3.6
+    "solar": 170.8,
+    "pres": 1013.6,
+    "wind": 0.7,
+    "wind_gust": 1.8
   }
 }
