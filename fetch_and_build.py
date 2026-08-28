@@ -751,26 +751,6 @@ def next_rain_forecast(hourly_fc, now, threshold=50):
             return f"Pluie prévue {_JOURS_ABBR_FR[dt.weekday()]} à {dt.strftime('%Hh%M')}"
     return "Pas de pluie prévue"
 
-# ── Phase de lune (calcul astronomique simplifié, sans API) ──────────────────
-def moon_phase(date=None):
-    """
-    Retourne (nom_phase, emoji) pour la date donnée (aujourd'hui par défaut),
-    calculé à partir d'une nouvelle lune de référence (06/01/2000) et de la
-    durée moyenne du cycle synodique (29,530588861 jours). Précision largement
-    suffisante pour un affichage grand public (± quelques heures).
-    """
-    if date is None:
-        date = datetime.date.today()
-    synodic = 29.530588861
-    ref_new_moon = datetime.date(2000, 1, 6)
-    days = (date - ref_new_moon).days
-    position = (days % synodic) / synodic
-    names  = ["Nouvelle Lune", "Premier Croissant", "Premier Quartier", "Lune Gibbeuse Croissante",
-              "Pleine Lune", "Lune Gibbeuse Décroissante", "Dernier Quartier", "Dernier Croissant"]
-    emojis = ["🌑", "🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘"]
-    idx = int(position * 8 + 0.5) % 8
-    return names[idx], emojis[idx]
-
 # ── 5. Génération HTML ────────────────────────────────────────────────────────
 def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_html=""):
     def val(v, unit="", dec=1):
@@ -1080,7 +1060,6 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <a href="index.html" class="active">⚡ En direct</a>
   <a href="dashboard.html">📊 Historique</a>
   <a href="climate.html">🌍 Climatologie</a>
-  <a href="station.html">🏠 Vue station</a>
 </nav>
 
 <!-- Hero -->
@@ -1479,7 +1458,6 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <a href="index.html">⚡ En direct</a>
   <a href="dashboard.html" class="active">📊 Historique</a>
   <a href="climate.html">🌍 Climatologie</a>
-  <a href="station.html">🏠 Vue station</a>
 </nav>
 
 <div class="kpi-grid">
@@ -1933,7 +1911,6 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <a href="index.html">⚡ En direct</a>
   <a href="dashboard.html">📊 Historique</a>
   <a href="climate.html" class="active">🌍 Climatologie</a>
-  <a href="station.html">🏠 Vue station</a>
 </nav>
 <div class="section">
   <div class="section-title" id="table-title">Moyennes mensuelles</div>
@@ -1993,287 +1970,6 @@ loadYear(YEARS[YEARS.length-1]);
     Path("docs/climate.html").write_text(html, encoding="utf-8")
     print("  → climate.html généré")
 
-# ── 5b. Vue station (widget compact façon écran d'accueil) ───────────────────
-def build_station(live, hourly, forecast, hourly_fc=None, records=None):
-    """
-    Génère docs/station.html : une vue compacte façon widget météo
-    (température actuelle + ressenti + min/max, phase de lune, vent,
-    humidité, pluie, lever/coucher du soleil, prévisions 6 jours,
-    et un bandeau des prochaines heures).
-    """
-    def val(v, unit="", dec=1):
-        if v is None: return "—"
-        return f"{v:.{dec}f}{unit}"
-
-    def wind_dir_str(deg):
-        if deg is None: return "—"
-        dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"]
-        return dirs[round(deg/22.5) % 16]
-
-    def weather_icon(solar, rain_rate, hum, temp):
-        if solar is None: solar = 0
-        if rain_rate is None: rain_rate = 0
-        if hum is None: hum = 50
-        if temp is None: temp = 15
-        if rain_rate > 2:   return "🌧️", "Pluie"
-        if rain_rate > 0.1: return "🌦️", "Averses"
-        if solar > 500:     return "☀️", "Ensoleillé"
-        if solar > 200:     return "⛅", "Partiellement nuageux"
-        if solar > 50:      return "🌤️", "Peu nuageux"
-        if hum > 90:        return "🌫️", "Brouillard"
-        if temp < 0:        return "❄️", "Gel"
-        return "☁️", "Nuageux"
-
-    sunrise, sunset, _ = sun_times()
-    moon_name, moon_emoji = moon_phase()
-    icon, condition = weather_icon(live.get("solar"), live.get("rain_rate"), live.get("hum"), live.get("temp"))
-
-    today_str = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%Y-%m-%d")
-    today_temps = [h["temp"] for h in hourly if h.get("temp") is not None and h.get("time","").startswith(today_str)]
-    if not today_temps:
-        today_temps = [h["temp"] for h in hourly if h.get("temp") is not None]
-    today_max = f"{max(today_temps):.0f}°" if today_temps else "—"
-    today_min = f"{min(today_temps):.0f}°" if today_temps else "—"
-
-    rain_today = val(live.get('rain_daily'), ' mm')
-    rain_rate  = val(live.get('rain_rate'), ' mm/h')
-
-    wmo_icons = {
-        0:"☀️",1:"🌤️",2:"⛅",3:"☁️",45:"🌫️",48:"🌫️",
-        51:"🌦️",53:"🌦️",55:"🌦️",56:"🌧️",57:"🌧️",
-        61:"🌦️",63:"🌧️",65:"🌧️",66:"🌨️",67:"🌨️",
-        71:"🌨️",73:"🌨️",75:"❄️",77:"❄️",
-        80:"🌦️",81:"🌧️",82:"⛈️",85:"🌨️",86:"❄️",
-        95:"⛈️",96:"⛈️",99:"⛈️",
-    }
-    wmo_js = json.dumps(wmo_icons)
-    jours = ["Dim","Lun","Mar","Mer","Jeu","Ven","Sam"]
-
-    forecast_js = json.dumps(forecast[1:7])  # 6 prochains jours (aujourd'hui déjà affiché dans la carte principale)
-    hourly_forecast_js = json.dumps((hourly_fc or [])[:24])
-
-    html = f"""<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="3600">
-<title>Vue station · Météo Colmar-Mittelharth</title>
-<style>
-*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
-:root{{
-  --bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;
-  --text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;
-  --border:rgba(11,11,11,.10);--radius:8px;
-  --accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3);
-}}
-@media(prefers-color-scheme:dark){{
-  :root{{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;
-    --text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;
-    --border:rgba(255,255,255,.10);
-    --accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4);}}
-}}
-html[data-theme="dark"]{{
-  --bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;
-  --text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;
-  --border:rgba(255,255,255,.10);
-  --accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4);
-}}
-html[data-theme="light"]{{
-  --bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;
-  --text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;
-  --border:rgba(11,11,11,.10);--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3);
-}}
-.theme-toggle{{background:var(--surface-muted);border:0.5px solid var(--border);border-radius:99px;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}}
-body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem;min-height:100vh}}
-.container{{max-width:920px;margin:0 auto}}
-nav{{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}}
-nav a{{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}}
-nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}}
-
-.widget{{background:var(--surface);border-radius:16px;border:0.5px solid var(--border);overflow:hidden;margin-bottom:1.5rem}}
-.widget-header{{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.5rem;background:var(--surface-muted);border-bottom:0.5px solid var(--border);flex-wrap:wrap;gap:10px}}
-.widget-city{{font-size:19px;font-weight:600}}
-.widget-city-sub{{font-size:12px;color:var(--text-muted);margin-top:2px}}
-.widget-clock{{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}}
-.widget-date{{font-size:14px;color:var(--text-muted);text-align:right}}
-
-.widget-body{{display:flex;gap:1rem;padding:1.25rem;flex-wrap:wrap}}
-.station-main-card{{flex:1 1 260px;background:var(--surface-muted);border-radius:var(--radius);border:0.5px solid var(--border);padding:1.25rem}}
-.station-icon{{font-size:48px;line-height:1;margin-bottom:6px}}
-.station-temp-row{{display:flex;align-items:baseline;gap:4px}}
-.station-temp{{font-size:44px;font-weight:300;line-height:1}}
-.station-feels{{font-size:14px;color:var(--text-muted);margin:4px 0 2px}}
-.station-cond{{font-size:16px;color:var(--text-secondary);margin-bottom:10px}}
-.station-hilo{{font-size:14px;color:var(--text-secondary);margin-bottom:12px}}
-.station-hilo b{{color:var(--text)}}
-.station-info{{display:flex;flex-direction:column;gap:8px;border-top:0.5px solid var(--border);padding-top:12px}}
-.station-info-row{{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-secondary)}}
-.station-info-row b{{color:var(--text);font-weight:600}}
-.station-info-row .muted{{color:var(--text-muted);font-size:12px}}
-
-.station-forecast{{flex:2 1 380px;display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px}}
-.sf-day{{background:var(--surface-muted);border-radius:var(--radius);border:0.5px solid var(--border);text-align:center;padding:14px 6px}}
-.sf-day-name{{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:8px}}
-.sf-icon{{font-size:28px;margin-bottom:8px;line-height:1}}
-.sf-max{{font-size:16px;font-weight:700;color:#d85a30}}
-.sf-min{{font-size:14px;color:#2a78d6;margin-top:2px}}
-.sf-rain{{font-size:12px;color:var(--text-muted);margin-top:6px}}
-
-.station-hourly{{padding:0 1.25rem 1.25rem}}
-.station-hourly-title{{font-size:13px;color:var(--text-muted);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}}
-.station-hourly-scroll{{display:flex;gap:2px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}}
-.sh-cell{{flex:0 0 auto;min-width:36px;text-align:center;padding:8px 2px;border-radius:6px}}
-.sh-cell.tick{{background:var(--surface-muted)}}
-.sh-time{{font-size:10px;color:var(--text-muted);margin-bottom:4px;min-height:12px}}
-.sh-rain{{font-size:10px;color:var(--accent);font-weight:600;min-height:12px}}
-
-@media(max-width:600px){{
-  .widget-header{{flex-direction:column;align-items:flex-start}}
-  .widget-date{{text-align:left}}
-}}
-</style>
-</head>
-<body>
-<div class="container">
-
-<nav>
-  <a href="index.html">⚡ En direct</a>
-  <a href="dashboard.html">📊 Historique</a>
-  <a href="climate.html">🌍 Climatologie</a>
-  <a href="station.html" class="active">🏠 Vue station</a>
-</nav>
-
-<div class="widget">
-  <div class="widget-header">
-    <div>
-      <div class="widget-city">Colmar</div>
-      <div class="widget-city-sub">Colmar, Grand-Est, FR</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:14px">
-      <div>
-        <div class="widget-clock" id="stationClock">--:--</div>
-      </div>
-      <div class="widget-date" id="stationDate">—</div>
-      <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
-    </div>
-  </div>
-
-  <div class="widget-body">
-    <div class="station-main-card">
-      <div class="station-icon">{icon}</div>
-      <div class="station-temp-row">
-        <span class="station-temp">{val(live.get('temp'),'',0)}°</span>
-      </div>
-      <div class="station-feels">(Ressenti {val(live.get('temp_feels'),'',0)}°)</div>
-      <div class="station-cond">{condition}</div>
-      <div class="station-hilo">H <b>{today_max}</b> &nbsp; B <b>{today_min}</b></div>
-      <div class="station-info">
-        <div class="station-info-row"><span>{moon_emoji}</span><b>{moon_name}</b></div>
-        <div class="station-info-row"><span>💨</span><b>{val(live.get('wind_speed'),' km/h',0)}</b> <span class="muted">{wind_dir_str(live.get('wind_dir'))}</span></div>
-        <div class="station-info-row"><span>💧</span><b>{val(live.get('hum'),' %',0)}</b></div>
-        <div class="station-info-row"><span>🌧</span><b>{rain_today}</b> <span class="muted">· {rain_rate}</span></div>
-        <div class="station-info-row"><span>🌅</span><b>{sunrise or '—'}</b></div>
-        <div class="station-info-row"><span>🌇</span><b>{sunset or '—'}</b></div>
-      </div>
-    </div>
-
-    <div class="station-forecast" id="stationForecastGrid"></div>
-  </div>
-
-  <div class="station-hourly">
-    <div class="station-hourly-title">🕐 Prochaines heures</div>
-    <div class="station-hourly-scroll" id="stationHourlyScroll"></div>
-  </div>
-</div>
-
-<footer style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--border)">
-  Station météo personnelle · Colmar-Mittelharth · Alsace
-</footer>
-</div>
-
-<script>
-const WMO = {wmo_js};
-const JOURS = {json.dumps(jours)};
-const forecast6 = {forecast_js};
-const hourlyForecast = {hourly_forecast_js};
-
-// Horloge + date
-function updateStationClock() {{
-  const now = new Date();
-  const clockEl = document.getElementById('stationClock');
-  const dateEl  = document.getElementById('stationDate');
-  if (clockEl) clockEl.textContent = now.toLocaleTimeString('fr-FR', {{timeZone:'Europe/Paris', hour:'2-digit', minute:'2-digit'}});
-  if (dateEl)  dateEl.textContent  = now.toLocaleDateString('fr-FR', {{timeZone:'Europe/Paris', weekday:'long', day:'2-digit', month:'long'}});
-}}
-updateStationClock();
-setInterval(updateStationClock, 1000);
-
-// Thème (partagé avec les autres pages du site)
-(function() {{
-  const stored = localStorage.getItem('mittelharth-theme');
-  if (stored) document.documentElement.setAttribute('data-theme', stored);
-  const btn = document.getElementById('themeToggle');
-  function isDark() {{
-    const attr = document.documentElement.getAttribute('data-theme');
-    if (attr) return attr === 'dark';
-    return window.matchMedia('(prefers-color-scheme:dark)').matches;
-  }}
-  function updateBtn() {{ btn.textContent = isDark() ? '☀️' : '🌙'; }}
-  updateBtn();
-  btn.addEventListener('click', () => {{
-    const next = isDark() ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('mittelharth-theme', next);
-    updateBtn();
-  }});
-}})();
-
-// Prévisions 6 jours
-(function() {{
-  const grid = document.getElementById('stationForecastGrid');
-  forecast6.forEach(day => {{
-    const dt = new Date(day.date + 'T12:00:00');
-    const nom = JOURS[dt.getDay()];
-    const icon = WMO[String(day.code)] || '🌡';
-    const div = document.createElement('div');
-    div.className = 'sf-day';
-    div.innerHTML = `
-      <div class="sf-day-name">${{nom}}</div>
-      <div class="sf-icon">${{icon}}</div>
-      <div class="sf-max">${{day.max_t !== null ? Math.round(day.max_t) + '°' : '—'}}</div>
-      <div class="sf-min">${{day.min_t !== null ? Math.round(day.min_t) + '°' : '—'}}</div>
-      <div class="sf-rain">${{day.rain !== null && day.rain > 0 ? Math.round(day.rain*10)/10 + ' mm' : ''}}</div>
-    `;
-    grid.appendChild(div);
-  }});
-}})();
-
-// Bandeau des prochaines heures (compact)
-(function() {{
-  const container = document.getElementById('stationHourlyScroll');
-  if (!container || !hourlyForecast.length) return;
-  const nowParis = new Date(new Date().toLocaleString('en-US', {{timeZone:'Europe/Paris'}}));
-  const upcoming = hourlyForecast
-    .map(h => ({{...h, dt: new Date(h.time)}}))
-    .filter(h => !isNaN(h.dt) && h.dt >= new Date(nowParis.getFullYear(), nowParis.getMonth(), nowParis.getDate(), nowParis.getHours()))
-    .slice(0, 24);
-  upcoming.forEach((h, i) => {{
-    const div = document.createElement('div');
-    const showLabel = i % 3 === 0;
-    div.className = 'sh-cell' + (showLabel ? ' tick' : '');
-    const label = showLabel ? h.dt.toLocaleTimeString('fr-FR', {{timeZone:'Europe/Paris', hour:'2-digit'}}).replace(':00','h').replace(' ','') : '';
-    const rain = h.rain_proba !== null && h.rain_proba !== undefined && h.rain_proba >= 20 ? h.rain_proba + '%' : '';
-    div.innerHTML = `<div class="sh-time">${{label}}</div><div class="sh-rain">${{rain}}</div>`;
-    container.appendChild(div);
-  }});
-}})();
-</script>
-</body>
-</html>"""
-    Path("docs/station.html").write_text(html, encoding="utf-8")
-    print("  → station.html généré")
-
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     Path("docs").mkdir(exist_ok=True)
@@ -2290,7 +1986,6 @@ if __name__ == "__main__":
     records = get_records(hist_dict)
 
     build_index(live, hourly, forecast, hourly_fc, records, hiking_html)
-    build_station(live, hourly, forecast, hourly_fc, records)
 
     years, data_by_year = aggregate_by_year(hist_dict)
     build_dashboard(years, data_by_year)
