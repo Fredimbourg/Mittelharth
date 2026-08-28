@@ -9294,14 +9294,14 @@
     "month": 8,
     "day": 28,
     "year": 2026,
-    "avg": 20.8,
+    "avg": 20.6,
     "hi": 28.2,
     "lo": 19.7,
-    "hum": 55.0,
+    "hum": 56.0,
     "rain": 5.8,
     "rain_rate_max": 0,
     "solar": 0.0,
-    "pres": 1017.6,
+    "pres": 1017.4,
     "wind": 0.0,
     "wind_gust": 0.0
   }
