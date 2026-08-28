@@ -862,6 +862,7 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
 
     # Prévisions JS
     forecast_js = json.dumps(forecast)
+    hourly_forecast_js = json.dumps(hourly_fc or [])
 
     # Codes météo WMO → icône
     wmo_icons = {
@@ -981,6 +982,19 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .card-value{{font-size:24px;font-weight:500;line-height:1}}
 .card-sub{{font-size:12px;color:var(--text-muted);margin-top:4px}}
 
+/* Prévisions horaires (24h) */
+.hourly-forecast{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
+.hourly-forecast-title{{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem}}
+.hourly-scroll{{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}}
+.hourly-scroll::-webkit-scrollbar{{height:6px}}
+.hourly-scroll::-webkit-scrollbar-thumb{{background:var(--border);border-radius:99px}}
+.hourly-item{{flex:0 0 auto;min-width:64px;text-align:center;padding:12px 8px;border-radius:var(--radius);background:var(--surface-muted)}}
+.hourly-item.now{{background:var(--accent-bg);border:0.5px solid var(--accent-border)}}
+.hourly-hour{{font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:6px}}
+.hourly-icon{{font-size:24px;margin:4px 0;line-height:1}}
+.hourly-temp{{font-size:15px;font-weight:600}}
+.hourly-rain{{font-size:11px;color:var(--accent);margin-top:4px;font-weight:500}}
+
 /* Prévisions */
 .forecast{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
 .forecast-title{{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem}}
@@ -1065,6 +1079,12 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     </div>
     {hero_alerts_html}
   </div>
+</div>
+
+<!-- Prévisions heure par heure (24h) -->
+<div class="hourly-forecast">
+  <div class="hourly-forecast-title">Prévisions heure par heure</div>
+  <div class="hourly-scroll" id="hourlyForecastScroll"></div>
 </div>
 
 <!-- Prévisions 7 jours -->
@@ -1174,6 +1194,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
 <script>
 const hourly   = {hourly_js};
 const forecast = {forecast_js};
+const hourlyForecast = {hourly_forecast_js};
 const WMO      = {wmo_js};
 const JOURS    = {json.dumps(jours)};
 
@@ -1270,6 +1291,36 @@ if (hourly.length > 0) {{
     }}
   }});
 }}
+
+// ── Prévisions heure par heure (24h) ─────────────────────────────────────────
+(function() {{
+  const container = document.getElementById('hourlyForecastScroll');
+  if (!container || !hourlyForecast.length) return;
+
+  const nowParis = new Date(new Date().toLocaleString('en-US', {{timeZone:'Europe/Paris'}}));
+
+  // Ne garder que les heures à venir (>= heure actuelle, arrondie), sur 24h
+  const upcoming = hourlyForecast
+    .map(h => ({{...h, dt: new Date(h.time)}}))
+    .filter(h => !isNaN(h.dt) && h.dt >= new Date(nowParis.getFullYear(), nowParis.getMonth(), nowParis.getDate(), nowParis.getHours()))
+    .slice(0, 24);
+
+  upcoming.forEach((h, i) => {{
+    const div = document.createElement('div');
+    div.className = 'hourly-item' + (i === 0 ? ' now' : '');
+    const label = i === 0 ? 'Maint.' : h.dt.toLocaleTimeString('fr-FR', {{timeZone:'Europe/Paris', hour:'2-digit'}}).replace(':00','h').replace(' ','');
+    const icon = WMO[String(h.code)] || '🌡';
+    const temp = h.temp !== null && h.temp !== undefined ? Math.round(h.temp) + '°' : '—';
+    const rain = h.rain_proba !== null && h.rain_proba !== undefined && h.rain_proba >= 20 ? '💧' + h.rain_proba + '%' : '';
+    div.innerHTML = `
+      <div class="hourly-hour">${{label}}</div>
+      <div class="hourly-icon">${{icon}}</div>
+      <div class="hourly-temp">${{temp}}</div>
+      <div class="hourly-rain">${{rain}}</div>
+    `;
+    container.appendChild(div);
+  }});
+}})();
 
 // ── Prévisions ────────────────────────────────────────────────────────────────
 const fg = document.getElementById('forecastGrid');
