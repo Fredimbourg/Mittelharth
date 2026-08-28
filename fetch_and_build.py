@@ -1036,7 +1036,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <p>Station personnelle · Colmar (68) · Alsace</p>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <span class="live-clock" id="liveClock">--:--:--</span>
+    <span class="live-clock" id="liveClock">--:-- · --/--</span>
     <span class="updated">Mis à jour : {live['updated_at']}</span>
     <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
   </div>
@@ -1181,10 +1181,14 @@ const JOURS    = {json.dumps(jours)};
 function updateLiveClock() {{
   const el = document.getElementById('liveClock');
   if (!el) return;
-  const now = new Date().toLocaleTimeString('fr-FR', {{
-    timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', second: '2-digit'
+  const now = new Date();
+  const time = now.toLocaleTimeString('fr-FR', {{
+    timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit'
   }});
-  el.textContent = now;
+  const date = now.toLocaleDateString('fr-FR', {{
+    timeZone: 'Europe/Paris', day: '2-digit', month: 'long'
+  }});
+  el.textContent = `${{time}} · ${{date}}`;
 }}
 updateLiveClock();
 setInterval(updateLiveClock, 1000);
