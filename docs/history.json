@@ -8725,8 +8725,8 @@
     "hum": 82.0,
     "rain": 0.0,
     "solar": 0.0,
-    "pres": 1011.9,
-    "wind": 2.5,
-    "wind_gust": 3.6
+    "pres": 1011.5,
+    "wind": 0.0,
+    "wind_gust": 0.0
   }
 }
