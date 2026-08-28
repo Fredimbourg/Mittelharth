@@ -272,12 +272,14 @@ def get_records(hist_dict):
         "max_t": {"val": None, "date": None},
         "min_t": {"val": None, "date": None},
         "max_rain": {"val": None, "date": None},
+        "max_rain_rate": {"val": None, "date": None},
         "max_wind": {"val": None, "date": None},
     }
     for date_str, d in hist_dict.items():
         hi = d.get("hi")
         lo = d.get("lo")
         rain = d.get("rain")
+        rain_rate = d.get("rain_rate_max")
         wind = d.get("wind")
         if hi is not None and (records["max_t"]["val"] is None or hi > records["max_t"]["val"]):
             records["max_t"] = {"val": hi, "date": date_str}
@@ -285,6 +287,8 @@ def get_records(hist_dict):
             records["min_t"] = {"val": lo, "date": date_str}
         if rain is not None and (records["max_rain"]["val"] is None or rain > records["max_rain"]["val"]):
             records["max_rain"] = {"val": rain, "date": date_str}
+        if rain_rate is not None and (records["max_rain_rate"]["val"] is None or rain_rate > records["max_rain_rate"]["val"]):
+            records["max_rain_rate"] = {"val": rain_rate, "date": date_str}
         gust = d.get("wind_gust") or d.get("wind")
         if gust is not None and (records["max_wind"]["val"] is None or gust > records["max_wind"]["val"]):
             records["max_wind"] = {"val": gust, "date": date_str}
@@ -310,6 +314,7 @@ def update_history(live):
     # Données d'aujourd'hui depuis l'API temps réel
     t = live.get("temp")
     existing = hist.get(today, {})
+    rain_rate_now = live.get("rain_rate")
     hist[today] = {
         "date":  today,
         "month": int(today[5:7]),
@@ -320,6 +325,7 @@ def update_history(live):
         "lo":    min(existing.get("lo") or t or 0, t or 0) if t else existing.get("lo"),
         "hum":   live.get("hum"),
         "rain":      live.get("rain_daily"),
+        "rain_rate_max": max(existing.get("rain_rate_max") or 0, rain_rate_now or 0),
         "solar":     live.get("solar"),
         "pres":      live.get("pressure"),
         "wind":      live.get("wind_speed"),
@@ -767,6 +773,7 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
     rec_max_t, rec_max_t_date = rec_fmt("max_t", " °C")
     rec_min_t, rec_min_t_date = rec_fmt("min_t", " °C")
     rec_rain,  rec_rain_date  = rec_fmt("max_rain", " mm")
+    rec_rain_rate, rec_rain_rate_date = rec_fmt("max_rain_rate", " mm/h")
     rec_wind,  rec_wind_date  = rec_fmt("max_wind", " km/h")
 
     # Pluie prévue aujourd'hui (cumul journalier Open-Meteo)
@@ -1138,6 +1145,11 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
       <div class="detail-label">Pluie max (jour)</div>
       <div class="detail-value" style="color:#1baf7a">{rec_rain}</div>
       <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{rec_rain_date}</div>
+    </div>
+    <div class="detail-item" style="border-left:3px solid #2a78d6">
+      <div class="detail-label">Averse la plus intense</div>
+      <div class="detail-value" style="color:#2a78d6">{rec_rain_rate}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{rec_rain_rate_date}</div>
     </div>
     <div class="detail-item" style="border-left:3px solid #eda100">
       <div class="detail-label">Rafale max</div>
