@@ -1053,7 +1053,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   <div class="hero-top">
     <div class="hero-icon">{icon}</div>
     <div class="hero-main">
-      <div class="hero-temp">{val(live['temp'])} °C <span class="hero-rain-today">🌧 {val(live['rain_daily'],' mm')}</span></div>
+      <div class="hero-temp">{val(live['temp'])} °C <span class="hero-rain-today">🌧 {val(live['rain_daily'],' mm')}</span> <span class="hero-rain-today">☀️ UV {val(live['uvi'],'',0)}</span></div>
       <div class="hero-cond">{condition} · Ressenti {val(live['temp_feels'])} °C</div>
       <div class="hero-trend">
         <span class="trend-{'up' if arrow == '↑' else 'down' if arrow == '↓' else 'stable'}">{arrow}</span>
