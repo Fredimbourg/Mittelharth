@@ -311,6 +311,10 @@ def update_history(live):
     for date_str, d in excel.items():
         if date_str not in hist:
             hist[date_str] = d
+        elif hist[date_str].get("rain_rate_max") is None and d.get("rain_rate_max") is not None:
+            # Complète les jours déjà présents avec ce champ ajouté après coup,
+            # sans toucher au reste de leurs données déjà enregistrées.
+            hist[date_str]["rain_rate_max"] = d["rain_rate_max"]
 
     # Données d'aujourd'hui depuis l'API temps réel
     t = live.get("temp")
