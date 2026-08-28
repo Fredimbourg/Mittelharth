@@ -9297,12 +9297,12 @@
     "avg": 28.0,
     "hi": 28.0,
     "lo": 19.7,
-    "hum": 44.0,
+    "hum": 39.0,
     "rain": 5.8,
     "rain_rate_max": 0,
-    "solar": 122.1,
-    "pres": 1013.9,
-    "wind": 4.3,
-    "wind_gust": 7.2
+    "solar": 356.6,
+    "pres": 1014.0,
+    "wind": 4.0,
+    "wind_gust": 5.4
   }
 }
