@@ -207,6 +207,7 @@ def read_excel_files():
                     "pres":      fv(row[32]),
                     "wind":      fv(row[28]),
                     "wind_gust": fv(row[29]),
+                    "rain_rate_max": fv(row[20]),
                 }
                 count += 1
             print(f"     {count} jours lus")
