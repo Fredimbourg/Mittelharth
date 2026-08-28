@@ -12,7 +12,8 @@
     "solar": 117.0,
     "pres": 1014.2,
     "wind": 0.2,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-01-02": {
     "date": "2026-01-02",
@@ -27,7 +28,8 @@
     "solar": 133.5,
     "pres": 1007.0,
     "wind": 1.5,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 1.8
   },
   "2026-01-03": {
     "date": "2026-01-03",
@@ -42,7 +44,8 @@
     "solar": 113.8,
     "pres": 1010.2,
     "wind": 0.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-01-04": {
     "date": "2026-01-04",
@@ -57,7 +60,8 @@
     "solar": 129.7,
     "pres": 1014.1,
     "wind": 0.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.2
   },
   "2026-01-05": {
     "date": "2026-01-05",
@@ -72,7 +76,8 @@
     "solar": 128.4,
     "pres": 1015.2,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-06": {
     "date": "2026-01-06",
@@ -87,7 +92,8 @@
     "solar": 120.8,
     "pres": 1017.9,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-07": {
     "date": "2026-01-07",
@@ -102,7 +108,8 @@
     "solar": 139.5,
     "pres": 1015.2,
     "wind": 0.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-01-08": {
     "date": "2026-01-08",
@@ -117,7 +124,8 @@
     "solar": 133.6,
     "pres": 1009.0,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.6
   },
   "2026-01-09": {
     "date": "2026-01-09",
@@ -132,7 +140,8 @@
     "solar": 213.4,
     "pres": 998.5,
     "wind": 3.3,
-    "wind_gust": 25.6
+    "wind_gust": 25.6,
+    "rain_rate_max": 4.8
   },
   "2026-01-10": {
     "date": "2026-01-10",
@@ -147,7 +156,8 @@
     "solar": 72.8,
     "pres": 1009.3,
     "wind": 1.1,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 1.8
   },
   "2026-01-11": {
     "date": "2026-01-11",
@@ -162,7 +172,8 @@
     "solar": 106.5,
     "pres": 1024.5,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.8
   },
   "2026-01-12": {
     "date": "2026-01-12",
@@ -177,7 +188,8 @@
     "solar": 141.9,
     "pres": 1017.3,
     "wind": 1.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 1.2
   },
   "2026-01-13": {
     "date": "2026-01-13",
@@ -192,7 +204,8 @@
     "solar": 167.9,
     "pres": 1015.2,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-14": {
     "date": "2026-01-14",
@@ -207,7 +220,8 @@
     "solar": 138.4,
     "pres": 1017.4,
     "wind": 0.4,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-15": {
     "date": "2026-01-15",
@@ -222,7 +236,8 @@
     "solar": 143.1,
     "pres": 1015.4,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-01-16": {
     "date": "2026-01-16",
@@ -237,7 +252,8 @@
     "solar": 154.8,
     "pres": 1016.2,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-17": {
     "date": "2026-01-17",
@@ -252,7 +268,8 @@
     "solar": 132.7,
     "pres": 1019.3,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-01-18": {
     "date": "2026-01-18",
@@ -267,7 +284,8 @@
     "solar": 38.5,
     "pres": 1020.7,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-19": {
     "date": "2026-01-19",
@@ -282,7 +300,8 @@
     "solar": 77.9,
     "pres": 1020.5,
     "wind": 0.2,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2026-01-20": {
     "date": "2026-01-20",
@@ -297,7 +316,8 @@
     "solar": 129.3,
     "pres": 1018.9,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-21": {
     "date": "2026-01-21",
@@ -312,7 +332,8 @@
     "solar": 78.4,
     "pres": 1006.9,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-22": {
     "date": "2026-01-22",
@@ -327,7 +348,8 @@
     "solar": 123.6,
     "pres": 999.6,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2026-01-23": {
     "date": "2026-01-23",
@@ -342,7 +364,8 @@
     "solar": 105.5,
     "pres": 998.5,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 1.8
   },
   "2026-01-24": {
     "date": "2026-01-24",
@@ -357,7 +380,8 @@
     "solar": 179.9,
     "pres": 1002.1,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.8
   },
   "2026-01-25": {
     "date": "2026-01-25",
@@ -372,7 +396,8 @@
     "solar": 110.8,
     "pres": 999.4,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 4.8
   },
   "2026-01-26": {
     "date": "2026-01-26",
@@ -387,7 +412,8 @@
     "solar": 98.8,
     "pres": 1002.9,
     "wind": 0.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-01-27": {
     "date": "2026-01-27",
@@ -402,7 +428,8 @@
     "solar": 131.9,
     "pres": 999.0,
     "wind": 0.2,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2026-01-28": {
     "date": "2026-01-28",
@@ -417,7 +444,8 @@
     "solar": 36.3,
     "pres": 993.8,
     "wind": 0.2,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 4.8
   },
   "2026-01-29": {
     "date": "2026-01-29",
@@ -432,7 +460,8 @@
     "solar": 201.8,
     "pres": 999.8,
     "wind": 0.2,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.8
   },
   "2026-01-30": {
     "date": "2026-01-30",
@@ -447,7 +476,8 @@
     "solar": 123.0,
     "pres": 1000.1,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 4.8
   },
   "2026-01-31": {
     "date": "2026-01-31",
@@ -462,7 +492,8 @@
     "solar": 206.7,
     "pres": 1004.4,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 1.8
   },
   "2026-02-01": {
     "date": "2026-02-01",
@@ -477,7 +508,8 @@
     "solar": 203.7,
     "pres": 1008.3,
     "wind": 0.4,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-02-02": {
     "date": "2026-02-02",
@@ -492,7 +524,8 @@
     "solar": 222.2,
     "pres": 1001.4,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2026-02-03": {
     "date": "2026-02-03",
@@ -507,7 +540,8 @@
     "solar": 144.8,
     "pres": 1000.2,
     "wind": 0.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.8
   },
   "2026-02-04": {
     "date": "2026-02-04",
@@ -522,7 +556,8 @@
     "solar": 75.1,
     "pres": 997.3,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2026-02-05": {
     "date": "2026-02-05",
@@ -537,7 +572,8 @@
     "solar": 211.5,
     "pres": 992.4,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-02-06": {
     "date": "2026-02-06",
@@ -552,7 +588,8 @@
     "solar": 177.1,
     "pres": 995.4,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-02-07": {
     "date": "2026-02-07",
@@ -567,7 +604,8 @@
     "solar": 209.3,
     "pres": 1005.3,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.2
   },
   "2026-02-08": {
     "date": "2026-02-08",
@@ -582,7 +620,8 @@
     "solar": 79.3,
     "pres": 1008.5,
     "wind": 0.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.8
   },
   "2026-02-09": {
     "date": "2026-02-09",
@@ -597,7 +636,8 @@
     "solar": 213.9,
     "pres": 1006.9,
     "wind": 0.2,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2026-02-10": {
     "date": "2026-02-10",
@@ -612,7 +652,8 @@
     "solar": 262.6,
     "pres": 997.8,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 4.8
   },
   "2026-02-11": {
     "date": "2026-02-11",
@@ -627,7 +668,8 @@
     "solar": 191.7,
     "pres": 991.2,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 4.8
   },
   "2026-02-12": {
     "date": "2026-02-12",
@@ -642,7 +684,8 @@
     "solar": 236.8,
     "pres": 987.9,
     "wind": 2.0,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 6.0
   },
   "2026-02-13": {
     "date": "2026-02-13",
@@ -657,7 +700,8 @@
     "solar": 153.2,
     "pres": 995.1,
     "wind": 0.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 1.8
   },
   "2026-02-14": {
     "date": "2026-02-14",
@@ -672,7 +716,8 @@
     "solar": 118.3,
     "pres": 1004.9,
     "wind": 2.9,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 1.8
   },
   "2026-02-15": {
     "date": "2026-02-15",
@@ -687,7 +732,8 @@
     "solar": 234.7,
     "pres": 1012.7,
     "wind": 1.1,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 4.8
   },
   "2026-02-16": {
     "date": "2026-02-16",
@@ -702,7 +748,8 @@
     "solar": 355.9,
     "pres": 1002.2,
     "wind": 2.4,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 4.8
   },
   "2026-02-17": {
     "date": "2026-02-17",
@@ -717,7 +764,8 @@
     "solar": 411.1,
     "pres": 1012.8,
     "wind": 2.1,
-    "wind_gust": 25.6
+    "wind_gust": 25.6,
+    "rain_rate_max": 9.6
   },
   "2026-02-18": {
     "date": "2026-02-18",
@@ -732,7 +780,8 @@
     "solar": 114.1,
     "pres": 1011.1,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 3.6
   },
   "2026-02-19": {
     "date": "2026-02-19",
@@ -747,7 +796,8 @@
     "solar": 364.2,
     "pres": 1002.7,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2026-02-20": {
     "date": "2026-02-20",
@@ -762,7 +812,8 @@
     "solar": 217.3,
     "pres": 1022.3,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2026-02-21": {
     "date": "2026-02-21",
@@ -777,7 +828,8 @@
     "solar": 384.2,
     "pres": 1026.2,
     "wind": 1.7,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 1.8
   },
   "2026-02-22": {
     "date": "2026-02-22",
@@ -792,7 +844,8 @@
     "solar": 231.7,
     "pres": 1024.7,
     "wind": 1.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-02-23": {
     "date": "2026-02-23",
@@ -807,7 +860,8 @@
     "solar": 318.8,
     "pres": 1022.0,
     "wind": 1.1,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 1.8
   },
   "2026-02-24": {
     "date": "2026-02-24",
@@ -822,7 +876,8 @@
     "solar": 475.2,
     "pres": 1021.6,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2026-02-25": {
     "date": "2026-02-25",
@@ -837,7 +892,8 @@
     "solar": 397.6,
     "pres": 1022.7,
     "wind": 0.4,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.2
   },
   "2026-02-26": {
     "date": "2026-02-26",
@@ -852,7 +908,8 @@
     "solar": 320.5,
     "pres": 1024.7,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.8
   },
   "2026-02-27": {
     "date": "2026-02-27",
@@ -867,7 +924,8 @@
     "solar": 313.0,
     "pres": 1020.4,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-02-28": {
     "date": "2026-02-28",
@@ -882,7 +940,8 @@
     "solar": 344.7,
     "pres": 1023.6,
     "wind": 0.9,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-03-01": {
     "date": "2026-03-01",
@@ -897,7 +956,8 @@
     "solar": 410.3,
     "pres": 1025.7,
     "wind": 0.4,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-02": {
     "date": "2026-03-02",
@@ -912,7 +972,8 @@
     "solar": 322.5,
     "pres": 1023.3,
     "wind": 0.7,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-03": {
     "date": "2026-03-03",
@@ -927,7 +988,8 @@
     "solar": 334.5,
     "pres": 1026.4,
     "wind": 1.2,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-04": {
     "date": "2026-03-04",
@@ -942,7 +1004,8 @@
     "solar": 333.0,
     "pres": 1026.0,
     "wind": 1.1,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-05": {
     "date": "2026-03-05",
@@ -957,7 +1020,8 @@
     "solar": 314.8,
     "pres": 1021.4,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-06": {
     "date": "2026-03-06",
@@ -972,7 +1036,8 @@
     "solar": 290.5,
     "pres": 1021.7,
     "wind": 0.5,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-07": {
     "date": "2026-03-07",
@@ -987,7 +1052,8 @@
     "solar": 305.7,
     "pres": 1023.7,
     "wind": 0.7,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-08": {
     "date": "2026-03-08",
@@ -1002,7 +1068,8 @@
     "solar": 313.8,
     "pres": 1023.9,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-09": {
     "date": "2026-03-09",
@@ -1017,7 +1084,8 @@
     "solar": 356.8,
     "pres": 1021.6,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-10": {
     "date": "2026-03-10",
@@ -1032,7 +1100,8 @@
     "solar": 408.4,
     "pres": 1020.1,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2026-03-11": {
     "date": "2026-03-11",
@@ -1047,7 +1116,8 @@
     "solar": 222.9,
     "pres": 1019.1,
     "wind": 1.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 4.8
   },
   "2026-03-12": {
     "date": "2026-03-12",
@@ -1062,7 +1132,8 @@
     "solar": 416.6,
     "pres": 1023.5,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-13": {
     "date": "2026-03-13",
@@ -1077,7 +1148,8 @@
     "solar": 494.9,
     "pres": 1011.6,
     "wind": 1.5,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 0.0
   },
   "2026-03-14": {
     "date": "2026-03-14",
@@ -1092,7 +1164,8 @@
     "solar": 148.8,
     "pres": 1005.3,
     "wind": 0.9,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 3.0
   },
   "2026-03-15": {
     "date": "2026-03-15",
@@ -1107,7 +1180,8 @@
     "solar": 550.9,
     "pres": 1016.2,
     "wind": 0.9,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-16": {
     "date": "2026-03-16",
@@ -1122,7 +1196,8 @@
     "solar": 285.4,
     "pres": 1020.9,
     "wind": 0.8,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-03-17": {
     "date": "2026-03-17",
@@ -1137,7 +1212,8 @@
     "solar": 418.0,
     "pres": 1021.9,
     "wind": 0.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-18": {
     "date": "2026-03-18",
@@ -1152,7 +1228,8 @@
     "solar": 391.0,
     "pres": 1020.6,
     "wind": 3.1,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 0.0
   },
   "2026-03-19": {
     "date": "2026-03-19",
@@ -1167,7 +1244,8 @@
     "solar": 399.0,
     "pres": 1021.5,
     "wind": 2.0,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-20": {
     "date": "2026-03-20",
@@ -1182,7 +1260,8 @@
     "solar": 408.0,
     "pres": 1018.4,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-21": {
     "date": "2026-03-21",
@@ -1197,7 +1276,8 @@
     "solar": 450.2,
     "pres": 1014.2,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-22": {
     "date": "2026-03-22",
@@ -1212,7 +1292,8 @@
     "solar": 440.9,
     "pres": 1012.7,
     "wind": 2.4,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-23": {
     "date": "2026-03-23",
@@ -1227,7 +1308,8 @@
     "solar": 510.7,
     "pres": 1019.1,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-24": {
     "date": "2026-03-24",
@@ -1242,7 +1324,8 @@
     "solar": 449.7,
     "pres": 1020.7,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-25": {
     "date": "2026-03-25",
@@ -1257,7 +1340,8 @@
     "solar": 500.9,
     "pres": 1009.9,
     "wind": 3.2,
-    "wind_gust": 31.3
+    "wind_gust": 31.3,
+    "rain_rate_max": 4.8
   },
   "2026-03-26": {
     "date": "2026-03-26",
@@ -1272,7 +1356,8 @@
     "solar": 584.8,
     "pres": 1016.5,
     "wind": 3.0,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2026-03-27": {
     "date": "2026-03-27",
@@ -1287,7 +1372,8 @@
     "solar": 597.3,
     "pres": 1023.4,
     "wind": 1.5,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-03-28": {
     "date": "2026-03-28",
@@ -1302,7 +1388,8 @@
     "solar": 239.7,
     "pres": 1022.4,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2026-03-29": {
     "date": "2026-03-29",
@@ -1317,7 +1404,8 @@
     "solar": 587.5,
     "pres": 1028.2,
     "wind": 1.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-03-30": {
     "date": "2026-03-30",
@@ -1332,7 +1420,8 @@
     "solar": 519.5,
     "pres": 1021.6,
     "wind": 2.5,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 3.6
   },
   "2026-03-31": {
     "date": "2026-03-31",
@@ -1347,7 +1436,8 @@
     "solar": 485.4,
     "pres": 1027.3,
     "wind": 1.0,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-04-01": {
     "date": "2026-04-01",
@@ -1362,7 +1452,8 @@
     "solar": 583.1,
     "pres": 1023.3,
     "wind": 1.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-04-02": {
     "date": "2026-04-02",
@@ -1377,7 +1468,8 @@
     "solar": 476.0,
     "pres": 1018.0,
     "wind": 1.3,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-04-03": {
     "date": "2026-04-03",
@@ -1392,7 +1484,8 @@
     "solar": 628.0,
     "pres": 1020.1,
     "wind": 1.4,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-04-04": {
     "date": "2026-04-04",
@@ -1407,7 +1500,8 @@
     "solar": 607.7,
     "pres": 1023.1,
     "wind": 1.8,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-04-05": {
     "date": "2026-04-05",
@@ -1422,7 +1516,8 @@
     "solar": 594.0,
     "pres": 1021.6,
     "wind": 3.1,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2026-04-06": {
     "date": "2026-04-06",
@@ -1437,7 +1532,8 @@
     "solar": 527.3,
     "pres": 1026.7,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-04-07": {
     "date": "2026-04-07",
@@ -1452,7 +1548,8 @@
     "solar": 508.6,
     "pres": 1024.2,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-04-08": {
     "date": "2026-04-08",
@@ -1467,7 +1564,8 @@
     "solar": 509.6,
     "pres": 1023.3,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-04-09": {
     "date": "2026-04-09",
@@ -1482,7 +1580,8 @@
     "solar": 516.3,
     "pres": 1019.3,
     "wind": 0.7,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-04-10": {
     "date": "2026-04-10",
@@ -1497,7 +1596,8 @@
     "solar": 333.9,
     "pres": 1017.9,
     "wind": 1.0,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-04-11": {
     "date": "2026-04-11",
@@ -1512,7 +1612,8 @@
     "solar": 487.8,
     "pres": 1013.2,
     "wind": 0.9,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 7.8
   },
   "2026-04-12": {
     "date": "2026-04-12",
@@ -1527,7 +1628,8 @@
     "solar": 161.9,
     "pres": 1016.6,
     "wind": 0.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 3.0
   },
   "2026-04-13": {
     "date": "2026-04-13",
@@ -1542,7 +1644,8 @@
     "solar": 233.2,
     "pres": 1013.0,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.8
   },
   "2026-04-14": {
     "date": "2026-04-14",
@@ -1557,7 +1660,8 @@
     "solar": 655.8,
     "pres": 1020.7,
     "wind": 1.2,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 1.8
   },
   "2026-04-15": {
     "date": "2026-04-15",
@@ -1572,7 +1676,8 @@
     "solar": 712.4,
     "pres": 1022.6,
     "wind": 1.2,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-04-16": {
     "date": "2026-04-16",
@@ -1587,7 +1692,8 @@
     "solar": 648.4,
     "pres": 1022.9,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-04-17": {
     "date": "2026-04-17",
@@ -1602,7 +1708,8 @@
     "solar": 567.2,
     "pres": 1021.5,
     "wind": 1.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-04-18": {
     "date": "2026-04-18",
@@ -1617,7 +1724,8 @@
     "solar": 693.2,
     "pres": 1020.1,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-04-19": {
     "date": "2026-04-19",
@@ -1632,7 +1740,8 @@
     "solar": 659.4,
     "pres": 1019.5,
     "wind": 2.3,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 0.0
   },
   "2026-04-20": {
     "date": "2026-04-20",
@@ -1647,7 +1756,8 @@
     "solar": 545.7,
     "pres": 1018.5,
     "wind": 1.7,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-04-21": {
     "date": "2026-04-21",
@@ -1662,7 +1772,8 @@
     "solar": 556.6,
     "pres": 1019.3,
     "wind": 2.4,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-04-22": {
     "date": "2026-04-22",
@@ -1677,7 +1788,8 @@
     "solar": 528.0,
     "pres": 1022.2,
     "wind": 2.5,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-04-23": {
     "date": "2026-04-23",
@@ -1692,7 +1804,8 @@
     "solar": 535.4,
     "pres": 1025.3,
     "wind": 1.7,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-04-24": {
     "date": "2026-04-24",
@@ -1707,7 +1820,8 @@
     "solar": 539.2,
     "pres": 1021.2,
     "wind": 1.8,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-04-25": {
     "date": "2026-04-25",
@@ -1722,7 +1836,8 @@
     "solar": 541.9,
     "pres": 1018.8,
     "wind": 1.4,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-04-26": {
     "date": "2026-04-26",
@@ -1737,7 +1852,8 @@
     "solar": 565.8,
     "pres": 1021.8,
     "wind": 1.4,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-04-27": {
     "date": "2026-04-27",
@@ -1752,7 +1868,8 @@
     "solar": 577.1,
     "pres": 1020.1,
     "wind": 1.3,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-04-28": {
     "date": "2026-04-28",
@@ -1767,7 +1884,8 @@
     "solar": 491.1,
     "pres": 1016.5,
     "wind": 1.2,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-04-29": {
     "date": "2026-04-29",
@@ -1782,7 +1900,8 @@
     "solar": 546.4,
     "pres": 1019.6,
     "wind": 3.1,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-04-30": {
     "date": "2026-04-30",
@@ -1797,7 +1916,8 @@
     "solar": 562.2,
     "pres": 1023.3,
     "wind": 2.4,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-05-01": {
     "date": "2026-05-01",
@@ -1812,7 +1932,8 @@
     "solar": 566.3,
     "pres": 1024.2,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-05-02": {
     "date": "2026-05-02",
@@ -1827,7 +1948,8 @@
     "solar": 573.1,
     "pres": 1019.8,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-05-03": {
     "date": "2026-05-03",
@@ -1842,7 +1964,8 @@
     "solar": 666.4,
     "pres": 1015.6,
     "wind": 1.9,
-    "wind_gust": 25.6
+    "wind_gust": 25.6,
+    "rain_rate_max": 0.0
   },
   "2026-05-04": {
     "date": "2026-05-04",
@@ -1857,7 +1980,8 @@
     "solar": 583.1,
     "pres": 1014.5,
     "wind": 0.5,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2026-05-05": {
     "date": "2026-05-05",
@@ -1872,7 +1996,8 @@
     "solar": 830.9,
     "pres": 1009.9,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2026-05-06": {
     "date": "2026-05-06",
@@ -1887,7 +2012,8 @@
     "solar": 429.8,
     "pres": 1008.8,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 3.6
   },
   "2026-05-07": {
     "date": "2026-05-07",
@@ -1902,7 +2028,8 @@
     "solar": 597.8,
     "pres": 1015.3,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2026-05-08": {
     "date": "2026-05-08",
@@ -1917,7 +2044,8 @@
     "solar": 592.8,
     "pres": 1016.4,
     "wind": 1.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-05-09": {
     "date": "2026-05-09",
@@ -1932,7 +2060,8 @@
     "solar": 592.6,
     "pres": 1015.8,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-05-10": {
     "date": "2026-05-10",
@@ -1947,7 +2076,8 @@
     "solar": 349.0,
     "pres": 1010.1,
     "wind": 0.8,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 4.8
   },
   "2026-05-11": {
     "date": "2026-05-11",
@@ -1962,7 +2092,8 @@
     "solar": 306.3,
     "pres": 1007.2,
     "wind": 1.5,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 4.8
   },
   "2026-05-12": {
     "date": "2026-05-12",
@@ -1977,7 +2108,8 @@
     "solar": 810.1,
     "pres": 1015.3,
     "wind": 1.9,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-05-13": {
     "date": "2026-05-13",
@@ -1992,7 +2124,8 @@
     "solar": 813.7,
     "pres": 1008.6,
     "wind": 1.7,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 3.6
   },
   "2026-05-14": {
     "date": "2026-05-14",
@@ -2007,7 +2140,8 @@
     "solar": 670.8,
     "pres": 1002.5,
     "wind": 1.4,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 7.8
   },
   "2026-05-15": {
     "date": "2026-05-15",
@@ -2022,7 +2156,8 @@
     "solar": 762.1,
     "pres": 1004.4,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 4.8
   },
   "2026-05-16": {
     "date": "2026-05-16",
@@ -2037,7 +2172,8 @@
     "solar": 764.6,
     "pres": 1012.1,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.2
   },
   "2026-05-17": {
     "date": "2026-05-17",
@@ -2052,7 +2188,8 @@
     "solar": 626.6,
     "pres": 1015.6,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-05-18": {
     "date": "2026-05-18",
@@ -2067,7 +2204,8 @@
     "solar": 672.4,
     "pres": 1016.6,
     "wind": 0.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 24.0
   },
   "2026-05-19": {
     "date": "2026-05-19",
@@ -2082,7 +2220,8 @@
     "solar": 659.5,
     "pres": 1019.7,
     "wind": 0.8,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 3.0
   },
   "2026-05-20": {
     "date": "2026-05-20",
@@ -2097,7 +2236,8 @@
     "solar": 713.6,
     "pres": 1025.4,
     "wind": 1.3,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2026-05-21": {
     "date": "2026-05-21",
@@ -2112,7 +2252,8 @@
     "solar": 645.0,
     "pres": 1028.4,
     "wind": 1.4,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-05-22": {
     "date": "2026-05-22",
@@ -2127,7 +2268,8 @@
     "solar": 641.1,
     "pres": 1027.2,
     "wind": 1.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-05-23": {
     "date": "2026-05-23",
@@ -2142,7 +2284,8 @@
     "solar": 640.9,
     "pres": 1027.3,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-05-24": {
     "date": "2026-05-24",
@@ -2157,7 +2300,8 @@
     "solar": 615.8,
     "pres": 1028.9,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-05-25": {
     "date": "2026-05-25",
@@ -2172,7 +2316,8 @@
     "solar": 618.5,
     "pres": 1029.9,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-05-26": {
     "date": "2026-05-26",
@@ -2187,7 +2332,8 @@
     "solar": 624.8,
     "pres": 1026.7,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-05-27": {
     "date": "2026-05-27",
@@ -2202,7 +2348,8 @@
     "solar": 651.6,
     "pres": 1022.9,
     "wind": 1.6,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-05-28": {
     "date": "2026-05-28",
@@ -2217,7 +2364,8 @@
     "solar": 640.3,
     "pres": 1023.6,
     "wind": 2.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-05-29": {
     "date": "2026-05-29",
@@ -2232,7 +2380,8 @@
     "solar": 640.8,
     "pres": 1023.8,
     "wind": 1.9,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-05-30": {
     "date": "2026-05-30",
@@ -2247,7 +2396,8 @@
     "solar": 651.1,
     "pres": 1020.3,
     "wind": 1.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-05-31": {
     "date": "2026-05-31",
@@ -2262,7 +2412,8 @@
     "solar": 519.0,
     "pres": 1017.0,
     "wind": 1.7,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 7.8
   },
   "2026-06-01": {
     "date": "2026-06-01",
@@ -2277,7 +2428,8 @@
     "solar": 686.9,
     "pres": 1017.4,
     "wind": 1.2,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-06-02": {
     "date": "2026-06-02",
@@ -2292,7 +2444,8 @@
     "solar": 790.3,
     "pres": 1011.2,
     "wind": 0.8,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 19.8
   },
   "2026-06-03": {
     "date": "2026-06-03",
@@ -2307,7 +2460,8 @@
     "solar": 890.7,
     "pres": 1013.8,
     "wind": 2.1,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2026-06-04": {
     "date": "2026-06-04",
@@ -2322,7 +2476,8 @@
     "solar": 374.4,
     "pres": 1010.5,
     "wind": 1.7,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2026-06-05": {
     "date": "2026-06-05",
@@ -2337,7 +2492,8 @@
     "solar": 817.9,
     "pres": 1016.1,
     "wind": 1.2,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 6.0
   },
   "2026-06-06": {
     "date": "2026-06-06",
@@ -2352,7 +2508,8 @@
     "solar": 757.7,
     "pres": 1017.5,
     "wind": 2.0,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-06-07": {
     "date": "2026-06-07",
@@ -2367,7 +2524,8 @@
     "solar": 677.9,
     "pres": 1023.4,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-06-08": {
     "date": "2026-06-08",
@@ -2382,7 +2540,8 @@
     "solar": 775.1,
     "pres": 1018.3,
     "wind": 1.4,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 3.0
   },
   "2026-06-09": {
     "date": "2026-06-09",
@@ -2397,7 +2556,8 @@
     "solar": 821.6,
     "pres": 1018.8,
     "wind": 2.1,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 4.8
   },
   "2026-06-10": {
     "date": "2026-06-10",
@@ -2412,7 +2572,8 @@
     "solar": 588.1,
     "pres": 1020.1,
     "wind": 0.9,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 22.8
   },
   "2026-06-11": {
     "date": "2026-06-11",
@@ -2427,7 +2588,8 @@
     "solar": 894.4,
     "pres": 1024.1,
     "wind": 1.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 3.0
   },
   "2026-06-12": {
     "date": "2026-06-12",
@@ -2442,7 +2604,8 @@
     "solar": 328.1,
     "pres": 1024.9,
     "wind": 1.8,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-06-13": {
     "date": "2026-06-13",
@@ -2457,7 +2620,8 @@
     "solar": 751.2,
     "pres": 1021.8,
     "wind": 2.6,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 0.0
   },
   "2026-06-14": {
     "date": "2026-06-14",
@@ -2472,7 +2636,8 @@
     "solar": 673.5,
     "pres": 1017.6,
     "wind": 2.3,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 0.0
   },
   "2026-06-15": {
     "date": "2026-06-15",
@@ -2487,7 +2652,8 @@
     "solar": 664.9,
     "pres": 1017.3,
     "wind": 1.1,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-06-16": {
     "date": "2026-06-16",
@@ -2502,7 +2668,8 @@
     "solar": 840.3,
     "pres": 1017.7,
     "wind": 1.2,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-06-17": {
     "date": "2026-06-17",
@@ -2517,7 +2684,8 @@
     "solar": 809.5,
     "pres": 1020.5,
     "wind": 1.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-06-18": {
     "date": "2026-06-18",
@@ -2532,7 +2700,8 @@
     "solar": 657.4,
     "pres": 1019.6,
     "wind": 1.8,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-06-19": {
     "date": "2026-06-19",
@@ -2547,7 +2716,8 @@
     "solar": 669.2,
     "pres": 1018.1,
     "wind": 1.4,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-06-20": {
     "date": "2026-06-20",
@@ -2562,7 +2732,8 @@
     "solar": 654.1,
     "pres": 1021.1,
     "wind": 1.4,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-06-21": {
     "date": "2026-06-21",
@@ -2577,7 +2748,8 @@
     "solar": 646.2,
     "pres": 1024.7,
     "wind": 2.5,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 0.0
   },
   "2026-06-22": {
     "date": "2026-06-22",
@@ -2592,7 +2764,8 @@
     "solar": 654.3,
     "pres": 1023.1,
     "wind": 1.8,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-06-23": {
     "date": "2026-06-23",
@@ -2607,7 +2780,8 @@
     "solar": 653.1,
     "pres": 1020.1,
     "wind": 1.8,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-06-24": {
     "date": "2026-06-24",
@@ -2622,7 +2796,8 @@
     "solar": 657.4,
     "pres": 1018.6,
     "wind": 1.9,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-06-25": {
     "date": "2026-06-25",
@@ -2637,7 +2812,8 @@
     "solar": 652.3,
     "pres": 1017.5,
     "wind": 2.0,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-06-26": {
     "date": "2026-06-26",
@@ -2652,7 +2828,8 @@
     "solar": 652.7,
     "pres": 1017.8,
     "wind": 1.4,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-06-27": {
     "date": "2026-06-27",
@@ -2667,7 +2844,8 @@
     "solar": 633.2,
     "pres": 1017.5,
     "wind": 1.3,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 1.8
   },
   "2026-06-28": {
     "date": "2026-06-28",
@@ -2682,7 +2860,8 @@
     "solar": 730.2,
     "pres": 1019.2,
     "wind": 2.8,
-    "wind_gust": 27.7
+    "wind_gust": 27.7,
+    "rain_rate_max": 33.6
   },
   "2026-06-29": {
     "date": "2026-06-29",
@@ -2697,7 +2876,8 @@
     "solar": 828.2,
     "pres": 1023.5,
     "wind": 2.4,
-    "wind_gust": 31.3
+    "wind_gust": 31.3,
+    "rain_rate_max": 37.8
   },
   "2026-06-30": {
     "date": "2026-06-30",
@@ -2712,7 +2892,8 @@
     "solar": 728.7,
     "pres": 1020.7,
     "wind": 1.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-07-01": {
     "date": "2026-07-01",
@@ -2727,7 +2908,8 @@
     "solar": 863.6,
     "pres": 1021.4,
     "wind": 1.8,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-07-02": {
     "date": "2026-07-02",
@@ -2742,7 +2924,8 @@
     "solar": 779.8,
     "pres": 1022.8,
     "wind": 2.2,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-07-03": {
     "date": "2026-07-03",
@@ -2757,7 +2940,8 @@
     "solar": 727.1,
     "pres": 1026.2,
     "wind": 2.0,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-07-04": {
     "date": "2026-07-04",
@@ -2772,7 +2956,8 @@
     "solar": 655.7,
     "pres": 1026.2,
     "wind": 1.6,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-07-05": {
     "date": "2026-07-05",
@@ -2787,7 +2972,8 @@
     "solar": 780.3,
     "pres": 1023.1,
     "wind": 2.0,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2026-07-06": {
     "date": "2026-07-06",
@@ -2802,7 +2988,8 @@
     "solar": 765.6,
     "pres": 1021.2,
     "wind": 1.6,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-07-07": {
     "date": "2026-07-07",
@@ -2817,7 +3004,8 @@
     "solar": 643.5,
     "pres": 1017.9,
     "wind": 2.0,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 0.0
   },
   "2026-07-08": {
     "date": "2026-07-08",
@@ -2832,7 +3020,8 @@
     "solar": 769.6,
     "pres": 1018.2,
     "wind": 1.4,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-07-09": {
     "date": "2026-07-09",
@@ -2847,7 +3036,8 @@
     "solar": 655.7,
     "pres": 1017.1,
     "wind": 2.0,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2026-07-10": {
     "date": "2026-07-10",
@@ -2862,7 +3052,8 @@
     "solar": 653.6,
     "pres": 1015.1,
     "wind": 1.9,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-07-11": {
     "date": "2026-07-11",
@@ -2877,7 +3068,8 @@
     "solar": 672.5,
     "pres": 1017.0,
     "wind": 1.9,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-07-12": {
     "date": "2026-07-12",
@@ -2892,7 +3084,8 @@
     "solar": 674.4,
     "pres": 1019.5,
     "wind": 2.1,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-07-13": {
     "date": "2026-07-13",
@@ -2907,7 +3100,8 @@
     "solar": 640.6,
     "pres": 1017.0,
     "wind": 1.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2026-07-14": {
     "date": "2026-07-14",
@@ -2922,7 +3116,8 @@
     "solar": 728.6,
     "pres": 1016.4,
     "wind": 1.3,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 16.8
   },
   "2026-07-15": {
     "date": "2026-07-15",
@@ -2937,7 +3132,8 @@
     "solar": 607.0,
     "pres": 1017.8,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 7.8
   },
   "2026-07-16": {
     "date": "2026-07-16",
@@ -2952,7 +3148,8 @@
     "solar": 723.3,
     "pres": 1017.2,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-07-17": {
     "date": "2026-07-17",
@@ -2967,7 +3164,8 @@
     "solar": 669.9,
     "pres": 1015.5,
     "wind": 1.2,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-07-18": {
     "date": "2026-07-18",
@@ -2982,7 +3180,8 @@
     "solar": 772.3,
     "pres": 1016.5,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 6.0
   },
   "2026-07-19": {
     "date": "2026-07-19",
@@ -2997,7 +3196,8 @@
     "solar": 670.3,
     "pres": 1019.1,
     "wind": 1.7,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 1.8
   },
   "2026-07-20": {
     "date": "2026-07-20",
@@ -3012,7 +3212,8 @@
     "solar": 635.8,
     "pres": 1021.7,
     "wind": 2.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-07-21": {
     "date": "2026-07-21",
@@ -3027,7 +3228,8 @@
     "solar": 636.1,
     "pres": 1023.2,
     "wind": 2.2,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-07-22": {
     "date": "2026-07-22",
@@ -3042,7 +3244,8 @@
     "solar": 611.6,
     "pres": 1021.9,
     "wind": 2.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-07-23": {
     "date": "2026-07-23",
@@ -3057,7 +3260,8 @@
     "solar": 617.8,
     "pres": 1020.4,
     "wind": 1.7,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-07-24": {
     "date": "2026-07-24",
@@ -3072,7 +3276,8 @@
     "solar": 641.8,
     "pres": 1017.3,
     "wind": 1.8,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-07-25": {
     "date": "2026-07-25",
@@ -3087,7 +3292,8 @@
     "solar": 745.0,
     "pres": 1009.6,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-07-26": {
     "date": "2026-07-26",
@@ -3102,7 +3308,8 @@
     "solar": 617.0,
     "pres": 1010.5,
     "wind": 2.5,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 0.0
   },
   "2026-07-27": {
     "date": "2026-07-27",
@@ -3117,7 +3324,8 @@
     "solar": 737.7,
     "pres": 1018.0,
     "wind": 2.3,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 0.0
   },
   "2026-07-28": {
     "date": "2026-07-28",
@@ -3132,7 +3340,8 @@
     "solar": 625.6,
     "pres": 1021.2,
     "wind": 2.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-07-29": {
     "date": "2026-07-29",
@@ -3147,7 +3356,8 @@
     "solar": 606.4,
     "pres": 1018.1,
     "wind": 2.0,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-07-30": {
     "date": "2026-07-30",
@@ -3162,7 +3372,8 @@
     "solar": 630.5,
     "pres": 1018.0,
     "wind": 1.9,
-    "wind_gust": 29.5
+    "wind_gust": 29.5,
+    "rain_rate_max": 0.0
   },
   "2026-07-31": {
     "date": "2026-07-31",
@@ -3177,7 +3388,8 @@
     "solar": 635.8,
     "pres": 1016.2,
     "wind": 1.5,
-    "wind_gust": 27.7
+    "wind_gust": 27.7,
+    "rain_rate_max": 3.0
   },
   "2026-08-01": {
     "date": "2026-08-01",
@@ -3192,7 +3404,8 @@
     "solar": 718.6,
     "pres": 1017.2,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-08-02": {
     "date": "2026-08-02",
@@ -3207,7 +3420,8 @@
     "solar": 595.1,
     "pres": 1014.9,
     "wind": 1.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-08-03": {
     "date": "2026-08-03",
@@ -3222,7 +3436,8 @@
     "solar": 794.8,
     "pres": 1012.7,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-08-04": {
     "date": "2026-08-04",
@@ -3237,7 +3452,8 @@
     "solar": 682.2,
     "pres": 1014.4,
     "wind": 1.1,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 9.0
   },
   "2026-08-05": {
     "date": "2026-08-05",
@@ -3252,7 +3468,8 @@
     "solar": 672.2,
     "pres": 1018.0,
     "wind": 1.8,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 4.2
   },
   "2026-08-06": {
     "date": "2026-08-06",
@@ -3267,7 +3484,8 @@
     "solar": 757.1,
     "pres": 1021.1,
     "wind": 1.7,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-08-07": {
     "date": "2026-08-07",
@@ -3282,7 +3500,8 @@
     "solar": 595.9,
     "pres": 1021.2,
     "wind": 1.8,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-08-08": {
     "date": "2026-08-08",
@@ -3297,7 +3516,8 @@
     "solar": 592.8,
     "pres": 1018.9,
     "wind": 1.6,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-08-09": {
     "date": "2026-08-09",
@@ -3312,7 +3532,8 @@
     "solar": 607.0,
     "pres": 1016.5,
     "wind": 0.9,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2026-08-10": {
     "date": "2026-08-10",
@@ -3327,7 +3548,8 @@
     "solar": 680.5,
     "pres": 1017.4,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-08-11": {
     "date": "2026-08-11",
@@ -3342,7 +3564,8 @@
     "solar": 578.5,
     "pres": 1021.2,
     "wind": 2.0,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-08-12": {
     "date": "2026-08-12",
@@ -3357,7 +3580,8 @@
     "solar": 572.9,
     "pres": 1022.9,
     "wind": 1.6,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2026-08-13": {
     "date": "2026-08-13",
@@ -3372,7 +3596,8 @@
     "solar": 574.3,
     "pres": 1022.0,
     "wind": 1.6,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-08-14": {
     "date": "2026-08-14",
@@ -3387,7 +3612,8 @@
     "solar": 554.0,
     "pres": 1017.6,
     "wind": 1.2,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2026-08-15": {
     "date": "2026-08-15",
@@ -3402,7 +3628,8 @@
     "solar": 653.6,
     "pres": 1014.7,
     "wind": 1.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2026-08-16": {
     "date": "2026-08-16",
@@ -3417,7 +3644,8 @@
     "solar": 545.1,
     "pres": 1015.5,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 13.8
   },
   "2025-01-01": {
     "date": "2025-01-01",
@@ -3432,7 +3660,8 @@
     "solar": 154.8,
     "pres": 1023.2,
     "wind": 0.6,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-01-02": {
     "date": "2025-01-02",
@@ -3447,7 +3676,8 @@
     "solar": 62.1,
     "pres": 1016.7,
     "wind": 1.2,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 3.0
   },
   "2025-01-03": {
     "date": "2025-01-03",
@@ -3462,7 +3692,8 @@
     "solar": 122.3,
     "pres": 1023.8,
     "wind": 0.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-01-04": {
     "date": "2025-01-04",
@@ -3477,7 +3708,8 @@
     "solar": 164.3,
     "pres": 1020.1,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-01-05": {
     "date": "2025-01-05",
@@ -3492,7 +3724,8 @@
     "solar": 76.0,
     "pres": 1004.6,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.8
   },
   "2025-01-06": {
     "date": "2025-01-06",
@@ -3507,7 +3740,8 @@
     "solar": 161.8,
     "pres": 999.2,
     "wind": 2.3,
-    "wind_gust": 25.6
+    "wind_gust": 25.6,
+    "rain_rate_max": 1.8
   },
   "2025-01-07": {
     "date": "2025-01-07",
@@ -3522,7 +3756,8 @@
     "solar": 164.7,
     "pres": 1007.9,
     "wind": 1.4,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 6.0
   },
   "2025-01-08": {
     "date": "2025-01-08",
@@ -3537,7 +3772,8 @@
     "solar": 91.7,
     "pres": 1006.0,
     "wind": 0.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 3.6
   },
   "2025-01-09": {
     "date": "2025-01-09",
@@ -3552,7 +3788,8 @@
     "solar": 116.7,
     "pres": 1006.6,
     "wind": 2.5,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 3.0
   },
   "2025-01-10": {
     "date": "2025-01-10",
@@ -3567,7 +3804,8 @@
     "solar": 214.2,
     "pres": 1021.0,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-01-11": {
     "date": "2025-01-11",
@@ -3582,7 +3820,8 @@
     "solar": 144.9,
     "pres": 1026.9,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-01-12": {
     "date": "2025-01-12",
@@ -3597,7 +3836,8 @@
     "solar": 139.4,
     "pres": 1037.2,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-01-13": {
     "date": "2025-01-13",
@@ -3612,7 +3852,8 @@
     "solar": 149.7,
     "pres": 1039.1,
     "wind": 1.7,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-01-14": {
     "date": "2025-01-14",
@@ -3627,7 +3868,8 @@
     "solar": 166.3,
     "pres": 1035.6,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-01-15": {
     "date": "2025-01-15",
@@ -3642,7 +3884,8 @@
     "solar": 118.2,
     "pres": 1033.2,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-01-16": {
     "date": "2025-01-16",
@@ -3657,7 +3900,8 @@
     "solar": 156.2,
     "pres": 1034.7,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-01-17": {
     "date": "2025-01-17",
@@ -3672,7 +3916,8 @@
     "solar": 64.5,
     "pres": 1035.7,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-01-18": {
     "date": "2025-01-18",
@@ -3687,7 +3932,8 @@
     "solar": 172.3,
     "pres": 1030.0,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-01-19": {
     "date": "2025-01-19",
@@ -3702,7 +3948,8 @@
     "solar": 147.4,
     "pres": 1022.7,
     "wind": 0.0,
-    "wind_gust": 1.8
+    "wind_gust": 1.8,
+    "rain_rate_max": 0.0
   },
   "2025-01-20": {
     "date": "2025-01-20",
@@ -3717,7 +3964,8 @@
     "solar": 110.8,
     "pres": 1020.7,
     "wind": 0.2,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-01-21": {
     "date": "2025-01-21",
@@ -3732,7 +3980,8 @@
     "solar": 72.1,
     "pres": 1018.8,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-01-22": {
     "date": "2025-01-22",
@@ -3747,7 +3996,8 @@
     "solar": 173.3,
     "pres": 1010.0,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.2
   },
   "2025-01-23": {
     "date": "2025-01-23",
@@ -3762,7 +4012,8 @@
     "solar": 316.6,
     "pres": 1011.5,
     "wind": 1.8,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 3.6
   },
   "2025-01-24": {
     "date": "2025-01-24",
@@ -3777,7 +4028,8 @@
     "solar": 136.6,
     "pres": 1013.0,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-01-25": {
     "date": "2025-01-25",
@@ -3792,7 +4044,8 @@
     "solar": 249.8,
     "pres": 1009.4,
     "wind": 1.4,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 3.0
   },
   "2025-01-26": {
     "date": "2025-01-26",
@@ -3807,7 +4060,8 @@
     "solar": 219.4,
     "pres": 1010.1,
     "wind": 2.0,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-01-27": {
     "date": "2025-01-27",
@@ -3822,7 +4076,8 @@
     "solar": 247.8,
     "pres": 1001.4,
     "wind": 1.5,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 1.8
   },
   "2025-01-28": {
     "date": "2025-01-28",
@@ -3837,7 +4092,8 @@
     "solar": 168.3,
     "pres": 1001.5,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.8
   },
   "2025-01-29": {
     "date": "2025-01-29",
@@ -3852,7 +4108,8 @@
     "solar": 223.8,
     "pres": 1010.5,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 9.6
   },
   "2025-01-30": {
     "date": "2025-01-30",
@@ -3867,7 +4124,8 @@
     "solar": 171.4,
     "pres": 1017.5,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-01-31": {
     "date": "2025-01-31",
@@ -3882,7 +4140,8 @@
     "solar": 257.8,
     "pres": 1028.7,
     "wind": 0.7,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-02-01": {
     "date": "2025-02-01",
@@ -3897,7 +4156,8 @@
     "solar": 214.4,
     "pres": 1028.5,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-02-02": {
     "date": "2025-02-02",
@@ -3912,7 +4172,8 @@
     "solar": 95.3,
     "pres": 1025.1,
     "wind": 0.2,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-02-03": {
     "date": "2025-02-03",
@@ -3927,7 +4188,8 @@
     "solar": 70.6,
     "pres": 1028.6,
     "wind": 0.3,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-02-04": {
     "date": "2025-02-04",
@@ -3942,7 +4204,8 @@
     "solar": 249.4,
     "pres": 1031.1,
     "wind": 0.4,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-02-05": {
     "date": "2025-02-05",
@@ -3957,7 +4220,8 @@
     "solar": 241.0,
     "pres": 1038.1,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-02-06": {
     "date": "2025-02-06",
@@ -3972,7 +4236,8 @@
     "solar": 154.1,
     "pres": 1035.3,
     "wind": 2.6,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-02-07": {
     "date": "2025-02-07",
@@ -3987,7 +4252,8 @@
     "solar": 259.0,
     "pres": 1024.2,
     "wind": 0.5,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-02-08": {
     "date": "2025-02-08",
@@ -4002,7 +4268,8 @@
     "solar": 341.2,
     "pres": 1022.7,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-02-09": {
     "date": "2025-02-09",
@@ -4017,7 +4284,8 @@
     "solar": 299.5,
     "pres": 1027.3,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-02-10": {
     "date": "2025-02-10",
@@ -4032,7 +4300,8 @@
     "solar": 121.7,
     "pres": 1023.2,
     "wind": 0.1,
-    "wind_gust": 1.8
+    "wind_gust": 1.8,
+    "rain_rate_max": 3.0
   },
   "2025-02-11": {
     "date": "2025-02-11",
@@ -4047,7 +4316,8 @@
     "solar": 64.8,
     "pres": 1020.3,
     "wind": 0.2,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 1.8
   },
   "2025-02-12": {
     "date": "2025-02-12",
@@ -4062,7 +4332,8 @@
     "solar": 99.2,
     "pres": 1017.4,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 3.0
   },
   "2025-02-13": {
     "date": "2025-02-13",
@@ -4077,7 +4348,8 @@
     "solar": 316.7,
     "pres": 1018.8,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 9.0
   },
   "2025-02-14": {
     "date": "2025-02-14",
@@ -4092,7 +4364,8 @@
     "solar": 246.3,
     "pres": 1025.0,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.8
   },
   "2025-02-15": {
     "date": "2025-02-15",
@@ -4107,7 +4380,8 @@
     "solar": 278.5,
     "pres": 1022.0,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.8
   },
   "2025-02-16": {
     "date": "2025-02-16",
@@ -4122,7 +4396,8 @@
     "solar": 390.1,
     "pres": 1018.4,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.2
   },
   "2025-02-17": {
     "date": "2025-02-17",
@@ -4137,7 +4412,8 @@
     "solar": 155.9,
     "pres": 1021.4,
     "wind": 0.4,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-02-18": {
     "date": "2025-02-18",
@@ -4152,7 +4428,8 @@
     "solar": 261.7,
     "pres": 1023.1,
     "wind": 0.6,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-02-19": {
     "date": "2025-02-19",
@@ -4167,7 +4444,8 @@
     "solar": 279.0,
     "pres": 1024.2,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-02-20": {
     "date": "2025-02-20",
@@ -4182,7 +4460,8 @@
     "solar": 306.2,
     "pres": 1026.0,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-02-21": {
     "date": "2025-02-21",
@@ -4197,7 +4476,8 @@
     "solar": 420.2,
     "pres": 1023.1,
     "wind": 0.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-02-22": {
     "date": "2025-02-22",
@@ -4212,7 +4492,8 @@
     "solar": 341.3,
     "pres": 1021.6,
     "wind": 0.8,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-02-23": {
     "date": "2025-02-23",
@@ -4227,7 +4508,8 @@
     "solar": 329.8,
     "pres": 1030.1,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-02-24": {
     "date": "2025-02-24",
@@ -4242,7 +4524,8 @@
     "solar": 192.9,
     "pres": 1024.4,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-02-25": {
     "date": "2025-02-25",
@@ -4257,7 +4540,8 @@
     "solar": 196.2,
     "pres": 1015.2,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 7.8
   },
   "2025-02-26": {
     "date": "2025-02-26",
@@ -4272,7 +4556,8 @@
     "solar": 331.2,
     "pres": 1019.7,
     "wind": 1.1,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-02-27": {
     "date": "2025-02-27",
@@ -4287,7 +4572,8 @@
     "solar": 522.5,
     "pres": 1020.2,
     "wind": 1.5,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2025-02-28": {
     "date": "2025-02-28",
@@ -4302,7 +4588,8 @@
     "solar": 209.6,
     "pres": 1024.5,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2025-03-01": {
     "date": "2025-03-01",
@@ -4317,7 +4604,8 @@
     "solar": 507.8,
     "pres": 1028.6,
     "wind": 3.0,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-03-02": {
     "date": "2025-03-02",
@@ -4332,7 +4620,8 @@
     "solar": 387.7,
     "pres": 1030.8,
     "wind": 2.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-03-03": {
     "date": "2025-03-03",
@@ -4347,7 +4636,8 @@
     "solar": 365.6,
     "pres": 1028.5,
     "wind": 1.1,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-04": {
     "date": "2025-03-04",
@@ -4362,7 +4652,8 @@
     "solar": 377.6,
     "pres": 1026.5,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-05": {
     "date": "2025-03-05",
@@ -4377,7 +4668,8 @@
     "solar": 372.7,
     "pres": 1025.5,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-06": {
     "date": "2025-03-06",
@@ -4392,7 +4684,8 @@
     "solar": 377.2,
     "pres": 1022.2,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-07": {
     "date": "2025-03-07",
@@ -4407,7 +4700,8 @@
     "solar": 394.1,
     "pres": 1019.2,
     "wind": 1.0,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-03-08": {
     "date": "2025-03-08",
@@ -4422,7 +4716,8 @@
     "solar": 378.9,
     "pres": 1013.1,
     "wind": 1.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-09": {
     "date": "2025-03-09",
@@ -4437,7 +4732,8 @@
     "solar": 412.4,
     "pres": 1005.0,
     "wind": 1.0,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-10": {
     "date": "2025-03-10",
@@ -4452,7 +4748,8 @@
     "solar": 184.6,
     "pres": 1003.8,
     "wind": 0.2,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2025-03-11": {
     "date": "2025-03-11",
@@ -4467,7 +4764,8 @@
     "solar": 274.7,
     "pres": 1003.4,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 3.0
   },
   "2025-03-12": {
     "date": "2025-03-12",
@@ -4482,7 +4780,8 @@
     "solar": 186.5,
     "pres": 999.9,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.6
   },
   "2025-03-13": {
     "date": "2025-03-13",
@@ -4497,7 +4796,8 @@
     "solar": 489.5,
     "pres": 998.8,
     "wind": 1.4,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 4.8
   },
   "2025-03-14": {
     "date": "2025-03-14",
@@ -4512,7 +4812,8 @@
     "solar": 310.5,
     "pres": 1006.9,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-15": {
     "date": "2025-03-15",
@@ -4527,7 +4828,8 @@
     "solar": 91.8,
     "pres": 1011.2,
     "wind": 3.7,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 1.2
   },
   "2025-03-16": {
     "date": "2025-03-16",
@@ -4542,7 +4844,8 @@
     "solar": 222.9,
     "pres": 1017.7,
     "wind": 1.9,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 1.8
   },
   "2025-03-17": {
     "date": "2025-03-17",
@@ -4557,7 +4860,8 @@
     "solar": 486.1,
     "pres": 1024.1,
     "wind": 2.1,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-03-18": {
     "date": "2025-03-18",
@@ -4572,7 +4876,8 @@
     "solar": 443.8,
     "pres": 1025.6,
     "wind": 1.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-03-19": {
     "date": "2025-03-19",
@@ -4587,7 +4892,8 @@
     "solar": 446.9,
     "pres": 1026.5,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-20": {
     "date": "2025-03-20",
@@ -4602,7 +4908,8 @@
     "solar": 473.8,
     "pres": 1023.9,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-21": {
     "date": "2025-03-21",
@@ -4617,7 +4924,8 @@
     "solar": 373.7,
     "pres": 1014.4,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-22": {
     "date": "2025-03-22",
@@ -4632,7 +4940,8 @@
     "solar": 498.8,
     "pres": 1005.2,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-23": {
     "date": "2025-03-23",
@@ -4647,7 +4956,8 @@
     "solar": 538.9,
     "pres": 1006.9,
     "wind": 0.9,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2025-03-24": {
     "date": "2025-03-24",
@@ -4662,7 +4972,8 @@
     "solar": 527.1,
     "pres": 1014.6,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.2
   },
   "2025-03-25": {
     "date": "2025-03-25",
@@ -4677,7 +4988,8 @@
     "solar": 570.4,
     "pres": 1019.8,
     "wind": 0.8,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-26": {
     "date": "2025-03-26",
@@ -4692,7 +5004,8 @@
     "solar": 315.2,
     "pres": 1021.5,
     "wind": 1.6,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 1.8
   },
   "2025-03-27": {
     "date": "2025-03-27",
@@ -4707,7 +5020,8 @@
     "solar": 594.5,
     "pres": 1019.5,
     "wind": 2.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-03-28": {
     "date": "2025-03-28",
@@ -4722,7 +5036,8 @@
     "solar": 489.8,
     "pres": 1012.8,
     "wind": 1.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-03-29": {
     "date": "2025-03-29",
@@ -4737,7 +5052,8 @@
     "solar": 184.9,
     "pres": 1016.9,
     "wind": 1.0,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.6
   },
   "2025-03-30": {
     "date": "2025-03-30",
@@ -4752,7 +5068,8 @@
     "solar": 575.8,
     "pres": 1021.4,
     "wind": 1.9,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2025-03-31": {
     "date": "2025-03-31",
@@ -4767,7 +5084,8 @@
     "solar": 546.7,
     "pres": 1024.7,
     "wind": 1.9,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-04-01": {
     "date": "2025-04-01",
@@ -4782,7 +5100,8 @@
     "solar": 618.0,
     "pres": 1021.2,
     "wind": 3.0,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 0.0
   },
   "2025-04-02": {
     "date": "2025-04-02",
@@ -4797,7 +5116,8 @@
     "solar": 500.6,
     "pres": 1017.1,
     "wind": 2.8,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2025-04-03": {
     "date": "2025-04-03",
@@ -4812,7 +5132,8 @@
     "solar": 518.8,
     "pres": 1021.1,
     "wind": 1.7,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-04-04": {
     "date": "2025-04-04",
@@ -4827,7 +5148,8 @@
     "solar": 514.2,
     "pres": 1017.7,
     "wind": 1.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-04-05": {
     "date": "2025-04-05",
@@ -4842,7 +5164,8 @@
     "solar": 524.8,
     "pres": 1014.8,
     "wind": 1.8,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-04-06": {
     "date": "2025-04-06",
@@ -4857,7 +5180,8 @@
     "solar": 530.3,
     "pres": 1019.9,
     "wind": 3.9,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 0.0
   },
   "2025-04-07": {
     "date": "2025-04-07",
@@ -4872,7 +5196,8 @@
     "solar": 531.9,
     "pres": 1023.0,
     "wind": 1.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-04-08": {
     "date": "2025-04-08",
@@ -4887,7 +5212,8 @@
     "solar": 553.2,
     "pres": 1024.2,
     "wind": 1.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-04-09": {
     "date": "2025-04-09",
@@ -4902,7 +5228,8 @@
     "solar": 547.7,
     "pres": 1022.6,
     "wind": 1.7,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-04-10": {
     "date": "2025-04-10",
@@ -4917,7 +5244,8 @@
     "solar": 531.5,
     "pres": 1025.8,
     "wind": 1.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-04-11": {
     "date": "2025-04-11",
@@ -4932,7 +5260,8 @@
     "solar": 539.0,
     "pres": 1021.4,
     "wind": 1.1,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-04-12": {
     "date": "2025-04-12",
@@ -4947,7 +5276,8 @@
     "solar": 556.8,
     "pres": 1011.9,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-04-13": {
     "date": "2025-04-13",
@@ -4962,7 +5292,8 @@
     "solar": 583.0,
     "pres": 1010.2,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 3.0
   },
   "2025-04-14": {
     "date": "2025-04-14",
@@ -4977,7 +5308,8 @@
     "solar": 708.3,
     "pres": 1008.7,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.2
   },
   "2025-04-15": {
     "date": "2025-04-15",
@@ -4992,7 +5324,8 @@
     "solar": 598.7,
     "pres": 1003.1,
     "wind": 0.6,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 3.0
   },
   "2025-04-16": {
     "date": "2025-04-16",
@@ -5007,7 +5340,8 @@
     "solar": 96.3,
     "pres": 1009.5,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2025-04-17": {
     "date": "2025-04-17",
@@ -5022,7 +5356,8 @@
     "solar": 149.0,
     "pres": 1011.1,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 3.6
   },
   "2025-04-18": {
     "date": "2025-04-18",
@@ -5037,7 +5372,8 @@
     "solar": 238.7,
     "pres": 1015.4,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-04-19": {
     "date": "2025-04-19",
@@ -5052,7 +5388,8 @@
     "solar": 649.3,
     "pres": 1008.8,
     "wind": 1.1,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-04-20": {
     "date": "2025-04-20",
@@ -5067,7 +5404,8 @@
     "solar": 403.1,
     "pres": 1009.1,
     "wind": 0.9,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 1.8
   },
   "2025-04-21": {
     "date": "2025-04-21",
@@ -5082,7 +5420,8 @@
     "solar": 724.5,
     "pres": 1013.9,
     "wind": 1.0,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 31.8
   },
   "2025-04-22": {
     "date": "2025-04-22",
@@ -5097,7 +5436,8 @@
     "solar": 667.4,
     "pres": 1019.0,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-04-23": {
     "date": "2025-04-23",
@@ -5112,7 +5452,8 @@
     "solar": 652.6,
     "pres": 1016.2,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2025-04-24": {
     "date": "2025-04-24",
@@ -5127,7 +5468,8 @@
     "solar": 633.0,
     "pres": 1018.0,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 6.0
   },
   "2025-04-25": {
     "date": "2025-04-25",
@@ -5142,7 +5484,8 @@
     "solar": 738.2,
     "pres": 1019.0,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 4.8
   },
   "2025-04-26": {
     "date": "2025-04-26",
@@ -5157,7 +5500,8 @@
     "solar": 763.8,
     "pres": 1018.9,
     "wind": 2.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-04-27": {
     "date": "2025-04-27",
@@ -5172,7 +5516,8 @@
     "solar": 617.4,
     "pres": 1022.6,
     "wind": 1.4,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-04-28": {
     "date": "2025-04-28",
@@ -5187,7 +5532,8 @@
     "solar": 602.3,
     "pres": 1024.9,
     "wind": 1.7,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-04-29": {
     "date": "2025-04-29",
@@ -5202,7 +5548,8 @@
     "solar": 595.2,
     "pres": 1023.9,
     "wind": 1.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-04-30": {
     "date": "2025-04-30",
@@ -5217,7 +5564,8 @@
     "solar": 602.0,
     "pres": 1021.9,
     "wind": 1.4,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-05-01": {
     "date": "2025-05-01",
@@ -5232,7 +5580,8 @@
     "solar": 595.6,
     "pres": 1019.8,
     "wind": 1.4,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-05-02": {
     "date": "2025-05-02",
@@ -5247,7 +5596,8 @@
     "solar": 585.3,
     "pres": 1017.2,
     "wind": 1.1,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-03": {
     "date": "2025-05-03",
@@ -5262,7 +5612,8 @@
     "solar": 778.6,
     "pres": 1012.8,
     "wind": 2.3,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 1.8
   },
   "2025-05-04": {
     "date": "2025-05-04",
@@ -5277,7 +5628,8 @@
     "solar": 199.9,
     "pres": 1011.7,
     "wind": 1.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 1.8
   },
   "2025-05-05": {
     "date": "2025-05-05",
@@ -5292,7 +5644,8 @@
     "solar": 264.6,
     "pres": 1012.5,
     "wind": 2.2,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 1.8
   },
   "2025-05-06": {
     "date": "2025-05-06",
@@ -5307,7 +5660,8 @@
     "solar": 742.1,
     "pres": 1016.1,
     "wind": 2.0,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-05-07": {
     "date": "2025-05-07",
@@ -5322,7 +5676,8 @@
     "solar": 789.7,
     "pres": 1015.6,
     "wind": 2.8,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-05-08": {
     "date": "2025-05-08",
@@ -5337,7 +5692,8 @@
     "solar": 713.6,
     "pres": 1014.6,
     "wind": 1.6,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-09": {
     "date": "2025-05-09",
@@ -5352,7 +5708,8 @@
     "solar": 693.9,
     "pres": 1017.4,
     "wind": 1.7,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-05-10": {
     "date": "2025-05-10",
@@ -5367,7 +5724,8 @@
     "solar": 626.7,
     "pres": 1018.3,
     "wind": 1.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-05-11": {
     "date": "2025-05-11",
@@ -5382,7 +5740,8 @@
     "solar": 635.2,
     "pres": 1013.4,
     "wind": 1.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-05-12": {
     "date": "2025-05-12",
@@ -5397,7 +5756,8 @@
     "solar": 797.0,
     "pres": 1013.6,
     "wind": 1.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 6.0
   },
   "2025-05-13": {
     "date": "2025-05-13",
@@ -5412,7 +5772,8 @@
     "solar": 646.9,
     "pres": 1016.7,
     "wind": 0.9,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-14": {
     "date": "2025-05-14",
@@ -5427,7 +5788,8 @@
     "solar": 622.2,
     "pres": 1017.1,
     "wind": 1.6,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-15": {
     "date": "2025-05-15",
@@ -5442,7 +5804,8 @@
     "solar": 632.7,
     "pres": 1016.5,
     "wind": 2.2,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2025-05-16": {
     "date": "2025-05-16",
@@ -5457,7 +5820,8 @@
     "solar": 674.4,
     "pres": 1018.7,
     "wind": 1.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-05-17": {
     "date": "2025-05-17",
@@ -5472,7 +5836,8 @@
     "solar": 764.0,
     "pres": 1017.3,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-05-18": {
     "date": "2025-05-18",
@@ -5487,7 +5852,8 @@
     "solar": 759.8,
     "pres": 1017.4,
     "wind": 0.9,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-19": {
     "date": "2025-05-19",
@@ -5502,7 +5868,8 @@
     "solar": 674.0,
     "pres": 1017.2,
     "wind": 1.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 4.8
   },
   "2025-05-20": {
     "date": "2025-05-20",
@@ -5517,7 +5884,8 @@
     "solar": 857.2,
     "pres": 1016.3,
     "wind": 1.2,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-05-21": {
     "date": "2025-05-21",
@@ -5532,7 +5900,8 @@
     "solar": 730.6,
     "pres": 1014.5,
     "wind": 2.3,
-    "wind_gust": 25.6
+    "wind_gust": 25.6,
+    "rain_rate_max": 0.0
   },
   "2025-05-22": {
     "date": "2025-05-22",
@@ -5547,7 +5916,8 @@
     "solar": 701.9,
     "pres": 1014.8,
     "wind": 1.0,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 4.8
   },
   "2025-05-23": {
     "date": "2025-05-23",
@@ -5562,7 +5932,8 @@
     "solar": 789.0,
     "pres": 1018.5,
     "wind": 1.8,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-24": {
     "date": "2025-05-24",
@@ -5577,7 +5948,8 @@
     "solar": 770.1,
     "pres": 1020.0,
     "wind": 1.2,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-05-25": {
     "date": "2025-05-25",
@@ -5592,7 +5964,8 @@
     "solar": 875.5,
     "pres": 1017.2,
     "wind": 1.7,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 1.2
   },
   "2025-05-26": {
     "date": "2025-05-26",
@@ -5607,7 +5980,8 @@
     "solar": 834.7,
     "pres": 1021.1,
     "wind": 2.0,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 1.8
   },
   "2025-05-27": {
     "date": "2025-05-27",
@@ -5622,7 +5996,8 @@
     "solar": 869.5,
     "pres": 1022.3,
     "wind": 1.3,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-28": {
     "date": "2025-05-28",
@@ -5637,7 +6012,8 @@
     "solar": 436.4,
     "pres": 1021.6,
     "wind": 1.6,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 1.8
   },
   "2025-05-29": {
     "date": "2025-05-29",
@@ -5652,7 +6028,8 @@
     "solar": 788.3,
     "pres": 1024.9,
     "wind": 1.1,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-30": {
     "date": "2025-05-30",
@@ -5667,7 +6044,8 @@
     "solar": 660.5,
     "pres": 1022.8,
     "wind": 1.1,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-05-31": {
     "date": "2025-05-31",
@@ -5682,7 +6060,8 @@
     "solar": 654.4,
     "pres": 1019.7,
     "wind": 1.3,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 31.8
   },
   "2025-06-01": {
     "date": "2025-06-01",
@@ -5697,7 +6076,8 @@
     "solar": 716.0,
     "pres": 1016.7,
     "wind": 1.8,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 15.0
   },
   "2025-06-02": {
     "date": "2025-06-02",
@@ -5712,7 +6092,8 @@
     "solar": 781.5,
     "pres": 1018.2,
     "wind": 0.4,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 12.0
   },
   "2025-06-03": {
     "date": "2025-06-03",
@@ -5727,7 +6108,8 @@
     "solar": 644.9,
     "pres": 1015.6,
     "wind": 0.9,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2025-06-04": {
     "date": "2025-06-04",
@@ -5742,7 +6124,8 @@
     "solar": 727.7,
     "pres": 1012.8,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 4.8
   },
   "2025-06-05": {
     "date": "2025-06-05",
@@ -5757,7 +6140,8 @@
     "solar": 488.3,
     "pres": 1014.9,
     "wind": 1.4,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-06-06": {
     "date": "2025-06-06",
@@ -5772,7 +6156,8 @@
     "solar": 844.0,
     "pres": 1015.1,
     "wind": 1.4,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 7.8
   },
   "2025-06-07": {
     "date": "2025-06-07",
@@ -5787,7 +6172,8 @@
     "solar": 771.8,
     "pres": 1015.1,
     "wind": 1.2,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-08": {
     "date": "2025-06-08",
@@ -5802,7 +6188,8 @@
     "solar": 771.9,
     "pres": 1019.9,
     "wind": 2.4,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 3.0
   },
   "2025-06-09": {
     "date": "2025-06-09",
@@ -5817,7 +6204,8 @@
     "solar": 641.9,
     "pres": 1024.6,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-10": {
     "date": "2025-06-10",
@@ -5832,7 +6220,8 @@
     "solar": 677.3,
     "pres": 1020.4,
     "wind": 1.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-06-11": {
     "date": "2025-06-11",
@@ -5847,7 +6236,8 @@
     "solar": 652.8,
     "pres": 1020.2,
     "wind": 1.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-06-12": {
     "date": "2025-06-12",
@@ -5862,7 +6252,8 @@
     "solar": 651.0,
     "pres": 1017.8,
     "wind": 1.4,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-06-13": {
     "date": "2025-06-13",
@@ -5877,7 +6268,8 @@
     "solar": 638.6,
     "pres": 1019.4,
     "wind": 1.4,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-06-14": {
     "date": "2025-06-14",
@@ -5892,7 +6284,8 @@
     "solar": 676.6,
     "pres": 1019.3,
     "wind": 1.4,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-06-15": {
     "date": "2025-06-15",
@@ -5907,7 +6300,8 @@
     "solar": 828.5,
     "pres": 1022.0,
     "wind": 1.2,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 78.0
   },
   "2025-06-16": {
     "date": "2025-06-16",
@@ -5922,7 +6316,8 @@
     "solar": 743.5,
     "pres": 1027.5,
     "wind": 1.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-17": {
     "date": "2025-06-17",
@@ -5937,7 +6332,8 @@
     "solar": 659.8,
     "pres": 1025.2,
     "wind": 2.0,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-06-18": {
     "date": "2025-06-18",
@@ -5952,7 +6348,8 @@
     "solar": 664.5,
     "pres": 1023.5,
     "wind": 2.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-19": {
     "date": "2025-06-19",
@@ -5967,7 +6364,8 @@
     "solar": 654.2,
     "pres": 1023.3,
     "wind": 2.2,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-06-20": {
     "date": "2025-06-20",
@@ -5982,7 +6380,8 @@
     "solar": 655.8,
     "pres": 1023.0,
     "wind": 1.9,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-21": {
     "date": "2025-06-21",
@@ -5997,7 +6396,8 @@
     "solar": 708.3,
     "pres": 1020.9,
     "wind": 1.6,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-22": {
     "date": "2025-06-22",
@@ -6012,7 +6412,8 @@
     "solar": 663.9,
     "pres": 1018.0,
     "wind": 1.3,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-23": {
     "date": "2025-06-23",
@@ -6027,7 +6428,8 @@
     "solar": 747.0,
     "pres": 1016.9,
     "wind": 3.7,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-24": {
     "date": "2025-06-24",
@@ -6042,7 +6444,8 @@
     "solar": 687.0,
     "pres": 1017.8,
     "wind": 1.4,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-06-25": {
     "date": "2025-06-25",
@@ -6057,7 +6460,8 @@
     "solar": 716.3,
     "pres": 1015.3,
     "wind": 1.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-26": {
     "date": "2025-06-26",
@@ -6072,7 +6476,8 @@
     "solar": 763.4,
     "pres": 1018.5,
     "wind": 2.4,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2025-06-27": {
     "date": "2025-06-27",
@@ -6087,7 +6492,8 @@
     "solar": 876.4,
     "pres": 1024.7,
     "wind": 1.0,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-06-28": {
     "date": "2025-06-28",
@@ -6102,7 +6508,8 @@
     "solar": 670.2,
     "pres": 1026.3,
     "wind": 1.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-06-29": {
     "date": "2025-06-29",
@@ -6117,7 +6524,8 @@
     "solar": 671.8,
     "pres": 1023.2,
     "wind": 2.4,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-06-30": {
     "date": "2025-06-30",
@@ -6132,7 +6540,8 @@
     "solar": 654.9,
     "pres": 1018.4,
     "wind": 1.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-07-01": {
     "date": "2025-07-01",
@@ -6147,7 +6556,8 @@
     "solar": 678.6,
     "pres": 1017.3,
     "wind": 1.8,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-07-02": {
     "date": "2025-07-02",
@@ -6162,7 +6572,8 @@
     "solar": 683.1,
     "pres": 1016.3,
     "wind": 1.3,
-    "wind_gust": 22.0
+    "wind_gust": 22.0,
+    "rain_rate_max": 19.8
   },
   "2025-07-03": {
     "date": "2025-07-03",
@@ -6177,7 +6588,8 @@
     "solar": 767.5,
     "pres": 1023.5,
     "wind": 2.0,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-07-04": {
     "date": "2025-07-04",
@@ -6192,7 +6604,8 @@
     "solar": 657.3,
     "pres": 1024.9,
     "wind": 2.1,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-07-05": {
     "date": "2025-07-05",
@@ -6207,7 +6620,8 @@
     "solar": 715.2,
     "pres": 1018.8,
     "wind": 1.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-07-06": {
     "date": "2025-07-06",
@@ -6222,7 +6636,8 @@
     "solar": 380.7,
     "pres": 1012.3,
     "wind": 1.7,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 1.8
   },
   "2025-07-07": {
     "date": "2025-07-07",
@@ -6237,7 +6652,8 @@
     "solar": 997.9,
     "pres": 1009.3,
     "wind": 1.9,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 7.8
   },
   "2025-07-08": {
     "date": "2025-07-08",
@@ -6252,7 +6668,8 @@
     "solar": 785.7,
     "pres": 1017.2,
     "wind": 1.2,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 9.0
   },
   "2025-07-09": {
     "date": "2025-07-09",
@@ -6267,7 +6684,8 @@
     "solar": 786.4,
     "pres": 1023.0,
     "wind": 1.0,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-07-10": {
     "date": "2025-07-10",
@@ -6282,7 +6700,8 @@
     "solar": 666.1,
     "pres": 1022.1,
     "wind": 2.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-07-11": {
     "date": "2025-07-11",
@@ -6297,7 +6716,8 @@
     "solar": 730.2,
     "pres": 1018.3,
     "wind": 1.7,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-08-04": {
     "date": "2025-08-04",
@@ -6312,7 +6732,8 @@
     "solar": 0.0,
     "pres": 1020.0,
     "wind": 0.0,
-    "wind_gust": 0.0
+    "wind_gust": 0.0,
+    "rain_rate_max": 0.0
   },
   "2025-08-05": {
     "date": "2025-08-05",
@@ -6327,7 +6748,8 @@
     "solar": 744.0,
     "pres": 1021.6,
     "wind": 1.7,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-06": {
     "date": "2025-08-06",
@@ -6342,7 +6764,8 @@
     "solar": 616.0,
     "pres": 1024.2,
     "wind": 1.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-07": {
     "date": "2025-08-07",
@@ -6357,7 +6780,8 @@
     "solar": 675.3,
     "pres": 1019.9,
     "wind": 1.1,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-08-08": {
     "date": "2025-08-08",
@@ -6372,7 +6796,8 @@
     "solar": 599.6,
     "pres": 1020.2,
     "wind": 1.4,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-08-09": {
     "date": "2025-08-09",
@@ -6387,7 +6812,8 @@
     "solar": 586.3,
     "pres": 1020.9,
     "wind": 1.2,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2025-08-10": {
     "date": "2025-08-10",
@@ -6402,7 +6828,8 @@
     "solar": 586.3,
     "pres": 1025.6,
     "wind": 1.6,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-11": {
     "date": "2025-08-11",
@@ -6417,7 +6844,8 @@
     "solar": 590.5,
     "pres": 1021.7,
     "wind": 1.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-12": {
     "date": "2025-08-12",
@@ -6432,7 +6860,8 @@
     "solar": 555.9,
     "pres": 1017.4,
     "wind": 1.0,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-13": {
     "date": "2025-08-13",
@@ -6447,7 +6876,8 @@
     "solar": 546.6,
     "pres": 1017.5,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-08-14": {
     "date": "2025-08-14",
@@ -6462,7 +6892,8 @@
     "solar": 587.4,
     "pres": 1019.4,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-08-15": {
     "date": "2025-08-15",
@@ -6477,7 +6908,8 @@
     "solar": 603.1,
     "pres": 1021.2,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-16": {
     "date": "2025-08-16",
@@ -6492,7 +6924,8 @@
     "solar": 609.6,
     "pres": 1020.7,
     "wind": 2.2,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-08-17": {
     "date": "2025-08-17",
@@ -6507,7 +6940,8 @@
     "solar": 578.8,
     "pres": 1020.1,
     "wind": 2.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-08-18": {
     "date": "2025-08-18",
@@ -6522,7 +6956,8 @@
     "solar": 577.2,
     "pres": 1018.0,
     "wind": 1.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-19": {
     "date": "2025-08-19",
@@ -6537,7 +6972,8 @@
     "solar": 570.0,
     "pres": 1013.7,
     "wind": 1.0,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-08-20": {
     "date": "2025-08-20",
@@ -6552,7 +6988,8 @@
     "solar": 508.8,
     "pres": 1011.0,
     "wind": 0.7,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 34.8
   },
   "2025-08-21": {
     "date": "2025-08-21",
@@ -6567,7 +7004,8 @@
     "solar": 271.1,
     "pres": 1011.1,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 12.6
   },
   "2025-08-22": {
     "date": "2025-08-22",
@@ -6582,7 +7020,8 @@
     "solar": 653.0,
     "pres": 1018.2,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-08-23": {
     "date": "2025-08-23",
@@ -6597,7 +7036,8 @@
     "solar": 743.2,
     "pres": 1020.3,
     "wind": 1.1,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-24": {
     "date": "2025-08-24",
@@ -6612,7 +7052,8 @@
     "solar": 567.0,
     "pres": 1020.4,
     "wind": 2.2,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-08-25": {
     "date": "2025-08-25",
@@ -6627,7 +7068,8 @@
     "solar": 554.9,
     "pres": 1018.6,
     "wind": 1.4,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-08-26": {
     "date": "2025-08-26",
@@ -6642,7 +7084,8 @@
     "solar": 537.8,
     "pres": 1014.4,
     "wind": 0.8,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 4.2
   },
   "2025-08-27": {
     "date": "2025-08-27",
@@ -6657,7 +7100,8 @@
     "solar": 612.9,
     "pres": 1011.9,
     "wind": 0.7,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 22.8
   },
   "2025-08-28": {
     "date": "2025-08-28",
@@ -6672,7 +7116,8 @@
     "solar": 265.9,
     "pres": 1008.9,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 9.0
   },
   "2025-08-29": {
     "date": "2025-08-29",
@@ -6687,7 +7132,8 @@
     "solar": 698.5,
     "pres": 1007.2,
     "wind": 1.2,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-08-30": {
     "date": "2025-08-30",
@@ -6702,7 +7148,8 @@
     "solar": 723.6,
     "pres": 1012.6,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-08-31": {
     "date": "2025-08-31",
@@ -6717,7 +7164,8 @@
     "solar": 593.0,
     "pres": 1012.0,
     "wind": 1.0,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-09-01": {
     "date": "2025-09-01",
@@ -6732,7 +7180,8 @@
     "solar": 718.7,
     "pres": 1011.9,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 35.4
   },
   "2025-09-02": {
     "date": "2025-09-02",
@@ -6747,7 +7196,8 @@
     "solar": 663.6,
     "pres": 1013.8,
     "wind": 0.8,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-09-03": {
     "date": "2025-09-03",
@@ -6762,7 +7212,8 @@
     "solar": 603.2,
     "pres": 1013.8,
     "wind": 0.9,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-09-04": {
     "date": "2025-09-04",
@@ -6777,7 +7228,8 @@
     "solar": 714.6,
     "pres": 1016.3,
     "wind": 0.3,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 4.8
   },
   "2025-09-05": {
     "date": "2025-09-05",
@@ -6792,7 +7244,8 @@
     "solar": 637.9,
     "pres": 1023.2,
     "wind": 1.0,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 7.2
   },
   "2025-09-06": {
     "date": "2025-09-06",
@@ -6807,7 +7260,8 @@
     "solar": 519.8,
     "pres": 1022.7,
     "wind": 1.2,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-09-07": {
     "date": "2025-09-07",
@@ -6822,7 +7276,8 @@
     "solar": 500.9,
     "pres": 1017.7,
     "wind": 0.6,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-09-08": {
     "date": "2025-09-08",
@@ -6837,7 +7292,8 @@
     "solar": 353.6,
     "pres": 1017.2,
     "wind": 0.2,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 27.6
   },
   "2025-09-09": {
     "date": "2025-09-09",
@@ -6852,7 +7308,8 @@
     "solar": 678.7,
     "pres": 1015.5,
     "wind": 0.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 19.8
   },
   "2025-09-10": {
     "date": "2025-09-10",
@@ -6867,7 +7324,8 @@
     "solar": 635.7,
     "pres": 1011.2,
     "wind": 0.4,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-09-11": {
     "date": "2025-09-11",
@@ -6882,7 +7340,8 @@
     "solar": 692.9,
     "pres": 1013.7,
     "wind": 1.5,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 3.0
   },
   "2025-09-12": {
     "date": "2025-09-12",
@@ -6897,7 +7356,8 @@
     "solar": 616.5,
     "pres": 1020.2,
     "wind": 0.9,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 4.8
   },
   "2025-09-13": {
     "date": "2025-09-13",
@@ -6912,7 +7372,8 @@
     "solar": 475.8,
     "pres": 1018.9,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-09-14": {
     "date": "2025-09-14",
@@ -6927,7 +7388,8 @@
     "solar": 537.5,
     "pres": 1018.0,
     "wind": 0.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 4.8
   },
   "2025-09-15": {
     "date": "2025-09-15",
@@ -6942,7 +7404,8 @@
     "solar": 693.3,
     "pres": 1017.4,
     "wind": 2.0,
-    "wind_gust": 18.4
+    "wind_gust": 18.4,
+    "rain_rate_max": 0.0
   },
   "2025-09-16": {
     "date": "2025-09-16",
@@ -6957,7 +7420,8 @@
     "solar": 585.8,
     "pres": 1024.0,
     "wind": 1.2,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-09-17": {
     "date": "2025-09-17",
@@ -6972,7 +7436,8 @@
     "solar": 736.4,
     "pres": 1025.1,
     "wind": 0.6,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-09-18": {
     "date": "2025-09-18",
@@ -6987,7 +7452,8 @@
     "solar": 456.6,
     "pres": 1025.8,
     "wind": 0.6,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-09-19": {
     "date": "2025-09-19",
@@ -7002,7 +7468,8 @@
     "solar": 451.8,
     "pres": 1024.8,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-09-20": {
     "date": "2025-09-20",
@@ -7017,7 +7484,8 @@
     "solar": 460.0,
     "pres": 1018.9,
     "wind": 0.8,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-09-21": {
     "date": "2025-09-21",
@@ -7032,7 +7500,8 @@
     "solar": 322.1,
     "pres": 1015.7,
     "wind": 1.3,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 15.6
   },
   "2025-09-22": {
     "date": "2025-09-22",
@@ -7047,7 +7516,8 @@
     "solar": 186.8,
     "pres": 1016.9,
     "wind": 2.9,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 7.8
   },
   "2025-09-23": {
     "date": "2025-09-23",
@@ -7062,7 +7532,8 @@
     "solar": 104.5,
     "pres": 1019.3,
     "wind": 1.5,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 4.8
   },
   "2025-09-24": {
     "date": "2025-09-24",
@@ -7077,7 +7548,8 @@
     "solar": 161.1,
     "pres": 1018.4,
     "wind": 1.2,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 4.8
   },
   "2025-09-25": {
     "date": "2025-09-25",
@@ -7092,7 +7564,8 @@
     "solar": 102.8,
     "pres": 1019.4,
     "wind": 0.0,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 3.0
   },
   "2025-09-26": {
     "date": "2025-09-26",
@@ -7107,7 +7580,8 @@
     "solar": 140.3,
     "pres": 1020.7,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2025-09-27": {
     "date": "2025-09-27",
@@ -7122,7 +7596,8 @@
     "solar": 569.9,
     "pres": 1022.3,
     "wind": 0.7,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-09-28": {
     "date": "2025-09-28",
@@ -7137,7 +7612,8 @@
     "solar": 399.3,
     "pres": 1021.9,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-09-29": {
     "date": "2025-09-29",
@@ -7152,7 +7628,8 @@
     "solar": 431.1,
     "pres": 1022.7,
     "wind": 0.8,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-09-30": {
     "date": "2025-09-30",
@@ -7167,7 +7644,8 @@
     "solar": 495.7,
     "pres": 1024.2,
     "wind": 0.5,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 6.0
   },
   "2025-10-01": {
     "date": "2025-10-01",
@@ -7182,7 +7660,8 @@
     "solar": 491.5,
     "pres": 1027.5,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-10-02": {
     "date": "2025-10-02",
@@ -7197,7 +7676,8 @@
     "solar": 384.9,
     "pres": 1027.1,
     "wind": 1.2,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2025-10-03": {
     "date": "2025-10-03",
@@ -7212,7 +7692,8 @@
     "solar": 198.0,
     "pres": 1021.6,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-10-04": {
     "date": "2025-10-04",
@@ -7227,7 +7708,8 @@
     "solar": 474.9,
     "pres": 1011.6,
     "wind": 2.7,
-    "wind_gust": 27.7
+    "wind_gust": 27.7,
+    "rain_rate_max": 4.8
   },
   "2025-10-05": {
     "date": "2025-10-05",
@@ -7242,7 +7724,8 @@
     "solar": 469.7,
     "pres": 1019.5,
     "wind": 1.2,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 3.0
   },
   "2025-10-06": {
     "date": "2025-10-06",
@@ -7257,7 +7740,8 @@
     "solar": 327.3,
     "pres": 1027.0,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-10-07": {
     "date": "2025-10-07",
@@ -7272,7 +7756,8 @@
     "solar": 444.4,
     "pres": 1026.5,
     "wind": 0.8,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-10-08": {
     "date": "2025-10-08",
@@ -7287,7 +7772,8 @@
     "solar": 366.8,
     "pres": 1022.9,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-10-09": {
     "date": "2025-10-09",
@@ -7302,7 +7788,8 @@
     "solar": 435.0,
     "pres": 1025.8,
     "wind": 0.7,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.2
   },
   "2025-10-10": {
     "date": "2025-10-10",
@@ -7317,7 +7804,8 @@
     "solar": 367.6,
     "pres": 1032.3,
     "wind": 0.9,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-10-11": {
     "date": "2025-10-11",
@@ -7332,7 +7820,8 @@
     "solar": 370.1,
     "pres": 1032.5,
     "wind": 0.5,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-10-12": {
     "date": "2025-10-12",
@@ -7347,7 +7836,8 @@
     "solar": 401.1,
     "pres": 1028.7,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-10-13": {
     "date": "2025-10-13",
@@ -7362,7 +7852,8 @@
     "solar": 433.5,
     "pres": 1025.8,
     "wind": 0.9,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 1.8
   },
   "2025-10-14": {
     "date": "2025-10-14",
@@ -7377,7 +7868,8 @@
     "solar": 404.1,
     "pres": 1024.8,
     "wind": 0.6,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-10-15": {
     "date": "2025-10-15",
@@ -7392,7 +7884,8 @@
     "solar": 457.6,
     "pres": 1025.0,
     "wind": 0.9,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-10-16": {
     "date": "2025-10-16",
@@ -7407,7 +7900,8 @@
     "solar": 397.3,
     "pres": 1023.8,
     "wind": 0.8,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-10-17": {
     "date": "2025-10-17",
@@ -7422,7 +7916,8 @@
     "solar": 375.8,
     "pres": 1023.5,
     "wind": 0.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-10-18": {
     "date": "2025-10-18",
@@ -7437,7 +7932,8 @@
     "solar": 351.5,
     "pres": 1023.9,
     "wind": 0.9,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-10-19": {
     "date": "2025-10-19",
@@ -7452,7 +7948,8 @@
     "solar": 267.8,
     "pres": 1016.0,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-10-20": {
     "date": "2025-10-20",
@@ -7467,7 +7964,8 @@
     "solar": 230.6,
     "pres": 1005.2,
     "wind": 1.0,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 3.0
   },
   "2025-10-21": {
     "date": "2025-10-21",
@@ -7482,7 +7980,8 @@
     "solar": 330.6,
     "pres": 1002.7,
     "wind": 0.8,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 4.8
   },
   "2025-10-22": {
     "date": "2025-10-22",
@@ -7497,7 +7996,8 @@
     "solar": 257.4,
     "pres": 1001.8,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 4.8
   },
   "2025-10-23": {
     "date": "2025-10-23",
@@ -7512,7 +8012,8 @@
     "solar": 306.7,
     "pres": 996.8,
     "wind": 3.2,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 7.8
   },
   "2025-10-24": {
     "date": "2025-10-24",
@@ -7527,7 +8028,8 @@
     "solar": 410.8,
     "pres": 1009.4,
     "wind": 1.8,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 7.2
   },
   "2025-10-25": {
     "date": "2025-10-25",
@@ -7542,7 +8044,8 @@
     "solar": 361.0,
     "pres": 1007.3,
     "wind": 1.2,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 3.0
   },
   "2025-10-26": {
     "date": "2025-10-26",
@@ -7557,7 +8060,8 @@
     "solar": 385.9,
     "pres": 1012.1,
     "wind": 1.4,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 3.0
   },
   "2025-10-27": {
     "date": "2025-10-27",
@@ -7572,7 +8076,8 @@
     "solar": 144.7,
     "pres": 1010.5,
     "wind": 2.1,
-    "wind_gust": 29.5
+    "wind_gust": 29.5,
+    "rain_rate_max": 6.0
   },
   "2025-10-28": {
     "date": "2025-10-28",
@@ -7587,7 +8092,8 @@
     "solar": 386.8,
     "pres": 1016.0,
     "wind": 1.2,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2025-10-29": {
     "date": "2025-10-29",
@@ -7602,7 +8108,8 @@
     "solar": 338.6,
     "pres": 1009.2,
     "wind": 0.6,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 4.8
   },
   "2025-10-30": {
     "date": "2025-10-30",
@@ -7617,7 +8124,8 @@
     "solar": 312.8,
     "pres": 1012.9,
     "wind": 1.4,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 1.8
   },
   "2025-10-31": {
     "date": "2025-10-31",
@@ -7632,7 +8140,8 @@
     "solar": 193.4,
     "pres": 1015.7,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-11-01": {
     "date": "2025-11-01",
@@ -7647,7 +8156,8 @@
     "solar": 124.3,
     "pres": 1014.7,
     "wind": 0.6,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 3.0
   },
   "2025-11-02": {
     "date": "2025-11-02",
@@ -7662,7 +8172,8 @@
     "solar": 135.8,
     "pres": 1016.7,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 7.8
   },
   "2025-11-03": {
     "date": "2025-11-03",
@@ -7677,7 +8188,8 @@
     "solar": 285.4,
     "pres": 1024.3,
     "wind": 0.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 1.2
   },
   "2025-11-04": {
     "date": "2025-11-04",
@@ -7692,7 +8204,8 @@
     "solar": 238.0,
     "pres": 1023.7,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-11-05": {
     "date": "2025-11-05",
@@ -7707,7 +8220,8 @@
     "solar": 233.2,
     "pres": 1019.5,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-11-06": {
     "date": "2025-11-06",
@@ -7722,7 +8236,8 @@
     "solar": 165.4,
     "pres": 1013.3,
     "wind": 0.0,
-    "wind_gust": 1.8
+    "wind_gust": 1.8,
+    "rain_rate_max": 1.8
   },
   "2025-11-07": {
     "date": "2025-11-07",
@@ -7737,7 +8252,8 @@
     "solar": 78.0,
     "pres": 1013.4,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 1.2
   },
   "2025-11-08": {
     "date": "2025-11-08",
@@ -7752,7 +8268,8 @@
     "solar": 75.1,
     "pres": 1016.4,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-11-09": {
     "date": "2025-11-09",
@@ -7767,7 +8284,8 @@
     "solar": 292.9,
     "pres": 1019.4,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.8
   },
   "2025-11-10": {
     "date": "2025-11-10",
@@ -7782,7 +8300,8 @@
     "solar": 282.3,
     "pres": 1016.8,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-11-11": {
     "date": "2025-11-11",
@@ -7797,7 +8316,8 @@
     "solar": 217.3,
     "pres": 1017.3,
     "wind": 0.3,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.2
   },
   "2025-11-12": {
     "date": "2025-11-12",
@@ -7812,7 +8332,8 @@
     "solar": 158.5,
     "pres": 1016.3,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-11-13": {
     "date": "2025-11-13",
@@ -7827,7 +8348,8 @@
     "solar": 197.7,
     "pres": 1015.4,
     "wind": 0.6,
-    "wind_gust": 13.0
+    "wind_gust": 13.0,
+    "rain_rate_max": 0.0
   },
   "2025-11-14": {
     "date": "2025-11-14",
@@ -7842,7 +8364,8 @@
     "solar": 135.8,
     "pres": 1010.5,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-11-15": {
     "date": "2025-11-15",
@@ -7857,7 +8380,8 @@
     "solar": 207.1,
     "pres": 1010.9,
     "wind": 0.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 3.0
   },
   "2025-11-16": {
     "date": "2025-11-16",
@@ -7872,7 +8396,8 @@
     "solar": 75.8,
     "pres": 1008.7,
     "wind": 0.0,
-    "wind_gust": 1.8
+    "wind_gust": 1.8,
+    "rain_rate_max": 3.0
   },
   "2025-11-17": {
     "date": "2025-11-17",
@@ -7887,7 +8412,8 @@
     "solar": 130.0,
     "pres": 1013.9,
     "wind": 0.9,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 3.0
   },
   "2025-11-18": {
     "date": "2025-11-18",
@@ -7902,7 +8428,8 @@
     "solar": 154.9,
     "pres": 1020.8,
     "wind": 0.2,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-11-19": {
     "date": "2025-11-19",
@@ -7917,7 +8444,8 @@
     "solar": 146.8,
     "pres": 1010.0,
     "wind": 0.4,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.2
   },
   "2025-11-20": {
     "date": "2025-11-20",
@@ -7932,7 +8460,8 @@
     "solar": 219.1,
     "pres": 1011.7,
     "wind": 0.9,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 1.8
   },
   "2025-11-21": {
     "date": "2025-11-21",
@@ -7947,7 +8476,8 @@
     "solar": 126.5,
     "pres": 1020.9,
     "wind": 1.0,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-11-22": {
     "date": "2025-11-22",
@@ -7962,7 +8492,8 @@
     "solar": 138.5,
     "pres": 1027.2,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-11-23": {
     "date": "2025-11-23",
@@ -7977,7 +8508,8 @@
     "solar": 107.8,
     "pres": 1013.4,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.0
   },
   "2025-11-24": {
     "date": "2025-11-24",
@@ -7992,7 +8524,8 @@
     "solar": 66.2,
     "pres": 1000.7,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.6
   },
   "2025-11-25": {
     "date": "2025-11-25",
@@ -8007,7 +8540,8 @@
     "solar": 125.5,
     "pres": 1004.8,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 3.0
   },
   "2025-11-26": {
     "date": "2025-11-26",
@@ -8022,7 +8556,8 @@
     "solar": 70.1,
     "pres": 1018.9,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 4.8
   },
   "2025-11-27": {
     "date": "2025-11-27",
@@ -8037,7 +8572,8 @@
     "solar": 145.9,
     "pres": 1025.1,
     "wind": 0.2,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-11-28": {
     "date": "2025-11-28",
@@ -8052,7 +8588,8 @@
     "solar": 152.7,
     "pres": 1021.0,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.8
   },
   "2025-11-29": {
     "date": "2025-11-29",
@@ -8067,7 +8604,8 @@
     "solar": 169.2,
     "pres": 1014.1,
     "wind": 0.2,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 1.8
   },
   "2025-11-30": {
     "date": "2025-11-30",
@@ -8082,7 +8620,8 @@
     "solar": 58.9,
     "pres": 1015.0,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 3.6
   },
   "2025-12-01": {
     "date": "2025-12-01",
@@ -8097,7 +8636,8 @@
     "solar": 95.5,
     "pres": 1019.6,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-12-02": {
     "date": "2025-12-02",
@@ -8112,7 +8652,8 @@
     "solar": 126.4,
     "pres": 1014.2,
     "wind": 0.3,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 1.2
   },
   "2025-12-03": {
     "date": "2025-12-03",
@@ -8127,7 +8668,8 @@
     "solar": 109.3,
     "pres": 1013.6,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-12-04": {
     "date": "2025-12-04",
@@ -8142,7 +8684,8 @@
     "solar": 119.0,
     "pres": 1009.6,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-12-05": {
     "date": "2025-12-05",
@@ -8157,7 +8700,8 @@
     "solar": 118.4,
     "pres": 1012.8,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.8
   },
   "2025-12-06": {
     "date": "2025-12-06",
@@ -8172,7 +8716,8 @@
     "solar": 110.7,
     "pres": 1011.7,
     "wind": 0.9,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 1.8
   },
   "2025-12-07": {
     "date": "2025-12-07",
@@ -8187,7 +8732,8 @@
     "solar": 82.5,
     "pres": 1013.9,
     "wind": 0.7,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 3.0
   },
   "2025-12-08": {
     "date": "2025-12-08",
@@ -8202,7 +8748,8 @@
     "solar": 105.3,
     "pres": 1019.3,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-12-09": {
     "date": "2025-12-09",
@@ -8217,7 +8764,8 @@
     "solar": 98.8,
     "pres": 1018.2,
     "wind": 0.4,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 1.8
   },
   "2025-12-10": {
     "date": "2025-12-10",
@@ -8232,7 +8780,8 @@
     "solar": 116.9,
     "pres": 1022.9,
     "wind": 0.5,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 1.8
   },
   "2025-12-11": {
     "date": "2025-12-11",
@@ -8247,7 +8796,8 @@
     "solar": 72.8,
     "pres": 1024.9,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 1.8
   },
   "2025-12-12": {
     "date": "2025-12-12",
@@ -8262,7 +8812,8 @@
     "solar": 79.2,
     "pres": 1023.9,
     "wind": 0.1,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.2
   },
   "2025-12-13": {
     "date": "2025-12-13",
@@ -8277,7 +8828,8 @@
     "solar": 76.5,
     "pres": 1029.2,
     "wind": 0.2,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 1.8
   },
   "2025-12-14": {
     "date": "2025-12-14",
@@ -8292,7 +8844,8 @@
     "solar": 54.8,
     "pres": 1026.7,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 1.8
   },
   "2025-12-15": {
     "date": "2025-12-15",
@@ -8307,7 +8860,8 @@
     "solar": 56.5,
     "pres": 1019.8,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-12-16": {
     "date": "2025-12-16",
@@ -8322,7 +8876,8 @@
     "solar": 67.8,
     "pres": 1016.4,
     "wind": 0.0,
-    "wind_gust": 1.8
+    "wind_gust": 1.8,
+    "rain_rate_max": 1.2
   },
   "2025-12-17": {
     "date": "2025-12-17",
@@ -8337,7 +8892,8 @@
     "solar": 117.9,
     "pres": 1021.5,
     "wind": 0.0,
-    "wind_gust": 1.8
+    "wind_gust": 1.8,
+    "rain_rate_max": 0.0
   },
   "2025-12-18": {
     "date": "2025-12-18",
@@ -8352,7 +8908,8 @@
     "solar": 101.0,
     "pres": 1022.2,
     "wind": 0.6,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-12-19": {
     "date": "2025-12-19",
@@ -8367,7 +8924,8 @@
     "solar": 76.5,
     "pres": 1021.5,
     "wind": 0.7,
-    "wind_gust": 11.2
+    "wind_gust": 11.2,
+    "rain_rate_max": 0.0
   },
   "2025-12-20": {
     "date": "2025-12-20",
@@ -8382,7 +8940,8 @@
     "solar": 166.7,
     "pres": 1016.9,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 3.0
   },
   "2025-12-21": {
     "date": "2025-12-21",
@@ -8397,7 +8956,8 @@
     "solar": 107.4,
     "pres": 1011.1,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-12-22": {
     "date": "2025-12-22",
@@ -8412,7 +8972,8 @@
     "solar": 53.4,
     "pres": 1011.0,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-12-23": {
     "date": "2025-12-23",
@@ -8427,7 +8988,8 @@
     "solar": 38.6,
     "pres": 1014.2,
     "wind": 1.3,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-12-24": {
     "date": "2025-12-24",
@@ -8442,7 +9004,8 @@
     "solar": 52.1,
     "pres": 1018.8,
     "wind": 4.8,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 0.0
   },
   "2025-12-25": {
     "date": "2025-12-25",
@@ -8457,7 +9020,8 @@
     "solar": 126.1,
     "pres": 1022.1,
     "wind": 2.5,
-    "wind_gust": 16.6
+    "wind_gust": 16.6,
+    "rain_rate_max": 0.0
   },
   "2025-12-26": {
     "date": "2025-12-26",
@@ -8472,7 +9036,8 @@
     "solar": 99.2,
     "pres": 1026.8,
     "wind": 0.2,
-    "wind_gust": 5.4
+    "wind_gust": 5.4,
+    "rain_rate_max": 0.0
   },
   "2025-12-27": {
     "date": "2025-12-27",
@@ -8487,7 +9052,8 @@
     "solar": 103.9,
     "pres": 1029.8,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-12-28": {
     "date": "2025-12-28",
@@ -8502,7 +9068,8 @@
     "solar": 132.9,
     "pres": 1027.7,
     "wind": 0.3,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 0.0
   },
   "2025-12-29": {
     "date": "2025-12-29",
@@ -8517,7 +9084,8 @@
     "solar": 57.0,
     "pres": 1024.6,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2025-12-30": {
     "date": "2025-12-30",
@@ -8532,7 +9100,8 @@
     "solar": 138.1,
     "pres": 1027.0,
     "wind": 0.5,
-    "wind_gust": 9.4
+    "wind_gust": 9.4,
+    "rain_rate_max": 0.0
   },
   "2025-12-31": {
     "date": "2025-12-31",
@@ -8547,7 +9116,8 @@
     "solar": 114.9,
     "pres": 1026.4,
     "wind": 0.1,
-    "wind_gust": 3.6
+    "wind_gust": 3.6,
+    "rain_rate_max": 0.0
   },
   "2026-08-21": {
     "date": "2026-08-21",
@@ -8562,7 +9132,8 @@
     "solar": 0.0,
     "pres": 1016.4,
     "wind": 1.8,
-    "wind_gust": 1.8
+    "wind_gust": 1.8,
+    "rain_rate_max": 10.8
   },
   "2026-08-22": {
     "date": "2026-08-22",
@@ -8592,7 +9163,8 @@
     "solar": 688.7,
     "pres": 1016.0,
     "wind": 0.6,
-    "wind_gust": 7.2
+    "wind_gust": 7.2,
+    "rain_rate_max": 45.6
   },
   "2026-08-18": {
     "date": "2026-08-18",
@@ -8607,7 +9179,8 @@
     "solar": 780.8,
     "pres": 1014.3,
     "wind": 1.8,
-    "wind_gust": 14.8
+    "wind_gust": 14.8,
+    "rain_rate_max": 0.0
   },
   "2026-08-19": {
     "date": "2026-08-19",
@@ -8622,7 +9195,8 @@
     "solar": 626.4,
     "pres": 1009.3,
     "wind": 2.4,
-    "wind_gust": 20.2
+    "wind_gust": 20.2,
+    "rain_rate_max": 0.0
   },
   "2026-08-20": {
     "date": "2026-08-20",
@@ -8637,7 +9211,8 @@
     "solar": 599.4,
     "pres": 1011.0,
     "wind": 1.9,
-    "wind_gust": 23.8
+    "wind_gust": 23.8,
+    "rain_rate_max": 0.0
   },
   "2026-08-23": {
     "date": "2026-08-23",
@@ -8719,15 +9294,15 @@
     "month": 8,
     "day": 28,
     "year": 2026,
-    "avg": 20.3,
+    "avg": 20.6,
     "hi": 22.3,
     "lo": 19.7,
     "hum": 95.0,
     "rain": 5.8,
     "rain_rate_max": 0,
-    "solar": 118.9,
-    "pres": 1012.7,
-    "wind": 0.0,
-    "wind_gust": 0.0
+    "solar": 114.2,
+    "pres": 1013.1,
+    "wind": 0.4,
+    "wind_gust": 1.8
   }
 }
