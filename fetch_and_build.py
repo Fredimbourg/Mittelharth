@@ -117,7 +117,7 @@ def fetch_forecast():
             f"https://api.open-meteo.com/v1/forecast"
             f"?latitude={LAT}&longitude={LON}"
             f"&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,"
-            f"weathercode,windspeed_10m_max"
+            f"precipitation_probability_max,weathercode,windspeed_10m_max"
             f"&hourly=temperature_2m,precipitation_probability,precipitation,"
             f"windspeed_10m,windgusts_10m,weathercode"
             f"&timezone=Europe%2FParis"
@@ -136,6 +136,7 @@ def fetch_forecast():
                 "max_t":  daily.get("temperature_2m_max", [None]*8)[i],
                 "min_t":  daily.get("temperature_2m_min", [None]*8)[i],
                 "rain":   daily.get("precipitation_sum",  [None]*8)[i],
+                "rain_proba": daily.get("precipitation_probability_max", [None]*8)[i],
                 "code":   daily.get("weathercode",        [None]*8)[i],
                 "wind":   daily.get("windspeed_10m_max",  [None]*8)[i],
             })
@@ -265,6 +266,30 @@ def sun_times(lat=48.08, lon=7.36):
         return f"{h:02d}:{mi:02d}"
 
     return fmt(sunrise), fmt(sunset), day_len
+
+# ── Phase de lune (algorithme synodique simplifié) ────────────────────────────
+def moon_phase_info(dt=None):
+    """Retourne (emoji, nom_fr) pour la phase de lune à la date donnée."""
+    if dt is None:
+        dt = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2)))
+    known_new_moon = datetime.datetime(2000, 1, 6, 18, 14, tzinfo=datetime.timezone.utc)
+    synodic = 29.530588861
+    days = (dt.astimezone(datetime.timezone.utc) - known_new_moon).total_seconds() / 86400
+    phase = (days % synodic) / synodic
+    steps = [
+        (0.0625, "🌑", "Nouvelle Lune"),
+        (0.1875, "🌒", "Premier Croissant"),
+        (0.3125, "🌓", "Premier Quartier"),
+        (0.4375, "🌔", "Lune Gibbeuse Croissante"),
+        (0.5625, "🌕", "Pleine Lune"),
+        (0.6875, "🌖", "Lune Gibbeuse Décroissante"),
+        (0.8125, "🌗", "Dernier Quartier"),
+        (0.9375, "🌘", "Dernier Croissant"),
+    ]
+    for edge, emoji, name in steps:
+        if phase < edge:
+            return emoji, name
+    return "🌑", "Nouvelle Lune"
 
 # ── Calcul des records de la station ─────────────────────────────────────────
 def get_records(hist_dict):
@@ -1345,6 +1370,245 @@ forecast.forEach(day => {{
     Path("docs/index.html").write_text(html, encoding="utf-8")
     print("  → index.html généré")
 
+def build_tablet(live, forecast, hourly_fc, records=None):
+    """
+    Vue compacte façon 'tableau de bord tablette murale' : gros pavé
+    condition actuelle à gauche, 6 jours de prévisions à droite, et une
+    frise des prochaines heures en bas. Thème sombre fixe (pas de bascule
+    clair/sombre), pensé pour rester lisible en continu sur un écran dédié.
+    """
+    hourly_fc = hourly_fc or []
+    forecast = forecast or []
+
+    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).replace(tzinfo=None)
+
+    WMO_ICONS_FR = {
+        0:"☀️",1:"🌤️",2:"⛅",3:"☁️",
+        45:"🌫️",48:"🌫️",
+        51:"🌦️",53:"🌦️",55:"🌦️",
+        56:"🌧️",57:"🌧️",
+        61:"🌦️",63:"🌧️",65:"🌧️",
+        66:"🌨️",67:"🌨️",
+        71:"🌨️",73:"🌨️",75:"❄️",77:"❄️",
+        80:"🌦️",81:"🌧️",82:"⛈️",
+        85:"🌨️",86:"❄️",
+        95:"⛈️",96:"⛈️",99:"⛈️",
+    }
+    WMO_LABELS_FR = {
+        0:"Ciel dégagé",1:"Peu nuageux",2:"Partiellement nuageux",3:"Couvert",
+        45:"Brouillard",48:"Brouillard givrant",
+        51:"Bruine légère",53:"Bruine",55:"Bruine dense",
+        56:"Bruine verglaçante",57:"Bruine verglaçante",
+        61:"Pluie légère",63:"Pluie",65:"Pluie forte",
+        66:"Pluie verglaçante",67:"Pluie verglaçante",
+        71:"Neige légère",73:"Neige",75:"Neige forte",77:"Grains de neige",
+        80:"Averses",81:"Averses",82:"Averses violentes",
+        85:"Averses de neige",86:"Averses de neige",
+        95:"Orage",96:"Orage",99:"Orage violent",
+    }
+    FR_DAYS_ABBR = {0:"lun.",1:"mar.",2:"mer.",3:"jeu.",4:"ven.",5:"sam.",6:"dim."}
+
+    def wind_dir_str(deg):
+        if deg is None: return "—"
+        dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSO","SO","OSO","O","ONO","NO","NNO"]
+        return dirs[round(deg/22.5) % 16]
+
+    # Condition actuelle : code météo de l'heure en cours (prévisions horaires)
+    past_or_now = [h for h in hourly_fc if h.get("time") and datetime.datetime.fromisoformat(h["time"]) <= now]
+    current_code = past_or_now[-1].get("code") if past_or_now else (forecast[0].get("code") if forecast else None)
+    cur_icon = WMO_ICONS_FR.get(current_code, "🌡️")
+    cur_label = WMO_LABELS_FR.get(current_code, "—")
+
+    # Prévisions du jour (H/B, pluie) issues du forecast journalier Open-Meteo
+    today_fc = forecast[0] if forecast else {}
+    day_hi = today_fc.get("max_t")
+    day_lo = today_fc.get("min_t")
+
+    # Pic de probabilité de pluie restant aujourd'hui + cumul du jour
+    today_str = now.strftime("%Y-%m-%d")
+    remaining_today = [
+        h for h in hourly_fc
+        if h.get("time", "").startswith(today_str) and datetime.datetime.fromisoformat(h["time"]) >= now
+    ]
+    probas = [h.get("rain_proba") for h in remaining_today if h.get("rain_proba") is not None]
+    rain_proba_today = max(probas) if probas else (today_fc.get("rain_proba") or 0)
+    rain_mm_today = today_fc.get("rain") or 0
+
+    sunrise, sunset, _ = sun_times()
+    moon_emoji, moon_name = moon_phase_info(now)
+
+    def fmt_t(v):
+        return f"{round(v)}°" if v is not None else "—"
+
+    # 6 prochains jours : "Demain" puis 5 jours nommés
+    day_cards = []
+    for i, d in enumerate(forecast[1:7], start=1):
+        dt = datetime.datetime.strptime(d["date"], "%Y-%m-%d")
+        label = "Demain" if i == 1 else FR_DAYS_ABBR.get(dt.weekday(), "")
+        day_cards.append({
+            "label": label,
+            "icon":  WMO_ICONS_FR.get(d.get("code"), "🌡️"),
+            "max":   fmt_t(d.get("max_t")),
+            "min":   fmt_t(d.get("min_t")),
+            "proba": d.get("rain_proba"),
+            "mm":    d.get("rain"),
+        })
+    day_cards_html = "".join(f"""
+    <div class="t-day">
+      <div class="t-day-label">{c['label']}</div>
+      <div class="t-day-icon">{c['icon']}</div>
+      <div class="t-day-temps"><b>{c['max']}</b> <span>{c['min']}</span></div>
+      <div class="t-day-rain">{f"☔ {c['proba']:.0f}%" + (f" {c['mm']:.1f} mm" if c.get('mm') and c['mm'] > 0 else "") if c.get('proba') else ""}</div>
+    </div>""" for c in day_cards)
+
+    # Frise des prochaines heures (jusqu'à 12h à venir)
+    upcoming_hours = [
+        h for h in hourly_fc
+        if h.get("time") and datetime.datetime.fromisoformat(h["time"]) >= now.replace(minute=0, second=0, microsecond=0)
+    ][:12]
+    hours_html = ""
+    for h in upcoming_hours:
+        dt = datetime.datetime.fromisoformat(h["time"])
+        proba = h.get("rain_proba")
+        proba_str = f"{proba:.0f}%" if proba is not None else ""
+        bar_h = max(4, min(100, proba or 0))
+        hours_html += f"""
+    <div class="t-hour">
+      <div class="t-hour-proba">{proba_str}</div>
+      <div class="t-hour-bar-wrap"><div class="t-hour-bar" style="height:{bar_h}%"></div></div>
+      <div class="t-hour-time">{dt.strftime('%H:%M')}</div>
+    </div>"""
+    n_hours = len(upcoming_hours)
+
+    html = f"""<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="1800">
+<title>Tablette · Météo Colmar-Mittelharth</title>
+<style>
+*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+:root{{
+  --bg:#0b0f1a;--card:#131a2b;--card-2:#161f33;
+  --border:rgba(255,255,255,.07);--text:#f4f6fb;--text-dim:#8b93a9;
+  --accent:#4a90e2;--yellow:#f5c542;--radius:16px;
+}}
+body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1rem;min-height:100vh}}
+.container{{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:14px}}
+
+.t-header{{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.6rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}}
+.t-header .city h1{{font-size:26px;font-weight:700}}
+.t-header .city p{{font-size:13px;color:var(--text-dim);margin-top:2px}}
+.t-header .clock{{font-size:44px;font-weight:800;letter-spacing:1px}}
+.t-header .date{{font-size:15px;color:var(--text-dim);text-align:right}}
+
+.t-main{{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;grid-auto-rows:1fr;gap:14px}}
+@media(max-width:820px){{.t-main{{grid-template-columns:repeat(3,1fr)}} .t-now{{grid-column:1/-1}}}}
+@media(max-width:560px){{.t-main{{grid-template-columns:repeat(2,1fr)}}}}
+
+.t-now{{grid-row:span 2;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem;display:flex;flex-direction:column;gap:14px}}
+.t-now-top{{display:flex;align-items:center;gap:22px}}
+.t-now-icon{{font-size:64px;line-height:1}}
+.t-now-temp{{font-size:56px;font-weight:800;line-height:1}}
+.t-now-temp sup{{font-size:22px;font-weight:600;vertical-align:super}}
+.t-now-feels{{font-size:14px;color:var(--text-dim);margin-top:2px}}
+.t-now-cond{{font-size:22px;font-weight:600;margin-top:2px}}
+.t-now-hilo{{font-size:16px;color:var(--text-dim)}}
+.t-now-hilo b{{color:var(--text);font-weight:700}}
+.t-now-list{{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}}
+.t-now-item{{display:flex;align-items:center;gap:8px;font-size:14px;padding:6px 0;border-top:1px solid var(--border)}}
+.t-now-item .ic{{font-size:16px;width:20px;text-align:center}}
+.t-now-item b{{font-weight:700}}
+.t-wind-arrow{{display:inline-block;font-size:15px}}
+
+.t-day{{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}}
+.t-day-label{{font-size:15px;font-weight:700}}
+.t-day-icon{{font-size:32px;margin:6px 0}}
+.t-day-temps{{font-size:16px}}
+.t-day-temps b{{font-size:20px;font-weight:800}}
+.t-day-temps span{{color:var(--text-dim);margin-left:6px}}
+.t-day-rain{{font-size:12.5px;color:var(--accent);min-height:16px}}
+
+.t-hours{{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem}}
+.t-hours-title{{font-size:14px;color:var(--text-dim);margin-bottom:14px;display:flex;align-items:center;gap:8px}}
+.t-hours-strip{{display:grid;grid-template-columns:repeat({max(n_hours,1)},1fr);gap:8px;align-items:end}}
+.t-hour{{display:flex;flex-direction:column;align-items:center;gap:6px}}
+.t-hour-proba{{font-size:12px;font-weight:700;color:var(--accent);min-height:15px}}
+.t-hour-bar-wrap{{width:10px;height:60px;background:rgba(255,255,255,.06);border-radius:6px;display:flex;align-items:flex-end;overflow:hidden}}
+.t-hour-bar{{width:100%;background:var(--accent);border-radius:6px}}
+.t-hour-time{{font-size:11px;color:var(--text-dim)}}
+
+footer{{text-align:center;font-size:12px;color:var(--text-dim);padding:0.5rem 0 0.2rem}}
+nav{{display:flex;gap:8px;flex-wrap:wrap}}
+nav a{{font-size:13px;padding:6px 14px;border-radius:99px;border:1px solid var(--border);background:var(--card-2);color:var(--text-dim);text-decoration:none}}
+nav a.active{{background:rgba(74,144,226,.18);color:var(--accent);border-color:rgba(74,144,226,.4)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<nav>
+  <a href="index.html">⚡ En direct</a>
+  <a href="dashboard.html">📊 Historique</a>
+  <a href="climate.html">🌍 Climatologie</a>
+  <a href="tablet.html" class="active">🖥 Tablette</a>
+</nav>
+
+<div class="t-header">
+  <div class="city">
+    <h1>Colmar</h1>
+    <p>Colmar, Grand-Est, FR</p>
+  </div>
+  <div class="clock" id="tClock">--:--</div>
+  <div class="date" id="tDate">—</div>
+</div>
+
+<div class="t-main">
+  <div class="t-now">
+    <div class="t-now-top">
+      <div class="t-now-icon">{cur_icon}</div>
+      <div>
+        <div class="t-now-temp">{fmt_t(live.get('temp'))}<sup>&nbsp;</sup></div>
+        <div class="t-now-feels">(Ressenti {fmt_t(live.get('temp_feels'))})</div>
+      </div>
+    </div>
+    <div class="t-now-cond">{cur_label}</div>
+    <div class="t-now-hilo">H <b>{fmt_t(day_hi)}</b>&nbsp;&nbsp;B <b>{fmt_t(day_lo)}</b></div>
+    <div class="t-now-list">
+      <div class="t-now-item"><span class="ic">{moon_emoji}</span> {moon_name}</div>
+      <div class="t-now-item"><span class="ic t-wind-arrow" style="transform:rotate({(live.get('wind_dir') or 0)}deg)">↓</span> {live.get('wind_speed') and f"{live['wind_speed']:.0f} km/h" or "—"} {wind_dir_str(live.get('wind_dir'))}</div>
+      <div class="t-now-item"><span class="ic">💧</span> {fmt_t(live.get('hum')).replace('°','')}%</div>
+      <div class="t-now-item"><span class="ic">☔</span> {rain_proba_today:.0f}% · {rain_mm_today:.1f} mm</div>
+      <div class="t-now-item"><span class="ic">🌅</span> {sunrise or '—'}</div>
+      <div class="t-now-item"><span class="ic">🌇</span> {sunset or '—'}</div>
+    </div>
+  </div>
+  {day_cards_html}
+</div>
+
+<div class="t-hours">
+  <div class="t-hours-title">☔ {n_hours} prochaines heures</div>
+  <div class="t-hours-strip">{hours_html}</div>
+</div>
+
+<footer>Station météo personnelle · Colmar-Mittelharth · Alsace · Prévisions Open-Meteo</footer>
+</div>
+
+<script>
+function updateTabletClock() {{
+  const now = new Date();
+  document.getElementById('tClock').textContent = now.toLocaleTimeString('fr-FR', {{timeZone:'Europe/Paris', hour:'2-digit', minute:'2-digit'}});
+  document.getElementById('tDate').textContent = now.toLocaleDateString('fr-FR', {{timeZone:'Europe/Paris', weekday:'long', day:'2-digit', month:'long'}});
+}}
+updateTabletClock();
+setInterval(updateTabletClock, 1000);
+</script>
+</body>
+</html>"""
+    Path("docs/tablet.html").write_text(html, encoding="utf-8")
+    print("  → tablet.html généré")
+
 def build_dashboard(years, data_by_year):
     """Dashboard avec sélecteur d'année."""
     if not years:
@@ -1986,6 +2250,7 @@ if __name__ == "__main__":
     records = get_records(hist_dict)
 
     build_index(live, hourly, forecast, hourly_fc, records, hiking_html)
+    build_tablet(live, forecast, hourly_fc, records)
 
     years, data_by_year = aggregate_by_year(hist_dict)
     build_dashboard(years, data_by_year)
