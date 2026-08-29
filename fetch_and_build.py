@@ -1105,6 +1105,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
       <div class="hero-records">
         <span>Aujourd'hui · Max <b>{today_max}</b> · Min <b>{today_min}</b></span>
         <span>{moon_emoji} {moon_name}</span>
+        <span>🌅 {sunrise or '—'} · 🌇 {sunset or '—'}</span>
       </div>
     </div>
     {hero_alerts_html}
@@ -1126,8 +1127,6 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <canvas id="miniChart"></canvas>
   </div>
 </div>
-
-{hiking_html}
 
 <!-- Cartes de données -->
 <div class="grid">
@@ -1171,14 +1170,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   </div>
 </div>
 
-<div class="section">
-  <div class="section-title">☀ Soleil aujourd'hui</div>
-  <div class="detail-grid">
-    <div class="detail-item"><div class="detail-label">🌅 Lever</div><div class="detail-value">{sunrise or '—'}</div></div>
-    <div class="detail-item"><div class="detail-label">🌇 Coucher</div><div class="detail-value">{sunset or '—'}</div></div>
-    <div class="detail-item"><div class="detail-label">⏱ Durée du jour</div><div class="detail-value">{day_str}</div></div>
-  </div>
-</div>
+{hiking_html}
 
 <div class="section">
   <div class="section-title">🏆 Records de la station (depuis jan. 2025)</div>
@@ -1234,7 +1226,7 @@ function updateLiveClock() {{
     timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit'
   }});
   const date = now.toLocaleDateString('fr-FR', {{
-    timeZone: 'Europe/Paris', day: '2-digit', month: 'long'
+    timeZone: 'Europe/Paris', weekday: 'long', day: '2-digit', month: 'long'
   }});
   el.textContent = `${{time}} · ${{date}}`;
 }}
