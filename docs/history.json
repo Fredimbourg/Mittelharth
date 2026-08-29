@@ -9310,14 +9310,14 @@
     "month": 8,
     "day": 29,
     "year": 2026,
-    "avg": 24.4,
+    "avg": 24.1,
     "hi": 26.6,
     "lo": 14.5,
-    "hum": 47.0,
+    "hum": 48.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 19.6,
-    "pres": 1015.7,
+    "solar": 7.0,
+    "pres": 1015.8,
     "wind": 0.0,
     "wind_gust": 0.0
   }
