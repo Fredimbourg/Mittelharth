@@ -266,6 +266,30 @@ def sun_times(lat=48.08, lon=7.36):
 
     return fmt(sunrise), fmt(sunset), day_len
 
+# ── Phase de lune (algorithme synodique simplifié) ────────────────────────────
+def moon_phase_info(dt=None):
+    """Retourne (emoji, nom_fr) pour la phase de lune à la date donnée."""
+    if dt is None:
+        dt = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2)))
+    known_new_moon = datetime.datetime(2000, 1, 6, 18, 14, tzinfo=datetime.timezone.utc)
+    synodic = 29.530588861
+    days = (dt.astimezone(datetime.timezone.utc) - known_new_moon).total_seconds() / 86400
+    phase = (days % synodic) / synodic
+    steps = [
+        (0.0625, "🌑", "Nouvelle Lune"),
+        (0.1875, "🌒", "Premier Croissant"),
+        (0.3125, "🌓", "Premier Quartier"),
+        (0.4375, "🌔", "Lune Gibbeuse Croissante"),
+        (0.5625, "🌕", "Pleine Lune"),
+        (0.6875, "🌖", "Lune Gibbeuse Décroissante"),
+        (0.8125, "🌗", "Dernier Quartier"),
+        (0.9375, "🌘", "Dernier Croissant"),
+    ]
+    for edge, emoji, name in steps:
+        if phase < edge:
+            return emoji, name
+    return "🌑", "Nouvelle Lune"
+
 # ── Calcul des records de la station ─────────────────────────────────────────
 def get_records(hist_dict):
     """Retourne les records absolus de la station."""
@@ -767,6 +791,9 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
     day_h, day_m = divmod(day_len, 60)
     day_str = f"{day_h}h{day_m:02d}min"
 
+    # Phase de lune
+    moon_emoji, moon_name = moon_phase_info()
+
     # Records
     rec = records or {}
     def rec_fmt(key, unit):
@@ -1077,6 +1104,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
       </div>
       <div class="hero-records">
         <span>Aujourd'hui · Max <b>{today_max}</b> · Min <b>{today_min}</b></span>
+        <span>{moon_emoji} {moon_name}</span>
       </div>
     </div>
     {hero_alerts_html}
