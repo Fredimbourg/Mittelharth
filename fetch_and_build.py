@@ -1039,6 +1039,7 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 /* Sections */
 .section{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1rem}}
 .section-title{{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}}
+.hero .detail-grid{{margin-top:1.25rem}}
 .detail-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}}
 .detail-item{{padding:10px 12px;background:var(--surface-muted);border-radius:var(--radius)}}
 .detail-label{{font-size:11px;color:var(--text-muted);margin-bottom:2px}}
@@ -1105,10 +1106,14 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
       <div class="hero-records">
         <span>Aujourd'hui · Max <b>{today_max}</b> · Min <b>{today_min}</b></span>
         <span>{moon_emoji} {moon_name}</span>
-        <span>🌅 {sunrise or '—'} · 🌇 {sunset or '—'}</span>
       </div>
     </div>
     {hero_alerts_html}
+  </div>
+  <div class="detail-grid">
+    <div class="detail-item"><div class="detail-label">🌅 Lever</div><div class="detail-value">{sunrise or '—'}</div></div>
+    <div class="detail-item"><div class="detail-label">🌇 Coucher</div><div class="detail-value">{sunset or '—'}</div></div>
+    <div class="detail-item"><div class="detail-label">⏱ Durée du jour</div><div class="detail-value">{day_str}</div></div>
   </div>
 </div>
 
