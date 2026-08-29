@@ -982,14 +982,13 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 .card-value{{font-size:24px;font-weight:500;line-height:1}}
 .card-sub{{font-size:12px;color:var(--text-muted);margin-top:4px}}
 
-/* Prévisions horaires (24h) */
-.hourly-forecast{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
-.hourly-forecast-title{{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem}}
+/* Prévisions 7 jours / heure par heure (un seul bloc, vue basculable) */
 .hourly-scroll{{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}}
 .hourly-scroll::-webkit-scrollbar{{height:6px}}
 .hourly-scroll::-webkit-scrollbar-thumb{{background:var(--border);border-radius:99px}}
-.hourly-item{{flex:0 0 auto;min-width:64px;text-align:center;padding:12px 8px;border-radius:var(--radius);background:var(--surface-muted)}}
-.hourly-item.now{{background:var(--accent-bg);border:0.5px solid var(--accent-border)}}
+.hourly-item{{flex:0 0 auto;min-width:64px;text-align:center;padding:12px 8px;border-radius:var(--radius);background:var(--surface-muted);cursor:pointer;border:1.5px solid transparent;transition:border-color .15s}}
+.hourly-item:hover{{border-color:var(--accent-border)}}
+.hourly-item.now{{background:var(--accent-bg);border-color:var(--accent-border)}}
 .hourly-hour{{font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:6px}}
 .hourly-icon{{font-size:24px;margin:4px 0;line-height:1}}
 .hourly-temp{{font-size:15px;font-weight:600}}
@@ -997,13 +996,13 @@ nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(-
 
 /* Prévisions */
 .forecast{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem}}
-.forecast-title{{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1.25rem}}
-.forecast-hint{{text-transform:none;font-weight:400;letter-spacing:normal;font-size:12px;opacity:.75}}
+.forecast-header{{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:1.25rem}}
+.forecast-title{{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}}
+.forecast-back{{font-size:12px;font-weight:500;padding:5px 14px;border-radius:99px;border:0.5px solid var(--accent-border);background:var(--accent-bg);color:var(--accent);cursor:pointer;font-family:inherit}}
 .forecast-grid{{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}}
 @media(max-width:600px){{.forecast-grid{{grid-template-columns:repeat(4,1fr)}}}}
-.forecast-day{{text-align:center;padding:16px 6px;border-radius:var(--radius);background:var(--surface-muted);cursor:pointer;border:1.5px solid transparent;transition:border-color .15s,background .15s}}
+.forecast-day{{text-align:center;padding:16px 6px;border-radius:var(--radius);background:var(--surface-muted);cursor:pointer;border:1.5px solid transparent;transition:border-color .15s}}
 .forecast-day:hover{{border-color:var(--accent-border)}}
-.forecast-day.active{{background:var(--accent-bg);border-color:var(--accent-border)}}
 .forecast-day-name{{font-size:15px;color:var(--text-secondary);margin-bottom:8px;font-weight:600}}
 .forecast-icon{{font-size:36px;margin:8px 0;line-height:1}}
 .forecast-max{{font-size:19px;font-weight:700;color:#d85a30}}
@@ -1084,16 +1083,13 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   </div>
 </div>
 
-<!-- Prévisions 7 jours -->
+<!-- Prévisions 7 jours ⇄ heure par heure (basculable) -->
 <div class="forecast">
-  <div class="forecast-title">Prévisions 7 jours <span class="forecast-hint">· cliquer un jour pour le détail heure par heure</span></div>
+  <div class="forecast-header">
+    <div class="forecast-title" id="forecastTitle">Prévisions 7 jours</div>
+    <button class="forecast-back" id="forecastBack" style="display:none" onclick="showDaysView()">← 7 jours</button>
+  </div>
   <div class="forecast-grid" id="forecastGrid"></div>
-</div>
-
-<!-- Prévisions heure par heure (12h) -->
-<div class="hourly-forecast">
-  <div class="hourly-forecast-title" id="hourlyForecastTitle">Prévisions heure par heure · Aujourd'hui</div>
-  <div class="hourly-scroll" id="hourlyForecastScroll"></div>
 </div>
 
 <!-- Graphique température 24h -->
@@ -1295,22 +1291,54 @@ if (hourly.length > 0) {{
   }});
 }}
 
-// ── Prévisions heure par heure (12h, cliquable depuis les 7 jours) ───────────
-const hourlyContainer = document.getElementById('hourlyForecastScroll');
-const hourlyTitle     = document.getElementById('hourlyForecastTitle');
-const nowParis        = new Date(new Date().toLocaleString('en-US', {{timeZone:'Europe/Paris'}}));
-const parsedHourly    = hourlyForecast.map(h => ({{...h, dt: new Date(h.time)}})).filter(h => !isNaN(h.dt));
+// ── Prévisions 7 jours ⇄ heure par heure (un seul bloc basculable) ───────────
+const forecastGrid  = document.getElementById('forecastGrid');
+const forecastTitle = document.getElementById('forecastTitle');
+const forecastBack  = document.getElementById('forecastBack');
+const nowParis       = new Date(new Date().toLocaleString('en-US', {{timeZone:'Europe/Paris'}}));
+const parsedHourly   = hourlyForecast.map(h => ({{...h, dt: new Date(h.time)}})).filter(h => !isNaN(h.dt));
 
-function renderHourlyStrip(dateStr, isToday) {{
-  if (!hourlyContainer) return;
-  hourlyContainer.innerHTML = '';
+function showDaysView() {{
+  forecastGrid.className = 'forecast-grid';
+  forecastGrid.innerHTML = '';
+  forecastBack.style.display = 'none';
+  forecastTitle.textContent = 'Prévisions 7 jours';
+
+  forecast.forEach((day, idx) => {{
+    const dt   = new Date(day.date + 'T12:00:00');
+    const nom  = JOURS[dt.getDay()];
+    const icon = WMO[String(day.code)] || '🌡';
+    const div  = document.createElement('div');
+    div.className = 'forecast-day';
+    div.innerHTML = `
+      <div class="forecast-day-name">${{nom}}</div>
+      <div class="forecast-icon">${{icon}}</div>
+      <div class="forecast-max">${{day.max_t !== null ? day.max_t.toFixed(0) + '°' : '—'}}</div>
+      <div class="forecast-min">${{day.min_t !== null ? day.min_t.toFixed(0) + '°' : '—'}}</div>
+      <div class="forecast-rain">${{day.rain !== null && day.rain > 0 ? day.rain.toFixed(1) + ' mm' : ''}}</div>
+    `;
+    div.addEventListener('click', () => showHoursView(day, idx === 0, nom, dt));
+    forecastGrid.appendChild(div);
+  }});
+}}
+
+function showHoursView(day, isToday, nom, dt) {{
+  forecastGrid.className = 'hourly-scroll';
+  forecastGrid.innerHTML = '';
+  forecastBack.style.display = 'inline-block';
+  const dateLabel = isToday
+    ? "Aujourd'hui"
+    : `${{nom}} ${{String(dt.getDate()).padStart(2,'0')}}/${{String(dt.getMonth()+1).padStart(2,'0')}}`;
+  forecastTitle.textContent = 'Heure par heure · ' + dateLabel;
+
   let items;
   if (isToday) {{
     const startHour = new Date(nowParis.getFullYear(), nowParis.getMonth(), nowParis.getDate(), nowParis.getHours());
     items = parsedHourly.filter(h => h.dt >= startHour).slice(0, 12);
   }} else {{
-    items = parsedHourly.filter(h => h.time.slice(0, 10) === dateStr).slice(0, 12);
+    items = parsedHourly.filter(h => h.time.slice(0, 10) === day.date).slice(0, 12);
   }}
+
   items.forEach((h, i) => {{
     const div = document.createElement('div');
     div.className = 'hourly-item' + (isToday && i === 0 ? ' now' : '');
@@ -1326,44 +1354,14 @@ function renderHourlyStrip(dateStr, isToday) {{
       <div class="hourly-temp">${{temp}}</div>
       <div class="hourly-rain">${{rain}}</div>
     `;
-    hourlyContainer.appendChild(div);
+    // Cliquer sur une heure revient à la vue 7 jours (bascule inverse)
+    div.addEventListener('click', showDaysView);
+    forecastGrid.appendChild(div);
   }});
 }}
 
-// ── Prévisions 7 jours (chaque jour ouvre son détail heure par heure) ────────
-const fg = document.getElementById('forecastGrid');
-const dayCards = [];
-forecast.forEach((day, idx) => {{
-  const dt   = new Date(day.date + 'T12:00:00');
-  const nom  = JOURS[dt.getDay()];
-  const icon = WMO[String(day.code)] || '🌡';
-  const div  = document.createElement('div');
-  div.className = 'forecast-day' + (idx === 0 ? ' active' : '');
-  div.innerHTML = `
-    <div class="forecast-day-name">${{nom}}</div>
-    <div class="forecast-icon">${{icon}}</div>
-    <div class="forecast-max">${{day.max_t !== null ? day.max_t.toFixed(0) + '°' : '—'}}</div>
-    <div class="forecast-min">${{day.min_t !== null ? day.min_t.toFixed(0) + '°' : '—'}}</div>
-    <div class="forecast-rain">${{day.rain !== null && day.rain > 0 ? day.rain.toFixed(1) + ' mm' : ''}}</div>
-  `;
-  div.addEventListener('click', () => {{
-    dayCards.forEach(c => c.classList.remove('active'));
-    div.classList.add('active');
-    const isToday = idx === 0;
-    if (hourlyTitle) {{
-      const dateLabel = isToday
-        ? "Aujourd'hui"
-        : `${{nom}} ${{String(dt.getDate()).padStart(2,'0')}}/${{String(dt.getMonth()+1).padStart(2,'0')}}`;
-      hourlyTitle.textContent = 'Prévisions heure par heure · ' + dateLabel;
-    }}
-    renderHourlyStrip(day.date, isToday);
-  }});
-  dayCards.push(div);
-  fg.appendChild(div);
-}});
-
-// Rendu initial : aujourd'hui, 12 prochaines heures
-if (forecast.length > 0) renderHourlyStrip(forecast[0].date, true);
+// Vue initiale : les 7 jours
+showDaysView();
 </script>
 </body>
 </html>"""
