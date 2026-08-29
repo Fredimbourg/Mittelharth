@@ -1437,12 +1437,19 @@ def build_dashboard(years, data_by_year):
     --border:rgba(255,255,255,.10);--grid:#2c2c2a;
     --accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4);}
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}
-.container{max-width:960px;margin:0 auto}
-header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
-header h1{font-size:20px;font-weight:500;margin-bottom:4px}
-header p{font-size:13px;color:var(--text-muted)}
-.year-selector{display:flex;gap:8px;align-items:center}
+html[data-theme="dark"]{
+  --bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;
+  --text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;
+  --border:rgba(255,255,255,.10);--grid:#2c2c2a;
+  --accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4);
+}
+html[data-theme="light"]{
+  --bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;
+  --text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;
+  --border:rgba(11,11,11,.10);--radius:8px;--accent:#2a78d6;
+  --accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3);--grid:#e1e0d9;
+}
+.theme-toggle{background:var(--surface-muted);border:0.5px solid var(--border);border-radius:99px;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}
 .year-selector label{font-size:13px;color:var(--text-muted)}
 .year-selector select{font-size:15px;font-weight:500;padding:6px 12px;border-radius:var(--radius);border:0.5px solid var(--accent-border);background:var(--accent-bg);color:var(--accent);font-family:inherit;cursor:pointer}
 nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
@@ -1496,9 +1503,12 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <h1>📊 Historique de la station</h1>
     <p id="header-sub">Station Colmar-Mittelharth</p>
   </div>
-  <div class="year-selector">
-    <label>Année :</label>
-    <select id="yearSelect" onchange="loadYear(+this.value)"></select>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="year-selector">
+      <label>Année :</label>
+      <select id="yearSelect" onchange="loadYear(+this.value)"></select>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
   </div>
 </header>
 
@@ -1609,6 +1619,27 @@ const YEARS = """ + years_js + """;
 const DATA  = """ + data_js  + """;
 const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
 
+// ── Mode sombre / clair (bouton + mémorisation, partagé avec les autres pages) ─
+(function() {
+  const stored = localStorage.getItem('mittelharth-theme');
+  if (stored) document.documentElement.setAttribute('data-theme', stored);
+  const btn = document.getElementById('themeToggle');
+  function isDark() {
+    const attr = document.documentElement.getAttribute('data-theme');
+    if (attr) return attr === 'dark';
+    return window.matchMedia('(prefers-color-scheme:dark)').matches;
+  }
+  function updateBtn() { btn.textContent = isDark() ? '☀️' : '🌙'; }
+  updateBtn();
+  btn.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('mittelharth-theme', next);
+    updateBtn();
+    location.reload(); // recharge pour que les graphiques Chart.js reprennent les bonnes couleurs
+  });
+})();
+
 let currentYear = YEARS[YEARS.length - 1];
 let cumulChart = null;
 let mainChart = null, dailyChart = null, rainChart = null, solarChart = null, humChart = null;
@@ -1623,7 +1654,12 @@ YEARS.forEach(y => {
   sel.appendChild(opt);
 });
 
-const gc = () => window.matchMedia('(prefers-color-scheme:dark)').matches ? '#2c2c2a' : '#e1e0d9';
+function isDarkTheme() {
+  const attr = document.documentElement.getAttribute('data-theme');
+  if (attr) return attr === 'dark';
+  return window.matchMedia('(prefers-color-scheme:dark)').matches;
+}
+const gc = () => isDarkTheme() ? '#2c2c2a' : '#e1e0d9';
 const tc = () => '#898781';
 
 function getMnthArr(key) {
@@ -1725,7 +1761,7 @@ function drawWL() {
   canvas.width=W*dpr; canvas.height=H*dpr;
   canvas.style.width=W+'px'; canvas.style.height=H+'px';
   const ctx = canvas.getContext('2d'); ctx.scale(dpr,dpr);
-  const dark = window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const dark = isDarkTheme();
   const ml=62,mr=72,mt=18,mb=36,cW=W-ml-mr,cH=H-mt-mb;
   const Tmin=-10,Tmax=50,Tmax_ext=60,n=MONTHS.length;
   const xPx = i => ml+(i/(n-1))*cW;
@@ -1920,6 +1956,9 @@ def build_climate(years, data_by_year):
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--radius:8px;--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}
 @media(prefers-color-scheme:dark){:root{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10)}}
+html[data-theme="dark"]{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10);--accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4)}
+html[data-theme="light"]{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}
+.theme-toggle{background:var(--surface-muted);border:0.5px solid var(--border);border-radius:99px;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}
 .container{max-width:960px;margin:0 auto}
 header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
@@ -1950,9 +1989,12 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <h1>🌍 Climatologie</h1>
     <p id="header-sub">Station Colmar-Mittelharth</p>
   </div>
-  <div class="year-selector">
-    <label>Année :</label>
-    <select id="yearSelect" onchange="loadYear(+this.value)"></select>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="year-selector">
+      <label>Année :</label>
+      <select id="yearSelect" onchange="loadYear(+this.value)"></select>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
   </div>
 </header>
 <nav>
@@ -1976,6 +2018,26 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 const YEARS = """ + years_js + """;
 const DATA  = """ + data_js  + """;
 const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
+
+// ── Mode sombre / clair (bouton + mémorisation, partagé avec les autres pages) ─
+(function() {
+  const stored = localStorage.getItem('mittelharth-theme');
+  if (stored) document.documentElement.setAttribute('data-theme', stored);
+  const btn = document.getElementById('themeToggle');
+  function isDark() {
+    const attr = document.documentElement.getAttribute('data-theme');
+    if (attr) return attr === 'dark';
+    return window.matchMedia('(prefers-color-scheme:dark)').matches;
+  }
+  function updateBtn() { btn.textContent = isDark() ? '☀️' : '🌙'; }
+  updateBtn();
+  btn.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('mittelharth-theme', next);
+    updateBtn();
+  });
+})();
 
 const sel = document.getElementById('yearSelect');
 YEARS.forEach(y => {
