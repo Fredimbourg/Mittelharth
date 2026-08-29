@@ -9316,9 +9316,9 @@
     "hum": 48.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 126.0,
-    "pres": 1017.3,
-    "wind": 1.1,
-    "wind_gust": 1.8
+    "solar": 232.7,
+    "pres": 1017.4,
+    "wind": 2.9,
+    "wind_gust": 3.6
   }
 }
