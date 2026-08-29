@@ -1449,6 +1449,12 @@ html[data-theme="light"]{
   --border:rgba(11,11,11,.10);--radius:8px;--accent:#2a78d6;
   --accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3);--grid:#e1e0d9;
 }
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}
+.container{max-width:960px;margin:0 auto}
+header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+header h1{font-size:20px;font-weight:500;margin-bottom:4px}
+header p{font-size:13px;color:var(--text-muted)}
+.year-selector{display:flex;gap:8px;align-items:center}
 .theme-toggle{background:var(--surface-muted);border:0.5px solid var(--border);border-radius:99px;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}
 .year-selector label{font-size:13px;color:var(--text-muted)}
 .year-selector select{font-size:15px;font-weight:500;padding:6px 12px;border-radius:var(--radius);border:0.5px solid var(--accent-border);background:var(--accent-bg);color:var(--accent);font-family:inherit;cursor:pointer}
