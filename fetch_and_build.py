@@ -1222,6 +1222,84 @@ const hourlyForecast = {hourly_forecast_js};
 const WMO      = {wmo_js};
 const JOURS    = {json.dumps(jours)};
 
+// ── Fêtes du jour (calendrier traditionnel français) ─────────────────────────
+const FETES = {{
+  "01-01":"Jour de l'An","01-02":"Saint Basile","01-03":"Sainte Geneviève","01-04":"Saint Odilon","01-05":"Saint Édouard",
+  "01-06":"Saint Mélaine","01-07":"Saint Raymond","01-08":"Saint Lucien","01-09":"Sainte Alix","01-10":"Saint Guillaume",
+  "01-11":"Saint Paulin","01-12":"Sainte Tatiana","01-13":"Sainte Yvette","01-14":"Sainte Nina","01-15":"Saint Rémi",
+  "01-16":"Saint Marcel","01-17":"Sainte Roseline","01-18":"Sainte Prisca","01-19":"Saint Marius","01-20":"Saint Sébastien",
+  "01-21":"Sainte Agnès","01-22":"Saint Vincent","01-23":"Saint Barnard","01-24":"Saint François de Sales","01-25":"Conversion de Paul",
+  "01-26":"Sainte Paule","01-27":"Sainte Angèle","01-28":"Saint Thomas d'Aquin","01-29":"Saint Gildas","01-30":"Sainte Martine",
+  "01-31":"Sainte Marcelle","02-01":"Sainte Ella","02-02":"Présentation","02-03":"Saint Blaise","02-04":"Sainte Véronique",
+  "02-05":"Sainte Agathe","02-06":"Saint Gaston","02-07":"Sainte Eugénie","02-08":"Sainte Jacqueline","02-09":"Sainte Apolline",
+  "02-10":"Saint Arnaud","02-11":"Notre-Dame de Lourdes","02-12":"Saint Félix","02-13":"Sainte Béatrice","02-14":"Saint Valentin",
+  "02-15":"Saint Claude","02-16":"Sainte Julienne","02-17":"Saint Alexis","02-18":"Sainte Bernadette","02-19":"Saint Gabin",
+  "02-20":"Sainte Aimée","02-21":"Saint Pierre-Damien","02-22":"Sainte Isabelle","02-23":"Saint Lazare","02-24":"Saint Modeste",
+  "02-25":"Saint Roméo","02-26":"Saint Nestor","02-27":"Sainte Honorine","02-28":"Saint Romain","02-29":"Saint Auguste",
+  "03-01":"Saint Aubin","03-02":"Saint Charles le Bon","03-03":"Saint Guénolé","03-04":"Saint Casimir","03-05":"Sainte Olive",
+  "03-06":"Sainte Colette","03-07":"Sainte Félicité","03-08":"Saint Jean de Dieu","03-09":"Sainte Françoise","03-10":"Saint Vivien",
+  "03-11":"Sainte Rosine","03-12":"Sainte Justine","03-13":"Saint Rodrigue","03-14":"Sainte Mathilde","03-15":"Saint Louise de Marillac",
+  "03-16":"Sainte Bénédicte","03-17":"Saint Patrick","03-18":"Saint Cyrille","03-19":"Saint Joseph","03-20":"Saint Herbert",
+  "03-21":"Sainte Clémence","03-22":"Sainte Léa","03-23":"Saint Victorien","03-24":"Saint Catherine de Suède","03-25":"Annonciation",
+  "03-26":"Sainte Larissa","03-27":"Saint Habib","03-28":"Saint Gontran","03-29":"Sainte Gwladys","03-30":"Saint Amédée",
+  "03-31":"Saint Benjamin","04-01":"Saint Hugues","04-02":"Sainte Sandrine","04-03":"Saint Richard","04-04":"Saint Isidore",
+  "04-05":"Sainte Irène","04-06":"Saint Marcellin","04-07":"Saint Jean-Baptiste de la Salle","04-08":"Sainte Julie","04-09":"Saint Gautier",
+  "04-10":"Saint Fulbert","04-11":"Saint Stanislas","04-12":"Saint Jules","04-13":"Sainte Ida","04-14":"Saint Maxime",
+  "04-15":"Saint Paterne","04-16":"Saint Benoît-Joseph","04-17":"Saint Anicet","04-18":"Saint Parfait","04-19":"Sainte Emma",
+  "04-20":"Sainte Odette","04-21":"Saint Anselme","04-22":"Saint Alexandre","04-23":"Saint Georges","04-24":"Saint Fidèle",
+  "04-25":"Saint Marc","04-26":"Sainte Alida","04-27":"Sainte Zita","04-28":"Sainte Valérie","04-29":"Saint Catherine de Sienne",
+  "04-30":"Saint Robert","05-01":"Fête du Travail","05-02":"Saint Boris","05-03":"Saints Philippe, Jacques","05-04":"Saint Sylvain",
+  "05-05":"Sainte Judith","05-06":"Sainte Prudence","05-07":"Sainte Gisèle","05-08":"Victoire 1945","05-09":"Saint Pacôme",
+  "05-10":"Sainte Solange","05-11":"Sainte Estelle","05-12":"Saint Achille","05-13":"Sainte Rolande","05-14":"Saint Matthias",
+  "05-15":"Sainte Denise","05-16":"Saint Honoré","05-17":"Saint Pascal","05-18":"Saint Éric","05-19":"Saint Yves",
+  "05-20":"Saint Bernardin","05-21":"Saint Constantin","05-22":"Saint Émile","05-23":"Saint Didier","05-24":"Saint Donatien",
+  "05-25":"Sainte Sophie","05-26":"Saint Bérenger","05-27":"Saint Augustin","05-28":"Saint Germain","05-29":"Saint Aymar",
+  "05-30":"Saint Ferdinand","05-31":"Visitation","06-01":"Saint Justin","06-02":"Sainte Blandine","06-03":"Saint Kévin",
+  "06-04":"Sainte Clotilde","06-05":"Saint Igor","06-06":"Saint Norbert","06-07":"Saint Gilbert","06-08":"Saint Médard",
+  "06-09":"Sainte Diane","06-10":"Saint Landry","06-11":"Saint Barnabé","06-12":"Saint Guy","06-13":"Saint Antoine de Padoue",
+  "06-14":"Saint Élisée","06-15":"Sainte Germaine","06-16":"Saint J.-F. Régis","06-17":"Saint Hervé","06-18":"Saint Léonce",
+  "06-19":"Saint Romuald","06-20":"Saint Silvère","06-21":"Saint Rodolphe","06-22":"Saint Alban","06-23":"Sainte Audrey",
+  "06-24":"Saint Jean-Baptiste","06-25":"Saint Prosper","06-26":"Saint Anthelme","06-27":"Saint Fernand","06-28":"Saint Irénée",
+  "06-29":"Saints Pierre, Paul","06-30":"Saint Martial","07-01":"Saint Thierry","07-02":"Saint Martinien","07-03":"Saint Thomas",
+  "07-04":"Saint Florent","07-05":"Saint Antoine","07-06":"Sainte Mariette","07-07":"Saint Raoul","07-08":"Saint Thibaut",
+  "07-09":"Sainte Amandine","07-10":"Saint Ulrich","07-11":"Saint Benoît","07-12":"Saint Olivier","07-13":"Saints Henri, Joël",
+  "07-14":"Fête Nationale","07-15":"Saint Donald","07-16":"N.-D. du Mont-Carmel","07-17":"Sainte Charlotte","07-18":"Saint Frédéric",
+  "07-19":"Saint Arsène","07-20":"Sainte Marina","07-21":"Saint Victor","07-22":"Sainte Marie-Madeleine","07-23":"Sainte Brigitte",
+  "07-24":"Sainte Christine","07-25":"Saint Jacques","07-26":"Saints Anne, Joachim","07-27":"Sainte Nathalie","07-28":"Saint Samson",
+  "07-29":"Sainte Marthe","07-30":"Sainte Juliette","07-31":"Saint Ignace de Loyola","08-01":"Saint Alphonse","08-02":"Saint Julien Eymard",
+  "08-03":"Sainte Lydie","08-04":"Saint Jean-Marie Vianney","08-05":"Saint Abel","08-06":"Transfiguration","08-07":"Saint Gaétan",
+  "08-08":"Saint Dominique","08-09":"Saint Amour","08-10":"Saint Laurent","08-11":"Sainte Claire","08-12":"Sainte Clarisse",
+  "08-13":"Saint Hippolyte","08-14":"Saint Evrard","08-15":"Assomption","08-16":"Saint Armel","08-17":"Saint Hyacinthe",
+  "08-18":"Sainte Hélène","08-19":"Saint Jean Eudes","08-20":"Saint Bernard","08-21":"Saint Christophe","08-22":"Saint Fabrice",
+  "08-23":"Sainte Rose de Lima","08-24":"Saint Barthélémy","08-25":"Saint Louis","08-26":"Sainte Natacha","08-27":"Sainte Monique",
+  "08-28":"Saint Augustin","08-29":"Sainte Sabine","08-30":"Saint Fiacre","08-31":"Saint Aristide","09-01":"Saint Gilles",
+  "09-02":"Sainte Ingrid","09-03":"Saint Grégoire","09-04":"Sainte Rosalie","09-05":"Sainte Raïssa","09-06":"Saint Bertrand",
+  "09-07":"Sainte Reine","09-08":"Nativité de N.-D.","09-09":"Saint Alain","09-10":"Sainte Inès","09-11":"Saint Adelphe",
+  "09-12":"Saint Apollinaire","09-13":"Saint Aimé","09-14":"La Sainte-Croix","09-15":"Saint Roland","09-16":"Sainte Édith",
+  "09-17":"Saint Renaud","09-18":"Sainte Nadège","09-19":"Sainte Émilie","09-20":"Saint Davy","09-21":"Saint Matthieu",
+  "09-22":"Saint Maurice","09-23":"Saint Constant","09-24":"Sainte Thècle","09-25":"Saint Hermann","09-26":"Saints Côme, Damien",
+  "09-27":"Saint Vincent de Paul","09-28":"Saint Venceslas","09-29":"Saints Michel, Gabriel, Raphaël","09-30":"Saint Jérôme","10-01":"Sainte Thérèse de l'Enfant-Jésus",
+  "10-02":"Saint Léger","10-03":"Saint Gérard","10-04":"Saint François d'Assise","10-05":"Sainte Fleur","10-06":"Saint Bruno",
+  "10-07":"Saint Serge","10-08":"Sainte Pélagie","10-09":"Saint Denis","10-10":"Saint Ghislain","10-11":"Saint Firmin",
+  "10-12":"Saint Wilfried","10-13":"Saint Géraud","10-14":"Saint Juste","10-15":"Sainte Thérèse d'Avila","10-16":"Sainte Edwige",
+  "10-17":"Saint Baudouin","10-18":"Saint Luc","10-19":"Saint René","10-20":"Sainte Adeline","10-21":"Sainte Céline",
+  "10-22":"Sainte Élodie","10-23":"Saint Jean de Capistran","10-24":"Saint Florentin","10-25":"Saint Crépin","10-26":"Saint Dimitri",
+  "10-27":"Sainte Émeline","10-28":"Saints Simon, Jude","10-29":"Saint Narcisse","10-30":"Sainte Bienvenue","10-31":"Saint Quentin",
+  "11-01":"Toussaint","11-02":"Défunts","11-03":"Saint Hubert","11-04":"Saint Charles","11-05":"Sainte Sylvie",
+  "11-06":"Sainte Bertille","11-07":"Sainte Carine","11-08":"Saint Geoffroy","11-09":"Saint Théodore","11-10":"Saint Léon",
+  "11-11":"Armistice 1918","11-12":"Saint Christian","11-13":"Saint Brice","11-14":"Saint Sidoine","11-15":"Saint Albert",
+  "11-16":"Sainte Marguerite","11-17":"Sainte Élisabeth","11-18":"Sainte Aude","11-19":"Saint Tanguy","11-20":"Saint Edmond",
+  "11-21":"Présentation de Marie","11-22":"Sainte Cécile","11-23":"Saint Clément","11-24":"Sainte Flora","11-25":"Sainte Catherine",
+  "11-26":"Sainte Delphine","11-27":"Saint Séverin","11-28":"Saint Jacques de la Marche","11-29":"Saint Saturnin","11-30":"Saint André",
+  "12-01":"Sainte Florence","12-02":"Sainte Viviane","12-03":"Saint François-Xavier","12-04":"Sainte Barbara","12-05":"Saint Gérald",
+  "12-06":"Saint Nicolas","12-07":"Saint Ambroise","12-08":"Immaculée Conception","12-09":"Saint Pierre Fourier","12-10":"Saint Romaric",
+  "12-11":"Saint Daniel","12-12":"Sainte Chantal","12-13":"Sainte Lucie","12-14":"Sainte Odile","12-15":"Sainte Ninon",
+  "12-16":"Sainte Alice","12-17":"Saint Judicaël","12-18":"Saint Gatien","12-19":"Saint Urbain","12-20":"Saint Théophile",
+  "12-21":"Saint Pierre Canisius","12-22":"Sainte Françoise-Xavière","12-23":"Saint Armand","12-24":"Sainte Adèle","12-25":"Noël",
+  "12-26":"Saint Étienne","12-27":"Saint Jean","12-28":"Innocents","12-29":"Saint David","12-30":"Saint Roger",
+  "12-31":"Saint Sylvestre"
+}};
+
 // ── Horloge en direct (header) ────────────────────────────────────────────────
 function updateLiveClock() {{
   const el = document.getElementById('liveClock');
@@ -1233,7 +1311,9 @@ function updateLiveClock() {{
   const date = now.toLocaleDateString('fr-FR', {{
     timeZone: 'Europe/Paris', weekday: 'long', day: '2-digit', month: 'long'
   }});
-  el.textContent = `${{time}} · ${{date}}`;
+  const dateKey = now.toLocaleDateString('en-CA', {{timeZone: 'Europe/Paris'}}).slice(5); // "MM-DD"
+  const fete = FETES[dateKey] ? ` · ${{FETES[dateKey]}}` : '';
+  el.textContent = `${{time}} · ${{date}}${{fete}}`;
 }}
 updateLiveClock();
 setInterval(updateLiveClock, 1000);
