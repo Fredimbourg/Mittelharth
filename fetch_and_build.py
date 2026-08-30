@@ -956,7 +956,7 @@ header h1{{font-size:20px;font-weight:500}}
 header p{{font-size:13px;color:var(--text-muted)}}
 .updated{{font-size:12px;color:var(--text-muted);background:var(--surface-muted);padding:4px 10px;border-radius:99px;border:0.5px solid var(--border)}}
 .nav-row{{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:1.5rem}}
-.live-clock{{font-size:13px;font-weight:600;color:var(--text-secondary);font-variant-numeric:tabular-nums;background:var(--surface-muted);padding:6px 14px;border-radius:99px;border:0.5px solid var(--border);white-space:nowrap}}
+.live-clock{{font-size:19px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;background:var(--surface-muted);padding:9px 20px;border-radius:99px;border:0.5px solid var(--border);white-space:nowrap}}
 nav{{display:flex;gap:8px;flex-wrap:wrap}}
 nav a{{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}}
 nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}}
