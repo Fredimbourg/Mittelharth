@@ -1353,7 +1353,12 @@ if (hourly.length > 0) {{
   // Heure actuelle Paris
   const nowParis = new Date(new Date().toLocaleString('en-US', {{timeZone:'Europe/Paris'}}));
   const currentHour = nowParis.getHours();
-  const todayStr = nowParis.toISOString().slice(0,10);
+  const pad2 = n => String(n).padStart(2, '0');
+  // Construit la date à partir des getters LOCAUX (cohérent avec getHours()) :
+  // toISOString() convertit en UTC et peut faire sauter d'un jour si le fuseau
+  // système de l'appareil n'est pas Europe/Paris, ce qui rejetait à tort les
+  // relevés du matin du filtre "aujourd'hui" ci-dessous.
+  const todayStr = `${{nowParis.getFullYear()}}-${{pad2(nowParis.getMonth() + 1)}}-${{pad2(nowParis.getDate())}}`;
 
   // Grille fixe de 00:00 à l'heure actuelle
   const labels24 = Array.from({{length: currentHour + 1}}, (_,h) => String(h).padStart(2,'0')+':00');
