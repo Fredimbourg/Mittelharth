@@ -9,6 +9,7 @@ fetch_and_build.py — Station Colmar-Mittelharth
 import os, json, math, datetime, requests, sys
 from collections import defaultdict
 from pathlib import Path
+from zoneinfo import ZoneInfo
 from hiking_score import fetch_hiking_forecasts, build_hiking_report
 
 APP_KEY = os.environ["ECOWITT_APP_KEY"]
@@ -22,6 +23,10 @@ LIVE_FILE     = Path("docs/live.json")      # données temps réel
 HOURLY_FILE   = Path("docs/hourly.json")    # données horaires (24 dernières heures)
 FORECAST_FILE = Path("docs/forecast.json")  # prévisions Open-Meteo
 HOURLY_FC_FILE = Path("docs/hourly_forecast.json")  # prévisions horaires (pour la durée des alertes)
+
+# Fuseau horaire de référence du site (gère automatiquement CET/CEST,
+# contrairement à un décalage fixe qui serait faux la moitié de l'année).
+PARIS_TZ = ZoneInfo("Europe/Paris")
 
 # Coordonnées de Colmar
 LAT, LON = 48.08, 7.36
@@ -58,7 +63,7 @@ def fetch_realtime():
         except: return None
 
     live = {
-        "updated_at": datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%d/%m/%Y %H:%M"),
+        "updated_at": datetime.datetime.now(PARIS_TZ).strftime("%d/%m/%Y %H:%M"),
         "temp":         safe("outdoor","temperature","value"),
         "temp_feels":   safe("outdoor","feels_like","value"),
         "hum":          safe("outdoor","humidity","value"),
@@ -83,7 +88,7 @@ def fetch_realtime():
 # ── 1b. Accumulation horaire (24h glissantes) ─────────────────────────────────
 def update_hourly(live):
     """Garde les 24 dernières mesures horaires pour le mini graphique."""
-    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%Y-%m-%d %H:%M")
+    now = datetime.datetime.now(PARIS_TZ).strftime("%Y-%m-%d %H:%M")
     if HOURLY_FILE.exists():
         hourly = json.loads(HOURLY_FILE.read_text())
     else:
@@ -218,7 +223,12 @@ def read_excel_files():
 # ── Calcul lever/coucher du soleil (algorithme NOAA) ─────────────────────────
 def sun_times(lat=48.08, lon=7.36):
     import math
-    date = datetime.date.today()
+    # Date ET décalage horaire réels de Paris (pas la date du serveur qui
+    # tourne en UTC sur GitHub Actions, et pas une approximation par mois :
+    # zoneinfo donne le +1h/+2h exact du jour, y compris les jours de
+    # changement d'heure).
+    now_paris = datetime.datetime.now(PARIS_TZ)
+    date = now_paris.date()
     y, m, d = date.year, date.month, date.day
 
     # Jour julien
@@ -254,8 +264,9 @@ def sun_times(lat=48.08, lon=7.36):
         return None, None, 0
     ha = math.degrees(math.acos(cos_ha))
 
-    # Lever/coucher UTC → heure locale Paris
-    dst = 2 if 3 < date.month < 11 else 1
+    # Lever/coucher UTC → heure locale Paris (décalage exact du jour, +1h en
+    # hiver / +2h en été, fourni par zoneinfo plutôt que deviné par mois)
+    dst = now_paris.utcoffset().total_seconds() / 3600
     sunrise = 720 - 4*(lon + ha) - eot + dst*60
     sunset  = 720 - 4*(lon - ha) - eot + dst*60
     day_len = int(sunset - sunrise)
@@ -270,7 +281,7 @@ def sun_times(lat=48.08, lon=7.36):
 def moon_phase_info(dt=None):
     """Retourne (emoji, nom_fr) pour la phase de lune à la date donnée."""
     if dt is None:
-        dt = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2)))
+        dt = datetime.datetime.now(PARIS_TZ)
     known_new_moon = datetime.datetime(2000, 1, 6, 18, 14, tzinfo=datetime.timezone.utc)
     synodic = 29.530588861
     days = (dt.astimezone(datetime.timezone.utc) - known_new_moon).total_seconds() / 86400
@@ -322,7 +333,7 @@ def get_records(hist_dict):
 
 def update_history(live):
     """Ajoute/met à jour la journée d'aujourd'hui dans history.json."""
-    today = datetime.date.today().strftime("%Y-%m-%d")
+    today = datetime.datetime.now(PARIS_TZ).strftime("%Y-%m-%d")
 
     # Charger historique existant
     if HIST_FILE.exists():
@@ -344,14 +355,19 @@ def update_history(live):
     t = live.get("temp")
     existing = hist.get(today, {})
     rain_rate_now = live.get("rain_rate")
+    # NB: on teste "t is not None" plutôt que "if t" — une température
+    # exactement à 0.0°C est une valeur valide (fréquente à Colmar en hiver)
+    # mais serait considérée comme "absente" par un simple "if t" en Python,
+    # ce qui aurait empêché la mise à jour du min/max du jour.
+    existing_hi, existing_lo = existing.get("hi"), existing.get("lo")
     hist[today] = {
         "date":  today,
         "month": int(today[5:7]),
         "day":   int(today[8:10]),
         "year":  int(today[:4]),
         "avg":   t,
-        "hi":    max(existing.get("hi") or t or 0, t or 0) if t else existing.get("hi"),
-        "lo":    min(existing.get("lo") or t or 0, t or 0) if t else existing.get("lo"),
+        "hi":    max(existing_hi, t) if (existing_hi is not None and t is not None) else (t if t is not None else existing_hi),
+        "lo":    min(existing_lo, t) if (existing_lo is not None and t is not None) else (t if t is not None else existing_lo),
         "hum":   live.get("hum"),
         "rain":      live.get("rain_daily"),
         "rain_rate_max": max(existing.get("rain_rate_max") or 0, rain_rate_now or 0),
@@ -651,7 +667,7 @@ def compute_alerts(live, forecast, hourly_fc=None):
     wind_gust = live.get("wind_gust")
     rain_rate = live.get("rain_rate")
     hourly_fc = hourly_fc or []
-    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).replace(tzinfo=None)
+    now = datetime.datetime.now(PARIS_TZ).replace(tzinfo=None)
 
     def add_alert(icon, label, level, kind, w, detail_unit="", detail_dec=0):
         window = (w[0], w[1]) if w else None
@@ -847,7 +863,7 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
     arrow, trend_txt = trend_arrow(hourly)
 
     # Prochaine pluie prévue (affichée à côté de la tendance de température)
-    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).replace(tzinfo=None)
+    now = datetime.datetime.now(PARIS_TZ).replace(tzinfo=None)
     rain_forecast_txt = next_rain_forecast(hourly_fc, now)
 
     # Alertes météo (orage, canicule, neige, vent, gel...) à côté de la température
@@ -877,7 +893,7 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
         hero_alerts_html = f'<div class="hero-alerts">{hero_alerts_html}</div>'
 
     # Records du jour (min/max depuis les données horaires d'AUJOURD'HUI seulement)
-    today_str = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).strftime("%Y-%m-%d")
+    today_str = datetime.datetime.now(PARIS_TZ).strftime("%Y-%m-%d")
     today_temps = [h["temp"] for h in hourly if h.get("temp") is not None and h.get("time","").startswith(today_str)]
     if not today_temps:  # fallback si pas encore de données aujourd'hui
         today_temps = [h["temp"] for h in hourly if h.get("temp") is not None]
