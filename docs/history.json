@@ -9342,14 +9342,14 @@
     "month": 8,
     "day": 31,
     "year": 2026,
-    "avg": 20.8,
+    "avg": 20.3,
     "hi": 20.8,
-    "lo": 20.8,
-    "hum": 75.0,
+    "lo": 20.3,
+    "hum": 77.0,
     "rain": 0.3,
     "rain_rate_max": 0,
     "solar": 0.0,
-    "pres": 1015.2,
+    "pres": 1015.1,
     "wind": 0.0,
     "wind_gust": 0.0
   }
