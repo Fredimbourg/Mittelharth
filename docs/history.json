@@ -9342,15 +9342,15 @@
     "month": 8,
     "day": 31,
     "year": 2026,
-    "avg": 23.8,
+    "avg": 20.3,
     "hi": 24.4,
     "lo": 17.8,
-    "hum": 49.0,
-    "rain": 1.8,
+    "hum": 76.0,
+    "rain": 2.1,
     "rain_rate_max": 1.8,
-    "solar": 163.2,
-    "pres": 1018.9,
-    "wind": 2.2,
-    "wind_gust": 3.6
+    "solar": 193.5,
+    "pres": 1019.0,
+    "wind": 0.0,
+    "wind_gust": 0.0
   }
 }
