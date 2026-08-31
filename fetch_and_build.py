@@ -87,8 +87,9 @@ def fetch_realtime():
 
 # ── 1b. Accumulation horaire (24h glissantes) ─────────────────────────────────
 def update_hourly(live):
-    """Garde les 24 dernières mesures horaires pour le mini graphique."""
-    now = datetime.datetime.now(PARIS_TZ).strftime("%Y-%m-%d %H:%M")
+    """Garde les mesures des dernières ~30h pour le mini graphique."""
+    now_dt = datetime.datetime.now(PARIS_TZ).replace(tzinfo=None, second=0, microsecond=0)
+    now = now_dt.strftime("%Y-%m-%d %H:%M")
     if HOURLY_FILE.exists():
         hourly = json.loads(HOURLY_FILE.read_text())
     else:
@@ -102,8 +103,21 @@ def update_hourly(live):
         "rain": live.get("rain_daily"),
         "solar": live.get("solar"),
     })
-    # Garder seulement les 24 dernières heures (24 points si run horaire)
-    hourly = hourly[-24:]
+
+    # Purge par ANCIENNETÉ RÉELLE plutôt que par nombre fixe d'entrées : un
+    # cap à 24 entrées suppose que le workflow tourne exactement une fois par
+    # heure. S'il tourne plus souvent (ex. toutes les 30 min), 24 entrées ne
+    # couvrent plus que 12h réelles, et les heures du matin se retrouvent
+    # éjectées du tampon au fil de la journée. On garde ici tout ce qui date
+    # de moins de 30h, quelle que soit la fréquence réelle des exécutions.
+    cutoff = now_dt - datetime.timedelta(hours=30)
+    def _parse_time(h):
+        try:
+            return datetime.datetime.strptime(h["time"], "%Y-%m-%d %H:%M")
+        except (KeyError, ValueError, TypeError):
+            return None
+    hourly = [h for h in hourly if (_parse_time(h) or now_dt) >= cutoff]
+
     HOURLY_FILE.write_text(json.dumps(hourly, ensure_ascii=False))
     print(f"  → Historique horaire : {len(hourly)} points")
     return hourly
