@@ -1,13 +1,13 @@
 {
-  "updated_at": "31/08/2026 21:22",
-  "temp": 18.8,
-  "temp_feels": 18.8,
-  "hum": 76.0,
-  "dew": 14.4,
-  "pressure": 1020.8,
-  "wind_speed": 0.4,
-  "wind_gust": 1.8,
-  "wind_dir": 137.0,
+  "updated_at": "31/08/2026 21:40",
+  "temp": 18.4,
+  "temp_feels": 18.4,
+  "hum": 78.0,
+  "dew": 14.5,
+  "pressure": 1021.1,
+  "wind_speed": 0.0,
+  "wind_gust": 0.0,
+  "wind_dir": 133.0,
   "rain_rate": 0.0,
   "rain_daily": 2.6,
   "rain_monthly": 51.6,
@@ -15,5 +15,5 @@
   "solar": 0.0,
   "uvi": 0.0,
   "temp_in": 25.3,
-  "hum_in": 39.0
+  "hum_in": 40.0
 }
