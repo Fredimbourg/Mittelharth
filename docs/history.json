@@ -9374,14 +9374,14 @@
     "month": 9,
     "day": 2,
     "year": 2026,
-    "avg": 24.0,
+    "avg": 23.5,
     "hi": 31.5,
     "lo": 13.5,
-    "hum": 45.0,
+    "hum": 46.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 0.1,
-    "pres": 1021.4,
+    "solar": 0.0,
+    "pres": 1021.5,
     "wind": 0.0,
     "wind_gust": 0.0
   }
