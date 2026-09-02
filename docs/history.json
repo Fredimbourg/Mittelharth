@@ -9374,15 +9374,15 @@
     "month": 9,
     "day": 2,
     "year": 2026,
-    "avg": 25.6,
+    "avg": 24.0,
     "hi": 31.5,
     "lo": 13.5,
-    "hum": 41.0,
+    "hum": 45.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 10.8,
-    "pres": 1021.0,
-    "wind": 2.2,
-    "wind_gust": 3.6
+    "solar": 0.1,
+    "pres": 1021.4,
+    "wind": 0.0,
+    "wind_gust": 0.0
   }
 }
