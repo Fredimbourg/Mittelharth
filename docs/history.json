@@ -9393,12 +9393,12 @@
     "avg": 28.3,
     "hi": 28.3,
     "lo": 15.1,
-    "hum": 38.0,
+    "hum": 37.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 442.9,
-    "pres": 1023.6,
-    "wind": 0.7,
-    "wind_gust": 1.8
+    "solar": 127.7,
+    "pres": 1023.3,
+    "wind": 3.6,
+    "wind_gust": 3.6
   }
 }
