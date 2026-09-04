@@ -9406,14 +9406,14 @@
     "month": 9,
     "day": 4,
     "year": 2026,
-    "avg": 32.9,
+    "avg": 33.1,
     "hi": 35.1,
     "lo": 15.7,
     "hum": 36.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 79.3,
-    "pres": 1016.1,
+    "solar": 63.4,
+    "pres": 1016.0,
     "wind": 1.4,
     "wind_gust": 1.8
   }
