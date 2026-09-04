@@ -9409,12 +9409,12 @@
     "avg": 25.0,
     "hi": 35.1,
     "lo": 15.7,
-    "hum": 52.0,
+    "hum": 50.0,
     "rain": 0.0,
     "rain_rate_max": 0,
     "solar": 0.0,
-    "pres": 1017.4,
-    "wind": 2.5,
-    "wind_gust": 3.6
+    "pres": 1017.5,
+    "wind": 4.0,
+    "wind_gust": 5.4
   }
 }
