@@ -9425,11 +9425,11 @@
     "avg": 19.0,
     "hi": 26.3,
     "lo": 19.0,
-    "hum": 91.0,
+    "hum": 92.0,
     "rain": 0.2,
     "rain_rate_max": 1.2,
-    "solar": 0.1,
-    "pres": 1021.5,
+    "solar": 3.7,
+    "pres": 1022.0,
     "wind": 0.0,
     "wind_gust": 0.0
   }
