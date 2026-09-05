@@ -9429,8 +9429,8 @@
     "rain": 0.0,
     "rain_rate_max": 0,
     "solar": 0.0,
-    "pres": 1019.7,
-    "wind": 2.5,
-    "wind_gust": 3.6
+    "pres": 1019.8,
+    "wind": 1.1,
+    "wind_gust": 1.8
   }
 }
