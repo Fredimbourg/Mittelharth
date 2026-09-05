@@ -9422,15 +9422,15 @@
     "month": 9,
     "day": 5,
     "year": 2026,
-    "avg": 22.5,
+    "avg": 22.9,
     "hi": 26.3,
     "lo": 22.5,
-    "hum": 64.0,
+    "hum": 63.0,
     "rain": 0.0,
     "rain_rate_max": 0,
     "solar": 0.0,
     "pres": 1020.2,
-    "wind": 0.0,
-    "wind_gust": 0.0
+    "wind": 1.8,
+    "wind_gust": 5.4
   }
 }
