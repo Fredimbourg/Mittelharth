@@ -9441,12 +9441,12 @@
     "avg": 15.8,
     "hi": 17.3,
     "lo": 15.4,
-    "hum": 63.0,
+    "hum": 62.0,
     "rain": 0.0,
     "rain_rate_max": 0,
     "solar": 0.0,
-    "pres": 1026.5,
-    "wind": 1.1,
+    "pres": 1026.4,
+    "wind": 1.8,
     "wind_gust": 1.8
   }
 }
