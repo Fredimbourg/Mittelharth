@@ -9438,14 +9438,14 @@
     "month": 9,
     "day": 6,
     "year": 2026,
-    "avg": 13.6,
+    "avg": 13.3,
     "hi": 17.3,
     "lo": 12.9,
-    "hum": 69.0,
+    "hum": 71.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 14.0,
-    "pres": 1026.8,
+    "solar": 19.0,
+    "pres": 1026.7,
     "wind": 0.0,
     "wind_gust": 0.0
   }
