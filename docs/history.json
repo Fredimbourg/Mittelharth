@@ -9454,15 +9454,15 @@
     "month": 9,
     "day": 7,
     "year": 2026,
-    "avg": 18.1,
+    "avg": 18.3,
     "hi": 21.1,
     "lo": 18.1,
-    "hum": 81.0,
-    "rain": 0.0,
+    "hum": 83.0,
+    "rain": 0.3,
     "rain_rate_max": 0,
-    "solar": 4.8,
-    "pres": 1023.3,
-    "wind": 0.7,
-    "wind_gust": 1.8
+    "solar": 9.2,
+    "pres": 1022.8,
+    "wind": 0.0,
+    "wind_gust": 0.0
   }
 }
