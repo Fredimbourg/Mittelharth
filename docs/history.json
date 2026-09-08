@@ -9473,11 +9473,11 @@
     "avg": 16.9,
     "hi": 22.6,
     "lo": 16.9,
-    "hum": 78.0,
+    "hum": 75.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 0.2,
-    "pres": 1016.8,
+    "solar": 11.9,
+    "pres": 1016.5,
     "wind": 0.0,
     "wind_gust": 0.0
   }
