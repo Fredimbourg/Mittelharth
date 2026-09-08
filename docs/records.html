@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Records · Météo Colmar-Mittelharth</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--radius:8px;--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}
+@media(prefers-color-scheme:dark){:root{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10);--accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4)}}
+html[data-theme="dark"]{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10);--accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4)}
+html[data-theme="light"]{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}
+.theme-toggle{background:var(--surface-muted);border:0.5px solid var(--border);border-radius:99px;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}
+.container{max-width:960px;margin:0 auto}
+header{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+header h1{font-size:20px;font-weight:500;margin-bottom:4px}
+header p{font-size:13px;color:var(--text-muted)}
+.year-selector{display:flex;gap:8px;align-items:center}
+.year-selector label{font-size:13px;color:var(--text-muted)}
+.year-selector select{font-size:15px;font-weight:500;padding:6px 12px;border-radius:var(--radius);border:0.5px solid var(--accent-border);background:var(--accent-bg);color:var(--accent);font-family:inherit;cursor:pointer}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+nav a{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}
+nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}
+.kpi-card{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:1rem 1.25rem}
+.kpi-label{font-size:12px;color:var(--text-muted);margin-bottom:6px}
+.kpi-value{font-size:20px;font-weight:500}
+.kpi-date{font-size:11px;color:var(--text-muted);margin-top:2px}
+.section{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;overflow-x:auto}
+.section-title{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+th{font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;text-align:center;border-bottom:0.5px solid var(--border)}
+th:first-child{text-align:left}
+td{padding:8px 10px;text-align:center;border-bottom:0.5px solid var(--border);color:var(--text-secondary)}
+td:first-child{font-weight:500;color:var(--text);text-align:left}
+tr:hover td{background:var(--surface-muted)}
+tr:last-child td{border-bottom:none}
+.rec-date{font-size:10px;color:var(--text-muted);margin-top:2px}
+footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;padding-top:1rem;border-top:0.5px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div>
+    <h1>🏆 Records</h1>
+    <p>Station Colmar-Mittelharth · records absolus et par année</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="year-selector">
+      <label>Année :</label>
+      <select id="yearSelect" onchange="loadYear(+this.value)"></select>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
+  </div>
+</header>
+<nav>
+  <a href="index.html">⚡ En direct</a>
+  <a href="dashboard.html">📊 Historique</a>
+  <a href="climate.html">🌍 Climatologie</a>
+  <a href="records.html" class="active">🏆 Records</a>
+</nav>
+
+<div class="kpi-grid">
+  <div class="kpi-card" style="border-left:3px solid #d85a30">
+    <div class="kpi-label">Température max (absolu)</div>
+    <div class="kpi-value" style="color:#d85a30">44.0 °C</div>
+    <div class="kpi-date">26/06/2026</div>
+  </div>
+  <div class="kpi-card" style="border-left:3px solid #2a78d6">
+    <div class="kpi-label">Température min (absolu)</div>
+    <div class="kpi-value" style="color:#2a78d6">-9.0 °C</div>
+    <div class="kpi-date">07/01/2026</div>
+  </div>
+  <div class="kpi-card" style="border-left:3px solid #1baf7a">
+    <div class="kpi-label">Pluie max / jour (absolu)</div>
+    <div class="kpi-value" style="color:#1baf7a">28.0 mm</div>
+    <div class="kpi-date">28/08/2025</div>
+  </div>
+  <div class="kpi-card" style="border-left:3px solid #2a78d6">
+    <div class="kpi-label">Averse la plus intense</div>
+    <div class="kpi-value" style="color:#2a78d6">78.0 mm/h</div>
+    <div class="kpi-date">15/06/2025</div>
+  </div>
+  <div class="kpi-card" style="border-left:3px solid #eda100">
+    <div class="kpi-label">Rafale max (absolu)</div>
+    <div class="kpi-value" style="color:#eda100">31 km/h</div>
+    <div class="kpi-date">25/03/2026</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Records absolus par mois (toutes années confondues)</div>
+  <table>
+    <thead><tr><th>Mois</th><th>T max</th><th>T min</th><th>Pluie max/j</th><th>Averse max</th><th>Rafale max</th></tr></thead>
+    <tbody><tr><td>Jan</td><td><b>17.7 °C</b><div class='rec-date'>25/01/2025</div></td><td><b>-9.0 °C</b><div class='rec-date'>07/01/2026</div></td><td><b>27.6 mm</b><div class='rec-date'>28/01/2026</div></td><td><b>9.6 mm/h</b><div class='rec-date'>29/01/2025</div></td><td><b>26 km/h</b><div class='rec-date'>09/01/2026</div></td></tr><tr><td>Fév</td><td><b>24.0 °C</b><div class='rec-date'>27/02/2026</div></td><td><b>-5.2 °C</b><div class='rec-date'>05/02/2025</div></td><td><b>10.7 mm</b><div class='rec-date'>12/02/2026</div></td><td><b>9.6 mm/h</b><div class='rec-date'>17/02/2026</div></td><td><b>26 km/h</b><div class='rec-date'>17/02/2026</div></td></tr><tr><td>Mar</td><td><b>24.0 °C</b><div class='rec-date'>20/03/2025</div></td><td><b>-1.8 °C</b><div class='rec-date'>28/03/2026</div></td><td><b>14.5 mm</b><div class='rec-date'>12/03/2025</div></td><td><b>4.8 mm/h</b><div class='rec-date'>11/03/2026</div></td><td><b>31 km/h</b><div class='rec-date'>25/03/2026</div></td></tr><tr><td>Avr</td><td><b>29.6 °C</b><div class='rec-date'>30/04/2025</div></td><td><b>-0.2 °C</b><div class='rec-date'>07/04/2025</div></td><td><b>8.6 mm</b><div class='rec-date'>25/04/2025</div></td><td><b>31.8 mm/h</b><div class='rec-date'>21/04/2025</div></td><td><b>24 km/h</b><div class='rec-date'>06/04/2025</div></td></tr><tr><td>Mai</td><td><b>37.5 °C</b><div class='rec-date'>26/05/2026</div></td><td><b>4.6 °C</b><div class='rec-date'>13/05/2026</div></td><td><b>19.0 mm</b><div class='rec-date'>31/05/2025</div></td><td><b>31.8 mm/h</b><div class='rec-date'>31/05/2025</div></td><td><b>26 km/h</b><div class='rec-date'>03/05/2026</div></td></tr><tr><td>Juin</td><td><b>44.0 °C</b><div class='rec-date'>26/06/2026</div></td><td><b>8.6 °C</b><div class='rec-date'>11/06/2026</div></td><td><b>27.9 mm</b><div class='rec-date'>15/06/2025</div></td><td><b>78.0 mm/h</b><div class='rec-date'>15/06/2025</div></td><td><b>31 km/h</b><div class='rec-date'>29/06/2026</div></td></tr><tr><td>Juil</td><td><b>42.4 °C</b><div class='rec-date'>30/07/2026</div></td><td><b>11.0 °C</b><div class='rec-date'>08/07/2025</div></td><td><b>7.6 mm</b><div class='rec-date'>08/07/2025</div></td><td><b>19.8 mm/h</b><div class='rec-date'>02/07/2025</div></td><td><b>30 km/h</b><div class='rec-date'>30/07/2026</div></td></tr><tr><td>Août</td><td><b>40.7 °C</b><div class='rec-date'>04/08/2026</div></td><td><b>10.9 °C</b><div class='rec-date'>25/08/2025</div></td><td><b>28.0 mm</b><div class='rec-date'>28/08/2025</div></td><td><b>45.6 mm/h</b><div class='rec-date'>17/08/2026</div></td><td><b>24 km/h</b><div class='rec-date'>20/08/2026</div></td></tr><tr><td>Sep</td><td><b>36.3 °C</b><div class='rec-date'>08/09/2026</div></td><td><b>6.9 °C</b><div class='rec-date'>28/09/2025</div></td><td><b>27.6 mm</b><div class='rec-date'>22/09/2025</div></td><td><b>35.4 mm/h</b><div class='rec-date'>01/09/2025</div></td><td><b>18 km/h</b><div class='rec-date'>15/09/2025</div></td></tr><tr><td>Oct</td><td><b>22.0 °C</b><div class='rec-date'>04/10/2025</div></td><td><b>3.7 °C</b><div class='rec-date'>02/10/2025</div></td><td><b>13.0 mm</b><div class='rec-date'>23/10/2025</div></td><td><b>7.8 mm/h</b><div class='rec-date'>23/10/2025</div></td><td><b>30 km/h</b><div class='rec-date'>27/10/2025</div></td></tr><tr><td>Nov</td><td><b>19.7 °C</b><div class='rec-date'>13/11/2025</div></td><td><b>-8.0 °C</b><div class='rec-date'>23/11/2025</div></td><td><b>6.6 mm</b><div class='rec-date'>30/11/2025</div></td><td><b>7.8 mm/h</b><div class='rec-date'>02/11/2025</div></td><td><b>17 km/h</b><div class='rec-date'>21/11/2025</div></td></tr><tr><td>Déc</td><td><b>15.2 °C</b><div class='rec-date'>08/12/2025</div></td><td><b>-6.2 °C</b><div class='rec-date'>29/12/2025</div></td><td><b>2.8 mm</b><div class='rec-date'>07/12/2025</div></td><td><b>3.0 mm/h</b><div class='rec-date'>07/12/2025</div></td><td><b>24 km/h</b><div class='rec-date'>24/12/2025</div></td></tr></tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title" id="year-table-title">Records par mois — année</div>
+  <table>
+    <thead><tr><th>Mois</th><th>T max</th><th>T min</th><th>Pluie max/j</th><th>Averse max</th><th>Rafale max</th></tr></thead>
+    <tbody id="year-tbody"></tbody>
+  </table>
+</div>
+
+<footer>Station météo personnelle · Colmar-Mittelharth · Alsace</footer>
+</div>
+<script>
+const YEARS = [2025, 2026];
+const YEAR_RECORDS = {"2025": {"1": {"max_t": {"val": 17.7, "date": "2025-01-25"}, "min_t": {"val": -6.2, "date": "2025-01-14"}, "max_rain": {"val": 13.0, "date": "2025-01-08"}, "max_rain_rate": {"val": 9.6, "date": "2025-01-29"}, "max_wind": {"val": 25.6, "date": "2025-01-06"}}, "2": {"max_t": {"val": 17.6, "date": "2025-02-23"}, "min_t": {"val": -5.2, "date": "2025-02-05"}, "max_rain": {"val": 8.7, "date": "2025-02-25"}, "max_rain_rate": {"val": 9.0, "date": "2025-02-13"}, "max_wind": {"val": 20.2, "date": "2025-02-27"}}, "3": {"max_t": {"val": 24.0, "date": "2025-03-20"}, "min_t": {"val": -1.5, "date": "2025-03-19"}, "max_rain": {"val": 14.5, "date": "2025-03-12"}, "max_rain_rate": {"val": 4.8, "date": "2025-03-13"}, "max_wind": {"val": 20.2, "date": "2025-03-25"}}, "4": {"max_t": {"val": 29.6, "date": "2025-04-30"}, "min_t": {"val": -0.2, "date": "2025-04-07"}, "max_rain": {"val": 8.6, "date": "2025-04-25"}, "max_rain_rate": {"val": 31.8, "date": "2025-04-21"}, "max_wind": {"val": 23.8, "date": "2025-04-06"}}, "5": {"max_t": {"val": 36.3, "date": "2025-05-31"}, "min_t": {"val": 6.4, "date": "2025-05-24"}, "max_rain": {"val": 19.0, "date": "2025-05-31"}, "max_rain_rate": {"val": 31.8, "date": "2025-05-31"}, "max_wind": {"val": 25.6, "date": "2025-05-21"}}, "6": {"max_t": {"val": 38.5, "date": "2025-06-22"}, "min_t": {"val": 9.3, "date": "2025-06-09"}, "max_rain": {"val": 27.9, "date": "2025-06-15"}, "max_rain_rate": {"val": 78.0, "date": "2025-06-15"}, "max_wind": {"val": 20.2, "date": "2025-06-23"}}, "7": {"max_t": {"val": 39.5, "date": "2025-07-02"}, "min_t": {"val": 11.0, "date": "2025-07-08"}, "max_rain": {"val": 7.6, "date": "2025-07-08"}, "max_rain_rate": {"val": 19.8, "date": "2025-07-02"}, "max_wind": {"val": 22.0, "date": "2025-07-02"}}, "8": {"max_t": {"val": 38.8, "date": "2025-08-09"}, "min_t": {"val": 10.9, "date": "2025-08-25"}, "max_rain": {"val": 28.0, "date": "2025-08-28"}, "max_rain_rate": {"val": 34.8, "date": "2025-08-20"}, "max_wind": {"val": 20.2, "date": "2025-08-05"}}, "9": {"max_t": {"val": 33.3, "date": "2025-09-20"}, "min_t": {"val": 6.9, "date": "2025-09-28"}, "max_rain": {"val": 27.6, "date": "2025-09-22"}, "max_rain_rate": {"val": 35.4, "date": "2025-09-01"}, "max_wind": {"val": 18.4, "date": "2025-09-15"}}, "10": {"max_t": {"val": 22.0, "date": "2025-10-04"}, "min_t": {"val": 3.7, "date": "2025-10-02"}, "max_rain": {"val": 13.0, "date": "2025-10-23"}, "max_rain_rate": {"val": 7.8, "date": "2025-10-23"}, "max_wind": {"val": 29.5, "date": "2025-10-27"}}, "11": {"max_t": {"val": 19.7, "date": "2025-11-13"}, "min_t": {"val": -8.0, "date": "2025-11-23"}, "max_rain": {"val": 6.6, "date": "2025-11-30"}, "max_rain_rate": {"val": 7.8, "date": "2025-11-02"}, "max_wind": {"val": 16.6, "date": "2025-11-21"}}, "12": {"max_t": {"val": 15.2, "date": "2025-12-08"}, "min_t": {"val": -6.2, "date": "2025-12-29"}, "max_rain": {"val": 2.8, "date": "2025-12-07"}, "max_rain_rate": {"val": 3.0, "date": "2025-12-07"}, "max_wind": {"val": 23.8, "date": "2025-12-24"}}}, "2026": {"1": {"max_t": {"val": 12.6, "date": "2026-01-15"}, "min_t": {"val": -9.0, "date": "2026-01-07"}, "max_rain": {"val": 27.6, "date": "2026-01-28"}, "max_rain_rate": {"val": 4.8, "date": "2026-01-09"}, "max_wind": {"val": 25.6, "date": "2026-01-09"}}, "2": {"max_t": {"val": 24.0, "date": "2026-02-27"}, "min_t": {"val": -1.1, "date": "2026-02-18"}, "max_rain": {"val": 10.7, "date": "2026-02-12"}, "max_rain_rate": {"val": 9.6, "date": "2026-02-17"}, "max_wind": {"val": 25.6, "date": "2026-02-17"}}, "3": {"max_t": {"val": 20.7, "date": "2026-03-09"}, "min_t": {"val": -1.8, "date": "2026-03-28"}, "max_rain": {"val": 3.1, "date": "2026-03-25"}, "max_rain_rate": {"val": 4.8, "date": "2026-03-11"}, "max_wind": {"val": 31.3, "date": "2026-03-25"}}, "4": {"max_t": {"val": 26.4, "date": "2026-04-09"}, "min_t": {"val": 0.3, "date": "2026-04-02"}, "max_rain": {"val": 7.6, "date": "2026-04-12"}, "max_rain_rate": {"val": 7.8, "date": "2026-04-11"}, "max_wind": {"val": 22.0, "date": "2026-04-19"}}, "5": {"max_t": {"val": 37.5, "date": "2026-05-26"}, "min_t": {"val": 4.6, "date": "2026-05-13"}, "max_rain": {"val": 10.2, "date": "2026-05-06"}, "max_rain_rate": {"val": 24.0, "date": "2026-05-18"}, "max_wind": {"val": 25.6, "date": "2026-05-03"}}, "6": {"max_t": {"val": 44.0, "date": "2026-06-26"}, "min_t": {"val": 8.6, "date": "2026-06-11"}, "max_rain": {"val": 10.7, "date": "2026-06-29"}, "max_rain_rate": {"val": 37.8, "date": "2026-06-29"}, "max_wind": {"val": 31.3, "date": "2026-06-29"}}, "7": {"max_t": {"val": 42.4, "date": "2026-07-30"}, "min_t": {"val": 12.5, "date": "2026-07-21"}, "max_rain": {"val": 5.3, "date": "2026-07-18"}, "max_rain_rate": {"val": 16.8, "date": "2026-07-14"}, "max_wind": {"val": 29.5, "date": "2026-07-30"}}, "8": {"max_t": {"val": 40.7, "date": "2026-08-04"}, "min_t": {"val": 11.4, "date": "2026-08-23"}, "max_rain": {"val": 17.5, "date": "2026-08-17"}, "max_rain_rate": {"val": 45.6, "date": "2026-08-17"}, "max_wind": {"val": 23.8, "date": "2026-08-20"}}, "9": {"max_t": {"val": 36.3, "date": "2026-09-08"}, "min_t": {"val": 12.9, "date": "2026-09-06"}, "max_rain": {"val": 0.3, "date": "2026-09-07"}, "max_rain_rate": {"val": 1.2, "date": "2026-09-05"}, "max_wind": {"val": 5.4, "date": "2026-09-04"}}, "10": {"max_t": {"val": null, "date": null}, "min_t": {"val": null, "date": null}, "max_rain": {"val": null, "date": null}, "max_rain_rate": {"val": null, "date": null}, "max_wind": {"val": null, "date": null}}, "11": {"max_t": {"val": null, "date": null}, "min_t": {"val": null, "date": null}, "max_rain": {"val": null, "date": null}, "max_rain_rate": {"val": null, "date": null}, "max_wind": {"val": null, "date": null}}, "12": {"max_t": {"val": null, "date": null}, "min_t": {"val": null, "date": null}, "max_rain": {"val": null, "date": null}, "max_rain_rate": {"val": null, "date": null}, "max_wind": {"val": null, "date": null}}}};
+const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
+
+// ── Mode sombre / clair (partagé avec les autres pages) ─────────────────────
+(function() {
+  const stored = localStorage.getItem('mittelharth-theme');
+  if (stored) document.documentElement.setAttribute('data-theme', stored);
+  const btn = document.getElementById('themeToggle');
+  function isDark() {
+    const attr = document.documentElement.getAttribute('data-theme');
+    if (attr) return attr === 'dark';
+    return window.matchMedia('(prefers-color-scheme:dark)').matches;
+  }
+  function updateBtn() { btn.textContent = isDark() ? '☀️' : '🌙'; }
+  updateBtn();
+  btn.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('mittelharth-theme', next);
+    updateBtn();
+  });
+})();
+
+const sel = document.getElementById('yearSelect');
+YEARS.forEach(y => {
+  const opt = document.createElement('option');
+  opt.value = y; opt.textContent = y;
+  if (y === YEARS[YEARS.length - 1]) opt.selected = true;
+  sel.appendChild(opt);
+});
+
+function fmtCell(v) {
+  if (!v || v.val === null || v.val === undefined) return { val: '—', date: '' };
+  const d = new Date(v.date + 'T00:00:00');
+  const dateStr = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+  return { val: v.val, date: dateStr };
+}
+
+function loadYear(year) {
+  document.getElementById('year-table-title').textContent = `Records par mois — année ${year}`;
+  const tbody = document.getElementById('year-tbody');
+  tbody.innerHTML = '';
+  const rec = YEAR_RECORDS[String(year)] || {};
+  MONTHS.forEach((m, i) => {
+    const r = rec[String(i+1)] || {};
+    const maxT   = fmtCell(r.max_t);
+    const minT   = fmtCell(r.min_t);
+    const rain   = fmtCell(r.max_rain);
+    const rrate  = fmtCell(r.max_rain_rate);
+    const wind   = fmtCell(r.max_wind);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${m}</td>
+      <td><b>${maxT.val !== '—' ? maxT.val.toFixed(1) + ' °C' : '—'}</b><div class="rec-date">${maxT.date}</div></td>
+      <td><b>${minT.val !== '—' ? minT.val.toFixed(1) + ' °C' : '—'}</b><div class="rec-date">${minT.date}</div></td>
+      <td><b>${rain.val !== '—' ? rain.val.toFixed(1) + ' mm' : '—'}</b><div class="rec-date">${rain.date}</div></td>
+      <td><b>${rrate.val !== '—' ? rrate.val.toFixed(1) + ' mm/h' : '—'}</b><div class="rec-date">${rrate.date}</div></td>
+      <td><b>${wind.val !== '—' ? wind.val.toFixed(0) + ' km/h' : '—'}</b><div class="rec-date">${wind.date}</div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+loadYear(YEARS[YEARS.length - 1]);
+</script>
+</body>
+</html>
