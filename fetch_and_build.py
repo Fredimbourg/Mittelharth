@@ -345,6 +345,83 @@ def get_records(hist_dict):
     return records
 
 
+def get_records_by_month(hist_dict):
+    """
+    Records ABSOLUS par mois (toutes années confondues). Même logique que
+    get_records(), mais un jeu de records par mois calendaire (1-12) plutôt
+    qu'un seul jeu global — répond à "quel a été le record de chaleur en
+    janvier, toutes années ?".
+    """
+    records = {m: {
+        "max_t":         {"val": None, "date": None},
+        "min_t":         {"val": None, "date": None},
+        "max_rain":      {"val": None, "date": None},
+        "max_rain_rate": {"val": None, "date": None},
+        "max_wind":      {"val": None, "date": None},
+    } for m in range(1, 13)}
+
+    for date_str, d in hist_dict.items():
+        m = d.get("month")
+        if not m or m not in records:
+            continue
+        r = records[m]
+        hi, lo = d.get("hi"), d.get("lo")
+        rain, rain_rate = d.get("rain"), d.get("rain_rate_max")
+        gust = d.get("wind_gust") or d.get("wind")
+
+        if hi is not None and (r["max_t"]["val"] is None or hi > r["max_t"]["val"]):
+            r["max_t"] = {"val": hi, "date": date_str}
+        if lo is not None and (r["min_t"]["val"] is None or lo < r["min_t"]["val"]):
+            r["min_t"] = {"val": lo, "date": date_str}
+        if rain is not None and (r["max_rain"]["val"] is None or rain > r["max_rain"]["val"]):
+            r["max_rain"] = {"val": rain, "date": date_str}
+        if rain_rate is not None and (r["max_rain_rate"]["val"] is None or rain_rate > r["max_rain_rate"]["val"]):
+            r["max_rain_rate"] = {"val": rain_rate, "date": date_str}
+        if gust is not None and (r["max_wind"]["val"] is None or gust > r["max_wind"]["val"]):
+            r["max_wind"] = {"val": gust, "date": date_str}
+
+    return records
+
+
+def get_year_month_records(daily):
+    """
+    Records par mois pour UNE SEULE année (la liste "daily" déjà filtrée
+    par aggregate_by_year). Même structure que get_records_by_month, mais
+    calculée sur un sous-ensemble d'une année — répond à "quel a été le
+    record de chaleur en janvier 2026 ?".
+    """
+    records = {m: {
+        "max_t":         {"val": None, "date": None},
+        "min_t":         {"val": None, "date": None},
+        "max_rain":      {"val": None, "date": None},
+        "max_rain_rate": {"val": None, "date": None},
+        "max_wind":      {"val": None, "date": None},
+    } for m in range(1, 13)}
+
+    for d in daily:
+        m = d.get("month")
+        if not m or m not in records:
+            continue
+        r = records[m]
+        date_str = d["date"]
+        hi, lo = d.get("hi"), d.get("lo")
+        rain, rain_rate = d.get("rain"), d.get("rain_rate_max")
+        gust = d.get("wind_gust") or d.get("wind")
+
+        if hi is not None and (r["max_t"]["val"] is None or hi > r["max_t"]["val"]):
+            r["max_t"] = {"val": hi, "date": date_str}
+        if lo is not None and (r["min_t"]["val"] is None or lo < r["min_t"]["val"]):
+            r["min_t"] = {"val": lo, "date": date_str}
+        if rain is not None and (r["max_rain"]["val"] is None or rain > r["max_rain"]["val"]):
+            r["max_rain"] = {"val": rain, "date": date_str}
+        if rain_rate is not None and (r["max_rain_rate"]["val"] is None or rain_rate > r["max_rain_rate"]["val"]):
+            r["max_rain_rate"] = {"val": rain_rate, "date": date_str}
+        if gust is not None and (r["max_wind"]["val"] is None or gust > r["max_wind"]["val"]):
+            r["max_wind"] = {"val": gust, "date": date_str}
+
+    return records
+
+
 def update_history(live):
     """Ajoute/met à jour la journée d'aujourd'hui dans history.json."""
     today = datetime.datetime.now(PARIS_TZ).strftime("%Y-%m-%d")
@@ -497,6 +574,7 @@ def aggregate_by_year(hist_dict):
         pluie = {m: sum(1 for d in daily if d["month"]==m and (d.get("rain") or 0) > 1) for m in range(1,13)}
         nuits_trop = {m: sum(1 for d in daily if d["month"]==m and (d.get("lo") or 0) >= 20) for m in range(1,13)}
         canicule = compute_canicule_days(daily)
+        month_records = get_year_month_records(daily)
 
         # Heatmap [mois 0-11][jour 0-30]
         heatmap = []
@@ -521,6 +599,7 @@ def aggregate_by_year(hist_dict):
             "pluie":   pluie,
             "nuits_trop": nuits_trop,
             "canicule": canicule,
+            "month_records": month_records,
             "max_abs": round(max(all_hi),1)     if all_hi   else None,
             "min_abs": round(min(all_lo),1)      if all_lo   else None,
             "rain_total": round(sum(all_rain),1) if all_rain else 0,
@@ -1121,6 +1200,7 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
     <a href="index.html" class="active">⚡ En direct</a>
     <a href="dashboard.html">📊 Historique</a>
     <a href="climate.html">🌍 Climatologie</a>
+    <a href="records.html">🏆 Records</a>
   </nav>
   <span class="live-clock" id="liveClock">--:-- · --/--</span>
 </div>
@@ -1640,6 +1720,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <a href="index.html">⚡ En direct</a>
   <a href="dashboard.html" class="active">📊 Historique</a>
   <a href="climate.html">🌍 Climatologie</a>
+  <a href="records.html">🏆 Records</a>
 </nav>
 
 <div class="kpi-grid">
@@ -2125,6 +2206,7 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
   <a href="index.html">⚡ En direct</a>
   <a href="dashboard.html">📊 Historique</a>
   <a href="climate.html" class="active">🌍 Climatologie</a>
+  <a href="records.html">🏆 Records</a>
 </nav>
 <div class="section">
   <div class="section-title" id="table-title">Moyennes mensuelles</div>
@@ -2204,6 +2286,244 @@ loadYear(YEARS[YEARS.length-1]);
     Path("docs/climate.html").write_text(html, encoding="utf-8")
     print("  → climate.html généré")
 
+
+def build_records(years, data_by_year, records_abs, records_abs_month):
+    """Page dédiée aux records : records absolus par mois + records de
+    l'année sélectionnée par mois."""
+    if not years:
+        return
+
+    mn = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"]
+
+    def rec_row_html(rec_month_dict):
+        """Construit les lignes <tr> pour un dict {mois: {clé: {val,date}}}."""
+        rows = []
+        for m in range(1, 13):
+            r = rec_month_dict.get(m, {})
+            def cell(key, unit, dec=1):
+                v = r.get(key, {})
+                if not v or v.get("val") is None:
+                    return "—", ""
+                dt = datetime.datetime.strptime(v["date"], "%Y-%m-%d")
+                return f"{v['val']:.{dec}f}{unit}", dt.strftime("%d/%m/%Y")
+            max_t, max_t_d   = cell("max_t", " °C")
+            min_t, min_t_d   = cell("min_t", " °C")
+            rain, rain_d     = cell("max_rain", " mm")
+            rrate, rrate_d   = cell("max_rain_rate", " mm/h")
+            wind, wind_d     = cell("max_wind", " km/h", 0)
+            rows.append(
+                f"<tr><td>{mn[m-1]}</td>"
+                f"<td><b>{max_t}</b><div class='rec-date'>{max_t_d}</div></td>"
+                f"<td><b>{min_t}</b><div class='rec-date'>{min_t_d}</div></td>"
+                f"<td><b>{rain}</b><div class='rec-date'>{rain_d}</div></td>"
+                f"<td><b>{rrate}</b><div class='rec-date'>{rrate_d}</div></td>"
+                f"<td><b>{wind}</b><div class='rec-date'>{wind_d}</div></td></tr>"
+            )
+        return "".join(rows)
+
+    abs_rows_html = rec_row_html(records_abs_month)
+
+    # Records annuels par mois, un jeu par année (pour bascule JS)
+    year_month_records_js = json.dumps({
+        str(y): {str(m): v for m, v in data_by_year[y]["month_records"].items()}
+        for y in years
+    }, ensure_ascii=False)
+    years_js = json.dumps(years)
+
+    # Records absolus globaux (toutes années, tous mois confondus) pour le
+    # bandeau du haut — réutilise get_records() déjà calculé en amont
+    def rec_fmt(key, unit, dec=1):
+        r = records_abs.get(key, {})
+        if not r or r.get("val") is None:
+            return "—", "—"
+        dt = datetime.datetime.strptime(r["date"], "%Y-%m-%d")
+        return f"{r['val']:.{dec}f}{unit}", dt.strftime("%d/%m/%Y")
+    g_max_t, g_max_t_d = rec_fmt("max_t", " °C")
+    g_min_t, g_min_t_d = rec_fmt("min_t", " °C")
+    g_rain,  g_rain_d  = rec_fmt("max_rain", " mm")
+    g_rrate, g_rrate_d = rec_fmt("max_rain_rate", " mm/h")
+    g_wind,  g_wind_d  = rec_fmt("max_wind", " km/h", 0)
+
+    html = f"""<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Records · Météo Colmar-Mittelharth</title>
+<style>
+*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+:root{{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--radius:8px;--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}}
+@media(prefers-color-scheme:dark){{:root{{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10);--accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4)}}}}
+html[data-theme="dark"]{{--bg:#111110;--surface:#1e1e1c;--surface-muted:#252523;--text:#fff;--text-secondary:#c3c2b7;--text-muted:#898781;--border:rgba(255,255,255,.10);--accent:#3987e5;--accent-bg:rgba(57,135,229,.12);--accent-border:rgba(57,135,229,.4)}}
+html[data-theme="light"]{{--bg:#f5f5f3;--surface:#fff;--surface-muted:#f0efec;--text:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--border:rgba(11,11,11,.10);--accent:#2a78d6;--accent-bg:#e6f1fb;--accent-border:rgba(42,120,214,.3)}}
+.theme-toggle{{background:var(--surface-muted);border:0.5px solid var(--border);border-radius:99px;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text)}}
+body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem}}
+.container{{max-width:960px;margin:0 auto}}
+header{{margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}}
+header h1{{font-size:20px;font-weight:500;margin-bottom:4px}}
+header p{{font-size:13px;color:var(--text-muted)}}
+.year-selector{{display:flex;gap:8px;align-items:center}}
+.year-selector label{{font-size:13px;color:var(--text-muted)}}
+.year-selector select{{font-size:15px;font-weight:500;padding:6px 12px;border-radius:var(--radius);border:0.5px solid var(--accent-border);background:var(--accent-bg);color:var(--accent);font-family:inherit;cursor:pointer}}
+nav{{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}}
+nav a{{font-size:13px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);text-decoration:none}}
+nav a.active{{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-border)}}
+.kpi-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}}
+.kpi-card{{background:var(--surface);border-radius:var(--radius);border:0.5px solid var(--border);padding:1rem 1.25rem}}
+.kpi-label{{font-size:12px;color:var(--text-muted);margin-bottom:6px}}
+.kpi-value{{font-size:20px;font-weight:500}}
+.kpi-date{{font-size:11px;color:var(--text-muted);margin-top:2px}}
+.section{{background:var(--surface);border-radius:12px;border:0.5px solid var(--border);padding:1.5rem;margin-bottom:1.5rem;overflow-x:auto}}
+.section-title{{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}}
+table{{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}}
+th{{font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;text-align:center;border-bottom:0.5px solid var(--border)}}
+th:first-child{{text-align:left}}
+td{{padding:8px 10px;text-align:center;border-bottom:0.5px solid var(--border);color:var(--text-secondary)}}
+td:first-child{{font-weight:500;color:var(--text);text-align:left}}
+tr:hover td{{background:var(--surface-muted)}}
+tr:last-child td{{border-bottom:none}}
+.rec-date{{font-size:10px;color:var(--text-muted);margin-top:2px}}
+footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;padding-top:1rem;border-top:0.5px solid var(--border)}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div>
+    <h1>🏆 Records</h1>
+    <p>Station Colmar-Mittelharth · records absolus et par année</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="year-selector">
+      <label>Année :</label>
+      <select id="yearSelect" onchange="loadYear(+this.value)"></select>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Basculer mode clair/sombre">🌙</button>
+  </div>
+</header>
+<nav>
+  <a href="index.html">⚡ En direct</a>
+  <a href="dashboard.html">📊 Historique</a>
+  <a href="climate.html">🌍 Climatologie</a>
+  <a href="records.html" class="active">🏆 Records</a>
+</nav>
+
+<div class="kpi-grid">
+  <div class="kpi-card" style="border-left:3px solid #d85a30">
+    <div class="kpi-label">Température max (absolu)</div>
+    <div class="kpi-value" style="color:#d85a30">{g_max_t}</div>
+    <div class="kpi-date">{g_max_t_d}</div>
+  </div>
+  <div class="kpi-card" style="border-left:3px solid #2a78d6">
+    <div class="kpi-label">Température min (absolu)</div>
+    <div class="kpi-value" style="color:#2a78d6">{g_min_t}</div>
+    <div class="kpi-date">{g_min_t_d}</div>
+  </div>
+  <div class="kpi-card" style="border-left:3px solid #1baf7a">
+    <div class="kpi-label">Pluie max / jour (absolu)</div>
+    <div class="kpi-value" style="color:#1baf7a">{g_rain}</div>
+    <div class="kpi-date">{g_rain_d}</div>
+  </div>
+  <div class="kpi-card" style="border-left:3px solid #2a78d6">
+    <div class="kpi-label">Averse la plus intense</div>
+    <div class="kpi-value" style="color:#2a78d6">{g_rrate}</div>
+    <div class="kpi-date">{g_rrate_d}</div>
+  </div>
+  <div class="kpi-card" style="border-left:3px solid #eda100">
+    <div class="kpi-label">Rafale max (absolu)</div>
+    <div class="kpi-value" style="color:#eda100">{g_wind}</div>
+    <div class="kpi-date">{g_wind_d}</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Records absolus par mois (toutes années confondues)</div>
+  <table>
+    <thead><tr><th>Mois</th><th>T max</th><th>T min</th><th>Pluie max/j</th><th>Averse max</th><th>Rafale max</th></tr></thead>
+    <tbody>{abs_rows_html}</tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title" id="year-table-title">Records par mois — année</div>
+  <table>
+    <thead><tr><th>Mois</th><th>T max</th><th>T min</th><th>Pluie max/j</th><th>Averse max</th><th>Rafale max</th></tr></thead>
+    <tbody id="year-tbody"></tbody>
+  </table>
+</div>
+
+<footer>Station météo personnelle · Colmar-Mittelharth · Alsace</footer>
+</div>
+<script>
+const YEARS = {years_js};
+const YEAR_RECORDS = {year_month_records_js};
+const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
+
+// ── Mode sombre / clair (partagé avec les autres pages) ─────────────────────
+(function() {{
+  const stored = localStorage.getItem('mittelharth-theme');
+  if (stored) document.documentElement.setAttribute('data-theme', stored);
+  const btn = document.getElementById('themeToggle');
+  function isDark() {{
+    const attr = document.documentElement.getAttribute('data-theme');
+    if (attr) return attr === 'dark';
+    return window.matchMedia('(prefers-color-scheme:dark)').matches;
+  }}
+  function updateBtn() {{ btn.textContent = isDark() ? '☀️' : '🌙'; }}
+  updateBtn();
+  btn.addEventListener('click', () => {{
+    const next = isDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('mittelharth-theme', next);
+    updateBtn();
+  }});
+}})();
+
+const sel = document.getElementById('yearSelect');
+YEARS.forEach(y => {{
+  const opt = document.createElement('option');
+  opt.value = y; opt.textContent = y;
+  if (y === YEARS[YEARS.length - 1]) opt.selected = true;
+  sel.appendChild(opt);
+}});
+
+function fmtCell(v) {{
+  if (!v || v.val === null || v.val === undefined) return {{ val: '—', date: '' }};
+  const d = new Date(v.date + 'T00:00:00');
+  const dateStr = String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+  return {{ val: v.val, date: dateStr }};
+}}
+
+function loadYear(year) {{
+  document.getElementById('year-table-title').textContent = `Records par mois — année ${{year}}`;
+  const tbody = document.getElementById('year-tbody');
+  tbody.innerHTML = '';
+  const rec = YEAR_RECORDS[String(year)] || {{}};
+  MONTHS.forEach((m, i) => {{
+    const r = rec[String(i+1)] || {{}};
+    const maxT   = fmtCell(r.max_t);
+    const minT   = fmtCell(r.min_t);
+    const rain   = fmtCell(r.max_rain);
+    const rrate  = fmtCell(r.max_rain_rate);
+    const wind   = fmtCell(r.max_wind);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${{m}}</td>
+      <td><b>${{maxT.val !== '—' ? maxT.val.toFixed(1) + ' °C' : '—'}}</b><div class="rec-date">${{maxT.date}}</div></td>
+      <td><b>${{minT.val !== '—' ? minT.val.toFixed(1) + ' °C' : '—'}}</b><div class="rec-date">${{minT.date}}</div></td>
+      <td><b>${{rain.val !== '—' ? rain.val.toFixed(1) + ' mm' : '—'}}</b><div class="rec-date">${{rain.date}}</div></td>
+      <td><b>${{rrate.val !== '—' ? rrate.val.toFixed(1) + ' mm/h' : '—'}}</b><div class="rec-date">${{rrate.date}}</div></td>
+      <td><b>${{wind.val !== '—' ? wind.val.toFixed(0) + ' km/h' : '—'}}</b><div class="rec-date">${{wind.date}}</div></td>`;
+    tbody.appendChild(tr);
+  }});
+}}
+
+loadYear(YEARS[YEARS.length - 1]);
+</script>
+</body>
+</html>"""
+    Path("docs/records.html").write_text(html, encoding="utf-8")
+    print("  → records.html généré")
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     Path("docs").mkdir(exist_ok=True)
@@ -2218,10 +2538,12 @@ if __name__ == "__main__":
     # Historique (pour les records)
     hist_dict = update_history(live)
     records = get_records(hist_dict)
+    records_by_month = get_records_by_month(hist_dict)
 
     build_index(live, hourly, forecast, hourly_fc, records, hiking_html)
 
     years, data_by_year = aggregate_by_year(hist_dict)
     build_dashboard(years, data_by_year)
     build_climate(years, data_by_year)
+    build_records(years, data_by_year, records, records_by_month)
     print("✓ Site généré avec succès dans docs/")
