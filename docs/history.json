@@ -9486,14 +9486,14 @@
     "month": 9,
     "day": 9,
     "year": 2026,
-    "avg": 22.2,
+    "avg": 21.3,
     "hi": 24.6,
-    "lo": 22.2,
-    "hum": 64.0,
+    "lo": 21.3,
+    "hum": 67.0,
     "rain": 0.0,
     "rain_rate_max": 0,
     "solar": 0.0,
-    "pres": 1012.1,
+    "pres": 1012.9,
     "wind": 0.7,
     "wind_gust": 1.8
   }
