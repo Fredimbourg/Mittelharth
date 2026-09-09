@@ -9486,15 +9486,15 @@
     "month": 9,
     "day": 9,
     "year": 2026,
-    "avg": 19.9,
+    "avg": 20.0,
     "hi": 24.6,
     "lo": 15.3,
-    "hum": 47.0,
+    "hum": 45.0,
     "rain": 1.8,
     "rain_rate_max": 1.8,
-    "solar": 202.7,
+    "solar": 225.4,
     "pres": 1017.3,
-    "wind": 2.9,
-    "wind_gust": 3.6
+    "wind": 3.6,
+    "wind_gust": 5.4
   }
 }
