@@ -9489,12 +9489,12 @@
     "avg": 17.2,
     "hi": 24.6,
     "lo": 15.3,
-    "hum": 67.0,
+    "hum": 60.0,
     "rain": 1.8,
     "rain_rate_max": 1.8,
-    "solar": 77.5,
-    "pres": 1016.0,
-    "wind": 4.7,
-    "wind_gust": 9.4
+    "solar": 170.0,
+    "pres": 1016.7,
+    "wind": 2.2,
+    "wind_gust": 3.6
   }
 }
