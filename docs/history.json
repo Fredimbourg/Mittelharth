@@ -9489,11 +9489,11 @@
     "avg": 16.7,
     "hi": 24.6,
     "lo": 15.3,
-    "hum": 78.0,
+    "hum": 76.0,
     "rain": 1.8,
     "rain_rate_max": 1.8,
-    "solar": 46.3,
-    "pres": 1015.0,
+    "solar": 57.1,
+    "pres": 1015.1,
     "wind": 0.0,
     "wind_gust": 0.0
   }
