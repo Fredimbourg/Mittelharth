@@ -9502,15 +9502,15 @@
     "month": 9,
     "day": 10,
     "year": 2026,
-    "avg": 15.8,
-    "hi": 15.8,
+    "avg": 17.6,
+    "hi": 17.6,
     "lo": 8.5,
-    "hum": 60.0,
+    "hum": 57.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 189.9,
-    "pres": 1020.4,
-    "wind": 4.7,
+    "solar": 287.2,
+    "pres": 1020.3,
+    "wind": 2.2,
     "wind_gust": 5.4
   }
 }
