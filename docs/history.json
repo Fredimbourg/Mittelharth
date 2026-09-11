@@ -9518,15 +9518,15 @@
     "month": 9,
     "day": 11,
     "year": 2026,
-    "avg": 12.2,
+    "avg": 12.0,
     "hi": 14.4,
-    "lo": 12.2,
-    "hum": 69.0,
+    "lo": 12.0,
+    "hum": 71.0,
     "rain": 0.0,
     "rain_rate_max": 0,
     "solar": 0.0,
-    "pres": 1019.9,
-    "wind": 2.5,
+    "pres": 1020.1,
+    "wind": 1.1,
     "wind_gust": 3.6
   }
 }
