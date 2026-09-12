@@ -663,7 +663,346 @@ def aggregate_by_year(hist_dict):
 
     return years, result
 
-# ── 4b. Alertes météo ─────────────────────────────────────────────────────────
+# ── 4b. Anomalies météorologiques (indice de rareté) ──────────────────────────
+# Principe : une journée est comparée aux journées « comparables » — celles
+# tombant dans une fenêtre de ANOMALY_WINDOW_DAYS jours autour de la même date
+# calendaire, toutes années confondues (pas à l'année entière). On calcule le
+# rang percentile de la valeur du jour dans cet échantillon, puis on en déduit
+# un indice de rareté 0-100. Aucun seuil arbitraire (ex. "> 35°C") n'intervient :
+# tout est relatif au climat réellement mesuré à Mittelharth.
+ANOMALY_WINDOW_DAYS = 7   # fenêtre calendaire (± jours) définissant "la même période de l'année"
+ANOMALY_MIN_POINTS  = 15  # nb mini de journées comparables pour un indice jugé fiable
+ANOMALY_MIN_YEARS   = 2   # nb mini d'années distinctes représentées dans l'échantillon
+
+# (clé interne, libellé affiché, unité, type de test, décimales d'affichage)
+# type de test :
+#   "two"      → bilatéral : un écart vers le haut OU vers le bas est notable
+#                (température, pluie journalière, amplitude, humidité...)
+#   "one_high" → unilatéral haut : seule une valeur ANORMALEMENT HAUTE est
+#                notable (ex. une longue série de jours sans pluie ; une série
+#                courte est simplement... normale, pas "rare vers le bas")
+ANOMALY_PARAMS = [
+    ("avg",        "Température moyenne",          " °C", "two",      1),
+    ("hi",         "Température maximale",         " °C", "two",      1),
+    ("lo",         "Température minimale",         " °C", "two",      1),
+    ("amplitude",  "Amplitude thermique",          " °C", "two",      1),
+    ("rain",       "Précipitations du jour",       " mm", "two",      1),
+    ("rain7",      "Cumul de pluie sur 7 jours",   " mm", "two",      1),
+    ("dry_streak", "Jours sans pluie consécutifs", " j",  "one_high", 0),
+    ("hum",        "Humidité moyenne",             " %",  "two",      0),
+]
+
+def _ordinal_md(month, day):
+    """Position dans l'année (1-366) sur une année de référence non bissextile,
+    pour pouvoir comparer des dates de différentes années. Le 29 février est
+    ramené au 28 (une seule journée de l'année n'a pas besoin d'un traitement
+    à part pour cet usage)."""
+    if month == 2 and day == 29:
+        day = 28
+    return datetime.date(2001, month, day).timetuple().tm_yday
+
+def compute_derived_series(hist_dict):
+    """Calcule, pour chaque jour, deux séries dérivées des relevés de pluie :
+    - dry_streak : nombre de jours consécutifs (jour inclus) avec rain < 0.1mm,
+      en remontant tant que les jours précédents sont eux-mêmes présents et secs.
+      Un jour manquant dans l'historique interrompt la remontée (on ne devine
+      pas ce qui s'est passé un jour non mesuré).
+    - rain7 : cumul de pluie sur les 7 derniers jours calendaires (jour inclus).
+      Nécessite les 7 jours réellement présents et renseignés, sinon None —
+      on préfère ne rien afficher plutôt qu'extrapoler un cumul partiel.
+    """
+    dry_streak, rain7 = {}, {}
+    for date_str, d in hist_dict.items():
+        cur = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+        r = d.get("rain")
+        streak = None
+        if r is not None:
+            streak = 0
+            probe, probe_r = cur, r
+            while probe_r is not None and probe_r < 0.1:
+                streak += 1
+                probe = probe - datetime.timedelta(days=1)
+                probe_d = hist_dict.get(probe.strftime("%Y-%m-%d"))
+                probe_r = probe_d.get("rain") if probe_d else None
+        dry_streak[date_str] = streak
+
+        window = [(cur - datetime.timedelta(days=k)).strftime("%Y-%m-%d") for k in range(6, -1, -1)]
+        vals = [hist_dict.get(w, {}).get("rain") for w in window]
+        rain7[date_str] = round(sum(vals), 1) if all(v is not None for v in vals) else None
+    return dry_streak, rain7
+
+def percentile_rank(value, sample):
+    """Rang percentile de `value` dans `sample`, par la position de Weibull
+    (rang / (n+1)), une convention standard pour estimer des périodes de
+    retour à partir d'échantillons courts (utilisée en hydrométéorologie).
+    Deux choix méthodologiques importants ici :
+    - les valeurs égales à `value` comptent pour moitié dans le rang (ne pas
+      classer arbitrairement une égalité côté haut ou bas — utile car
+      beaucoup de jours partagent la même valeur de pluie, 0mm) ;
+    - le dénominateur est (n+1) et non n : avec un historique encore court
+      (quelques années), la valeur la plus extrême jamais observée NE DOIT
+      PAS ressortir comme "100% certaine" — elle est seulement la plus
+      extrême parmi les n jours comparables connus à ce jour. La position de
+      Weibull traduit cette incertitude résiduelle au lieu de la masquer."""
+    n = len(sample)
+    if n == 0:
+        return None
+    less  = sum(1 for s in sample if s <  value)
+    equal = sum(1 for s in sample if s == value)
+    rank = less + 0.5 * equal + 0.5
+    return rank / (n + 1) * 100
+
+def _rarity_two_tailed(p):
+    """0 au centre de la distribution (médiane), 100 aux deux extrêmes."""
+    if p is None:
+        return None
+    return round(100 - 2 * min(p, 100 - p), 1)
+
+def _rarity_one_tailed_high(p):
+    """0 tant qu'on est sous la médiane (ou dessus mais pas extrême dans le
+    sens qui nous intéresse), monte vers 100 seulement pour la queue haute."""
+    if p is None:
+        return None
+    return round(max(0.0, 2 * (p - 50)), 1)
+
+def compute_all_anomalies(hist_dict):
+    """Calcule l'indice de rareté de chaque journée de l'historique.
+
+    Retourne { date_str: { "index": float|None, "dominant": clé|None,
+                            "params": { clé: {label, unit, value, percentile,
+                                              rarity, n, years, reliable} } } }
+
+    "index" est le MAX des raretés des paramètres jugés fiables du jour (une
+    journée est inhabituelle dès qu'AU MOINS UN paramètre l'est nettement) ;
+    "dominant" indique quel paramètre explique ce score.
+    Si aucun paramètre du jour n'atteint le seuil de fiabilité (assez de
+    jours ET d'années comparables), "index" vaut None : on affiche alors
+    "données insuffisantes" plutôt qu'un chiffre qui suggérerait une
+    précision non justifiée par l'échantillon.
+    """
+    enriched = {}
+    dry_streak, rain7 = compute_derived_series(hist_dict)
+    for date_str, d in hist_dict.items():
+        if d.get("month") is None or d.get("day") is None:
+            continue
+        amplitude = round(d["hi"] - d["lo"], 1) if (d.get("hi") is not None and d.get("lo") is not None) else None
+        enriched[date_str] = {
+            "year": d.get("year"), "doy": _ordinal_md(d["month"], d["day"]),
+            "avg": d.get("avg"), "hi": d.get("hi"), "lo": d.get("lo"),
+            "amplitude": amplitude, "rain": d.get("rain"), "hum": d.get("hum"),
+            "dry_streak": dry_streak.get(date_str), "rain7": rain7.get(date_str),
+        }
+
+    entries = list(enriched.items())
+
+    # Échantillon GLOBAL (toute l'année, pas seulement la fenêtre saisonnière)
+    # par paramètre — sert uniquement de critère de départage secondaire (voir
+    # plus bas) : avec un historique encore court, plusieurs jours atteignent
+    # souvent le même plafond de rareté SAISONNIÈRE simplement parce qu'ils
+    # sont "le plus extrême de leur petite fenêtre de ±N jours" (effet de
+    # comparaisons multiples sur un petit échantillon). Comparer en plus leur
+    # position dans l'historique COMPLET du paramètre permet de distinguer un
+    # record absolu (ex. 44°C, jamais revu) d'une simple pointe locale sans
+    # rien changer à l'indice saisonnier affiché, qui reste la seule mesure
+    # officielle de "rareté pour la période de l'année".
+    global_samples = {key: [v[key] for _, v in entries if v.get(key) is not None]
+                       for key, *_ in ANOMALY_PARAMS}
+
+    results = {}
+    for date_str, values in entries:
+        target_doy = values["doy"]
+
+        # Échantillon de comparaison : mêmes ± N jours calendaires, toutes
+        # années confondues, jour lui-même exclu. Calculé une seule fois par
+        # date (indépendamment du paramètre) pour rester rapide.
+        window = []
+        for ds2, v2 in entries:
+            if ds2 == date_str:
+                continue
+            dist = abs(v2["doy"] - target_doy)
+            dist = min(dist, 365 - dist)
+            if dist <= ANOMALY_WINDOW_DAYS:
+                window.append(v2)
+
+        params_out = {}
+        for key, label, unit, tail, dec in ANOMALY_PARAMS:
+            val = values.get(key)
+            if val is None:
+                continue
+            sample = [w[key] for w in window if w.get(key) is not None]
+            years_seen = {w["year"] for w in window if w.get(key) is not None}
+            n = len(sample)
+            if n == 0:
+                continue
+            p = percentile_rank(val, sample)
+            rarity = _rarity_one_tailed_high(p) if tail == "one_high" else _rarity_two_tailed(p)
+            # Écart-type de l'échantillon : sert UNIQUEMENT à départager deux
+            # jours à rareté quasi identique (cas fréquent avec un historique
+            # court : plusieurs jours peuvent chacun être "le plus extrême de
+            # leur petite fenêtre" sans être comparables en intensité réelle).
+            # L'indice affiché reste basé sur le percentile, jamais sur ce z.
+            gp = percentile_rank(val, global_samples[key])
+            global_rarity = _rarity_one_tailed_high(gp) if tail == "one_high" else _rarity_two_tailed(gp)
+            params_out[key] = {
+                "label": label, "unit": unit, "value": val, "dec": dec,
+                "percentile": round(p, 1), "rarity": rarity,
+                "global_rarity": global_rarity,
+                "n": n, "years": len(years_seen),
+                "reliable": n >= ANOMALY_MIN_POINTS and len(years_seen) >= ANOMALY_MIN_YEARS,
+            }
+
+        reliable_keys = [k for k, p in params_out.items() if p["reliable"]]
+        if reliable_keys:
+            # Départage : rareté SAISONNIÈRE d'abord (c'est la mesure
+            # officielle, comparée aux dates voisines) ; en cas d'égalité,
+            # rareté dans l'historique COMPLET du paramètre en second critère
+            # — jamais l'inverse, et jamais utilisé pour calculer l'indice lui-même.
+            dominant = max(reliable_keys, key=lambda k: (params_out[k]["rarity"], params_out[k]["global_rarity"]))
+            index = params_out[dominant]["rarity"]
+        else:
+            dominant, index = None, None
+
+        results[date_str] = {"index": index, "dominant": dominant, "params": params_out}
+
+    return results
+
+def rarity_label(score):
+    """Traduction textuelle de l'indice, selon le barème demandé (0-100)."""
+    if score is None: return "Données insuffisantes"
+    if score <= 20:  return "très courant"
+    if score <= 40:  return "légèrement inhabituel"
+    if score <= 60:  return "inhabituel"
+    if score <= 80:  return "très inhabituel"
+    if score <= 95:  return "exceptionnel"
+    return "extrêmement rare"
+
+def rarity_color(score):
+    if score is None: return "#898781"
+    if score <= 20:  return "#1baf7a"
+    if score <= 40:  return "#8fb339"
+    if score <= 60:  return "#eda100"
+    if score <= 80:  return "#d85a30"
+    if score <= 95:  return "#d81e1e"
+    return "#8a1010"
+
+def param_quality_word(key, p):
+    """Qualificatif court adapté au sens du paramètre (ex: 'normale',
+    'exceptionnellement élevée', 'inhabituellement longue')."""
+    if not p.get("reliable") or p.get("rarity") is None:
+        return "non évaluable"
+    rarity, pct = p["rarity"], p["percentile"]
+    if rarity <= 20:
+        return "normale" if key != "dry_streak" else "normale"
+    if key == "dry_streak":
+        degree = "légèrement" if rarity <= 40 else ("nettement" if rarity <= 80 else "exceptionnellement")
+        return f"{degree} longue"
+    degree = "légèrement" if rarity <= 40 else ("nettement" if rarity <= 80 else "exceptionnellement")
+    high = pct >= 50
+    direction = "élevée" if high else ("faible" if key == "rain" else "basse")
+    return f"{degree} {direction}"
+
+def build_anomaly_sentence(p):
+    """Phrase détaillée façon 'Cette valeur est supérieure à 95% des...'."""
+    pct = p["percentile"]
+    side, pct_display = ("supérieure", pct) if pct >= 50 else ("inférieure", 100 - pct)
+    return (f"Cette valeur est {side} à {pct_display:.0f}\u202f% des relevés de "
+            f"« {p['label'].lower()} » observés autour de cette date depuis le "
+            f"début des mesures ({p['n']} jours sur {p['years']} années).")
+
+def fmt_date_fr(date_str):
+    dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+    mn = ["janvier","février","mars","avril","mai","juin","juillet","août",
+          "septembre","octobre","novembre","décembre"]
+    return f"{dt.day} {mn[dt.month-1]} {dt.year}"
+
+def attach_anomaly_data(years, data_by_year, anomalies):
+    """Ajoute à chaque année (déjà agrégée par aggregate_by_year) la série
+    quotidienne de l'indice de rareté et le top 10 des journées les plus
+    inhabituelles de l'année — sans toucher au calcul climatique existant."""
+    for year in years:
+        daily = data_by_year[year]["daily"]
+        data_by_year[year]["anomaly_daily"] = [
+            {"date": d["date"], "index": (anomalies.get(d["date"]) or {}).get("index")}
+            for d in daily
+        ]
+        year_days = [(ds, a) for ds, a in anomalies.items()
+                     if a.get("index") is not None and int(ds[:4]) == year]
+        # Tri par rareté d'abord ; en cas d'égalité (fréquent avec un
+        # historique encore court, voir compute_all_anomalies), départage par
+        # l'écart normalisé du paramètre dominant pour faire remonter les
+        # écarts réellement les plus marqués en valeur physique.
+        year_days.sort(key=lambda x: (-x[1]["index"], -x[1]["params"][x[1]["dominant"]]["global_rarity"]))
+        top = []
+        for ds, a in year_days[:10]:
+            dom = a["dominant"]
+            p = a["params"][dom]
+            top.append({
+                "date": ds, "index": a["index"], "label": rarity_label(a["index"]),
+                "dominant_label": p["label"], "value": p["value"],
+                "unit": p["unit"], "dec": p["dec"],
+            })
+        data_by_year[year]["anomaly_top"] = top
+
+def build_today_anomaly_html(hist_dict, anomalies):
+    """Encart 'Aujourd'hui' : reprend TOUJOURS le dernier jour de l'historique,
+    indépendamment de l'année choisie dans le sélecteur du dashboard."""
+    if not hist_dict:
+        return "<p class='anomaly-empty'>Pas encore de données.</p>"
+    latest = max(hist_dict.keys())
+    a = anomalies.get(latest)
+    first_year = min(int(d[:4]) for d in hist_dict)
+
+    if not a or a.get("index") is None:
+        return f"""<div class="anomaly-today">
+  <div class="anomaly-today-date">{fmt_date_fr(latest)}</div>
+  <p class="anomaly-empty">Données historiques insuffisantes pour calculer un indice fiable pour cette date
+  (il faut au moins {ANOMALY_MIN_YEARS} années comparables autour du {fmt_date_fr(latest)[:-5].strip()} — station active depuis {first_year}).</p>
+</div>"""
+
+    idx, color, label = a["index"], rarity_color(a["index"]), rarity_label(a["index"])
+    icons = {"avg":"🌡️","hi":"🌡️","lo":"🌙","amplitude":"↕️","rain":"🌧️","rain7":"🌧️","dry_streak":"☀️","hum":"💧"}
+    rows = []
+    for key, p in sorted(a["params"].items(), key=lambda kv: -(kv[1]["rarity"] or -1)):
+        if not p["reliable"]:
+            continue
+        val_str = f"{p['value']:.{p['dec']}f}{p['unit']}"
+        qual = param_quality_word(key, p)
+        rows.append(
+            f'<div class="anomaly-param-row"><span>{icons.get(key,"•")} {p["label"]}</span>'
+            f'<span>{val_str}</span><span class="anomaly-qual" style="color:{rarity_color(p["rarity"])}">{qual}</span></div>'
+        )
+    rows_html = "".join(rows) if rows else "<p class='anomaly-empty'>Pas assez de paramètres fiables pour cette date.</p>"
+
+    return f"""<div class="anomaly-today">
+  <div class="anomaly-today-top">
+    <div class="anomaly-today-date">{fmt_date_fr(latest)}</div>
+    <div class="anomaly-badge" style="background:{color}22;color:{color};border-color:{color}55">Indice de rareté : {idx:.0f}/100 — {label}</div>
+  </div>
+  <div class="anomaly-params">{rows_html}</div>
+  <div class="anomaly-note">Comparaison basée sur les journées situées à ±{ANOMALY_WINDOW_DAYS} jours de cette date, toutes années confondues (station active depuis {first_year}).</div>
+</div>"""
+
+def build_records_anomaly_html(anomalies):
+    """Court encart pour la page Records : la journée la plus rare jamais
+    enregistrée, toutes dates et tous paramètres confondus."""
+    all_days = [(ds, a) for ds, a in anomalies.items() if a.get("index") is not None]
+    if not all_days:
+        return ""
+    ds, a = max(all_days, key=lambda x: (x[1]["index"], x[1]["params"][x[1]["dominant"]]["global_rarity"]))
+    dom = a["dominant"]
+    p = a["params"][dom]
+    val_str = f"{p['value']:.{p['dec']}f}{p['unit']}"
+    color = rarity_color(a["index"])
+    return f"""<div class="section" style="border-left:3px solid {color}">
+  <div class="section-title">🔎 Journée la plus rare enregistrée</div>
+  <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px">
+    <span style="font-size:22px;font-weight:600;color:{color}">{a['index']:.0f}/100</span>
+    <span style="font-size:14px;color:var(--text-secondary)">{rarity_label(a['index'])} · {fmt_date_fr(ds)}</span>
+  </div>
+  <div style="font-size:13px;color:var(--text-secondary)">{p['label']} : <b>{val_str}</b> — {build_anomaly_sentence(p)}</div>
+</div>"""
+
+# ── 4c. Alertes météo ─────────────────────────────────────────────────────────
 def _find_condition_window(hourly_fc, cond, now, limit_hours=168, value_fn=None):
     """
     Cherche, dans les prévisions horaires à venir (jusqu'à limit_hours),
@@ -1666,7 +2005,7 @@ showDaysView();
     Path("docs/index.html").write_text(html, encoding="utf-8")
     print("  → index.html généré")
 
-def build_dashboard(years, data_by_year):
+def build_dashboard(years, data_by_year, today_anomaly_html=""):
     """Dashboard avec sélecteur d'année."""
     if not years:
         return
@@ -1686,6 +2025,8 @@ def build_dashboard(years, data_by_year):
         "min_abs": data_by_year[y]["min_abs"],
         "rain_total": data_by_year[y]["rain_total"],
         "n_days":  data_by_year[y]["n_days"],
+        "anomaly_daily": data_by_year[y].get("anomaly_daily", []),
+        "anomaly_top":   data_by_year[y].get("anomaly_top", []),
     } for y in years}, ensure_ascii=False)
 
     html = """<!DOCTYPE html>
@@ -1766,6 +2107,28 @@ nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--
 .badge-canicule{background:rgba(216,30,30,.14);color:#d81e1e}
 .badge-zero{color:var(--text-muted)}
 .totaux td{font-weight:600;color:var(--text)!important;background:var(--surface-muted);border-top:1px solid var(--border)!important}
+.anomaly-intro{font-size:12.5px;color:var(--text-muted);line-height:1.5;margin-bottom:1rem}
+.anomaly-today{background:var(--surface-muted);border-radius:var(--radius);border:0.5px solid var(--border);padding:1rem 1.25rem;margin-bottom:1.25rem}
+.anomaly-today-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:.75rem}
+.anomaly-today-date{font-size:14px;font-weight:600;color:var(--text)}
+.anomaly-badge{font-size:13px;font-weight:600;padding:5px 14px;border-radius:99px;border:0.5px solid}
+.anomaly-params{display:flex;flex-direction:column;gap:2px}
+.anomaly-param-row{display:grid;grid-template-columns:1fr auto auto;gap:14px;font-size:13px;padding:5px 0;border-bottom:0.5px solid var(--border)}
+.anomaly-param-row:last-child{border-bottom:none}
+.anomaly-param-row span:nth-child(2){color:var(--text-secondary);font-weight:500;text-align:right}
+.anomaly-qual{font-weight:600;text-align:right;min-width:150px}
+.anomaly-note{font-size:11.5px;color:var(--text-muted);margin-top:.6rem}
+.anomaly-empty{font-size:13px;color:var(--text-muted)}
+.anomaly-year-title{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
+.anomaly-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-top:10px}
+.anomaly-legend-item{display:flex;align-items:center;gap:5px}
+.anomaly-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.anomaly-lb-row{display:grid;grid-template-columns:28px 1fr auto auto;gap:12px;align-items:center;font-size:13px;padding:8px 4px;border-bottom:0.5px solid var(--border)}
+.anomaly-lb-row:last-child{border-bottom:none}
+.anomaly-lb-rank{color:var(--text-muted);font-weight:600;text-align:center}
+.anomaly-lb-date{color:var(--text)}
+.anomaly-lb-cause{color:var(--text-muted);font-size:12px}
+.anomaly-lb-score{font-weight:700;text-align:right;min-width:44px}
 .heatmap-wrap{overflow-x:auto}
 .heatmap{display:grid;grid-template-columns:48px repeat(31,1fr);gap:2px;min-width:520px}
 .hm-cell{height:20px;border-radius:2px;cursor:pointer}
@@ -1869,6 +2232,28 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 </div>
 
 <div class="section">
+  <div class="section-title">🔎 Anomalies météorologiques</div>
+  <div class="anomaly-intro">Chaque journée est comparée aux journées situées à ±""" + str(ANOMALY_WINDOW_DAYS) + """ jours de la même date calendaire, toutes années confondues (et non à l'année entière). L'indice de rareté (0 à 100) reflète la position de la valeur la plus atypique du jour dans cette distribution — 0 = parfaitement dans la norme, 100 = jamais observé à cette période.</div>
+  """ + today_anomaly_html + """
+  <div class="anomaly-year-block">
+    <div class="anomaly-year-title">Indice de rareté par jour — <span id="anomalyYearLabel"></span></div>
+    <div class="chart-wrap" style="height:160px"><canvas id="anomalyChart"></canvas></div>
+    <div class="anomaly-legend">
+      <span class="anomaly-legend-item"><span class="anomaly-dot" style="background:#1baf7a"></span>Courant (0-20)</span>
+      <span class="anomaly-legend-item"><span class="anomaly-dot" style="background:#8fb339"></span>Légèrement inhabituel (21-40)</span>
+      <span class="anomaly-legend-item"><span class="anomaly-dot" style="background:#eda100"></span>Inhabituel (41-60)</span>
+      <span class="anomaly-legend-item"><span class="anomaly-dot" style="background:#d85a30"></span>Très inhabituel (61-80)</span>
+      <span class="anomaly-legend-item"><span class="anomaly-dot" style="background:#d81e1e"></span>Exceptionnel (81-95)</span>
+      <span class="anomaly-legend-item"><span class="anomaly-dot" style="background:#8a1010"></span>Extrêmement rare (96-100)</span>
+    </div>
+  </div>
+  <div class="anomaly-year-block" style="margin-top:1.25rem">
+    <div class="anomaly-year-title">Journées les plus inhabituelles — <span id="anomalyLeaderYearLabel"></span></div>
+    <div id="anomalyLeaderboard"></div>
+  </div>
+</div>
+
+<div class="section">
   <div class="section-title">Précipitations mensuelles</div>
   <div class="chart-wrap" style="height:200px"><canvas id="rainChart"></canvas></div>
 </div>
@@ -1924,6 +2309,7 @@ const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct"
 let currentYear = YEARS[YEARS.length - 1];
 let cumulChart = null;
 let mainChart = null, dailyChart = null, rainChart = null, solarChart = null, humChart = null;
+let anomalyChart = null;
 let currentMode = 'temp';
 
 // Peupler le sélecteur
@@ -1965,6 +2351,81 @@ function loadYear(year) {
   buildHeatmap();
   buildJours();
   buildSecondaryCharts();
+  buildAnomalyChart();
+  buildAnomalyLeaderboard();
+}
+
+// ── Anomalies météorologiques (indice de rareté) ──────────────────────────────
+function anomalyColor(score) {
+  if (score === null || score === undefined) return '#898781';
+  if (score <= 20) return '#1baf7a';
+  if (score <= 40) return '#8fb339';
+  if (score <= 60) return '#eda100';
+  if (score <= 80) return '#d85a30';
+  if (score <= 95) return '#d81e1e';
+  return '#8a1010';
+}
+function anomalyLabel(score) {
+  if (score === null || score === undefined) return 'Données insuffisantes';
+  if (score <= 20) return 'très courant';
+  if (score <= 40) return 'légèrement inhabituel';
+  if (score <= 60) return 'inhabituel';
+  if (score <= 80) return 'très inhabituel';
+  if (score <= 95) return 'exceptionnel';
+  return 'extrêmement rare';
+}
+
+function buildAnomalyChart() {
+  const d = DATA[currentYear];
+  document.getElementById('anomalyYearLabel').textContent = currentYear;
+  const daily = d.anomaly_daily || [];
+  const labels = daily.map(x => {
+    const day = parseInt(x.date.slice(8));
+    return day === 1 ? MONTHS[parseInt(x.date.slice(5,7))-1] : '';
+  });
+  const values = daily.map(x => x.index);
+  const colors = values.map(anomalyColor);
+  if (anomalyChart) anomalyChart.destroy();
+  anomalyChart = new Chart(document.getElementById('anomalyChart'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 2, barPercentage: 1, categoryPercentage: 1 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          title: c => daily[c[0].dataIndex].date,
+          label: c => c.parsed.y !== null ? `Indice : ${c.parsed.y.toFixed(0)}/100 — ${anomalyLabel(c.parsed.y)}` : 'Données insuffisantes'
+        }}
+      },
+      scales: {
+        x: { ticks: { color: tc(), maxRotation: 0, autoSkip: false, callback: (v,i) => labels[i] }, grid: { display: false } },
+        y: { min: 0, max: 100, ticks: { color: tc(), stepSize: 20 }, grid: { color: gc() } }
+      }
+    }
+  });
+}
+
+function buildAnomalyLeaderboard() {
+  const d = DATA[currentYear];
+  document.getElementById('anomalyLeaderYearLabel').textContent = currentYear;
+  const box = document.getElementById('anomalyLeaderboard');
+  const top = d.anomaly_top || [];
+  if (top.length === 0) {
+    box.innerHTML = '<p class="anomaly-empty">Pas assez de données pour établir un classement fiable sur cette année.</p>';
+    return;
+  }
+  box.innerHTML = top.map((t, i) => {
+    const dt = new Date(t.date + 'T12:00:00');
+    const dateStr = `${String(dt.getDate()).padStart(2,'0')} ${MONTHS[dt.getMonth()]}`;
+    const valStr = t.value.toFixed(t.dec) + t.unit;
+    return `<div class="anomaly-lb-row">
+      <span class="anomaly-lb-rank">${i+1}</span>
+      <span class="anomaly-lb-date">${dateStr} — <span class="anomaly-lb-cause">${t.dominant_label.toLowerCase()} : ${valStr}</span></span>
+      <span class="anomaly-lb-cause">${t.label}</span>
+      <span class="anomaly-lb-score" style="color:${anomalyColor(t.index)}">${t.index.toFixed(0)}</span>
+    </div>`;
+  }).join('');
 }
 
 // ── Graphique principal ───────────────────────────────────────────────────────
@@ -2364,7 +2825,7 @@ loadYear(YEARS[YEARS.length-1]);
     print("  → climate.html généré")
 
 
-def build_records(years, data_by_year, records_abs, records_abs_month):
+def build_records(years, data_by_year, records_abs, records_abs_month, anomaly_highlight_html=""):
     """Page dédiée aux records : records absolus par mois + records de
     l'année sélectionnée par mois."""
     if not years:
@@ -2514,6 +2975,8 @@ footer{{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem
   </div>
 </div>
 
+{anomaly_highlight_html}
+
 <div class="section">
   <div class="section-title">Records absolus par mois (toutes années confondues)</div>
   <table>
@@ -2621,7 +3084,17 @@ if __name__ == "__main__":
     build_index(live, hourly, forecast, hourly_fc, records, hiking_html)
 
     years, data_by_year = aggregate_by_year(hist_dict)
-    build_dashboard(years, data_by_year)
+
+    # Anomalies météorologiques (indice de rareté) — calculées une fois sur
+    # tout l'historique, puis réparties par année et exposées dans le
+    # dashboard (jour du jour + graphique/palmarès par année) et en aperçu
+    # sur la page Records (journée la plus rare jamais enregistrée).
+    anomalies = compute_all_anomalies(hist_dict)
+    attach_anomaly_data(years, data_by_year, anomalies)
+    today_anomaly_html = build_today_anomaly_html(hist_dict, anomalies)
+    records_anomaly_html = build_records_anomaly_html(anomalies)
+
+    build_dashboard(years, data_by_year, today_anomaly_html)
     build_climate(years, data_by_year)
-    build_records(years, data_by_year, records, records_by_month)
+    build_records(years, data_by_year, records, records_by_month, records_anomaly_html)
     print("✓ Site généré avec succès dans docs/")
