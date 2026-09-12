@@ -9537,11 +9537,11 @@
     "avg": 18.8,
     "hi": 29.2,
     "lo": 11.2,
-    "hum": 58.0,
+    "hum": 57.0,
     "rain": 0.0,
     "rain_rate_max": 0,
     "solar": 0.0,
-    "pres": 1024.4,
+    "pres": 1024.5,
     "wind": 0.0,
     "wind_gust": 0.0
   }
