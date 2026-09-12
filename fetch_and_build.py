@@ -451,6 +451,23 @@ def update_history(live):
     # mais serait considérée comme "absente" par un simple "if t" en Python,
     # ce qui aurait empêché la mise à jour du min/max du jour.
     existing_hi, existing_lo = existing.get("hi"), existing.get("lo")
+
+    # Moyenne glissante de l'ensoleillement sur la journée. "solar" côté API
+    # est une mesure INSTANTANÉE (W/m² à l'instant T), qui retombe à 0 la
+    # nuit — normal en soi. Mais comme cette entrée du jour est réécrite en
+    # entier à chaque exécution du workflow (toutes les heures), une simple
+    # affectation "solar": live.get("solar") ferait retomber la valeur du
+    # jour à ~0 dès que le run du soir/de la nuit s'exécute, écrasant les
+    # relevés ensoleillés enregistrés plus tôt dans la journée — biaisant
+    # tout le mois en cours vers des valeurs proches de zéro. On accumule
+    # donc somme + nombre de relevés (comme un compteur qui persiste d'un
+    # run à l'autre) pour obtenir une vraie moyenne journalière, cohérente
+    # avec les données Excel historiques (déjà des moyennes journalières).
+    solar_now = live.get("solar")
+    solar_sum = existing.get("_solar_sum", 0.0) + (solar_now or 0.0)
+    solar_n   = existing.get("_solar_n", 0) + (1 if solar_now is not None else 0)
+    solar_avg = round(solar_sum / solar_n, 1) if solar_n > 0 else existing.get("solar")
+
     hist[today] = {
         "date":  today,
         "month": int(today[5:7]),
@@ -462,7 +479,9 @@ def update_history(live):
         "hum":   live.get("hum"),
         "rain":      live.get("rain_daily"),
         "rain_rate_max": max(existing.get("rain_rate_max") or 0, rain_rate_now or 0),
-        "solar":     live.get("solar"),
+        "solar":      solar_avg,
+        "_solar_sum": solar_sum,
+        "_solar_n":   solar_n,
         "pres":      live.get("pressure"),
         "wind":      live.get("wind_speed"),
         "wind_gust": live.get("wind_gust"),
