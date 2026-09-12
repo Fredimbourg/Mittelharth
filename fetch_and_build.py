@@ -451,22 +451,50 @@ def update_history(live):
     # mais serait considérée comme "absente" par un simple "if t" en Python,
     # ce qui aurait empêché la mise à jour du min/max du jour.
     existing_hi, existing_lo = existing.get("hi"), existing.get("lo")
+    # Moyenne glissante pour les grandeurs dont l'API ne renvoie qu'un
+    # relevé INSTANTANÉ (rayonnement solaire, humidité, pression, vitesse du
+    # vent) — voir "solar" ci-dessous pour l'explication détaillée du
+    # problème. Cette fonction factorise le calcul somme+compteur pour ne
+    # pas le dupliquer quatre fois.
+    def running_avg(field_key, current_val):
+        s = existing.get(f"_{field_key}_sum", 0.0) + (current_val or 0.0)
+        n = existing.get(f"_{field_key}_n", 0) + (1 if current_val is not None else 0)
+        avg = round(s / n, 1) if n > 0 else existing.get(field_key)
+        return avg, s, n
 
-    # Moyenne glissante de l'ensoleillement sur la journée. "solar" côté API
-    # est une mesure INSTANTANÉE (W/m² à l'instant T), qui retombe à 0 la
-    # nuit — normal en soi. Mais comme cette entrée du jour est réécrite en
-    # entier à chaque exécution du workflow (toutes les heures), une simple
-    # affectation "solar": live.get("solar") ferait retomber la valeur du
-    # jour à ~0 dès que le run du soir/de la nuit s'exécute, écrasant les
-    # relevés ensoleillés enregistrés plus tôt dans la journée — biaisant
-    # tout le mois en cours vers des valeurs proches de zéro. On accumule
-    # donc somme + nombre de relevés (comme un compteur qui persiste d'un
-    # run à l'autre) pour obtenir une vraie moyenne journalière, cohérente
-    # avec les données Excel historiques (déjà des moyennes journalières).
-    solar_now = live.get("solar")
-    solar_sum = existing.get("_solar_sum", 0.0) + (solar_now or 0.0)
-    solar_n   = existing.get("_solar_n", 0) + (1 if solar_now is not None else 0)
-    solar_avg = round(solar_sum / solar_n, 1) if solar_n > 0 else existing.get("solar")
+    # "solar" côté API est une mesure INSTANTANÉE (W/m² à l'instant T), qui
+    # retombe à 0 la nuit — normal en soi. Mais comme cette entrée du jour
+    # est réécrite en entier à chaque exécution du workflow (toutes les
+    # heures), une simple affectation "solar": live.get("solar") ferait
+    # retomber la valeur du jour à ~0 dès que le run du soir/de la nuit
+    # s'exécute, écrasant les relevés ensoleillés enregistrés plus tôt dans
+    # la journée — biaisant tout le mois en cours vers des valeurs proches
+    # de zéro. On accumule donc somme + nombre de relevés (comme un
+    # compteur qui persiste d'un run à l'autre) pour obtenir une vraie
+    # moyenne journalière, cohérente avec les données Excel historiques
+    # (déjà des moyennes journalières). Même traitement appliqué à
+    # l'humidité, la pression et la vitesse du vent, qui souffrent du même
+    # défaut de fond (simple "dernier relevé gagne" au lieu d'une moyenne).
+    solar_avg, solar_sum, solar_n = running_avg("solar", live.get("solar"))
+    hum_avg,   hum_sum,   hum_n   = running_avg("hum",   live.get("hum"))
+    pres_avg,  pres_sum,  pres_n  = running_avg("pres",  live.get("pressure"))
+    wind_avg,  wind_sum,  wind_n  = running_avg("wind",  live.get("wind_speed"))
+
+    # Rafale MAX du jour, glissante — même défaut que ci-dessus, mais pour
+    # une rafale on veut le MAXIMUM du jour, pas une moyenne : "wind_gust"
+    # côté API est un relevé instantané, réécrit en entier à chaque run.
+    # Sans max glissant, une forte rafale survenue en milieu de journée
+    # serait écrasée par un relevé plus calme au run suivant, et un record
+    # de vent pourrait passer inaperçu (records station + page Records qui
+    # s'appuient tous deux sur ce champ pour trouver le maximum du jour).
+    # On applique donc le même traitement que hi/lo pour la température :
+    # conserver le plus grand des deux relevés.
+    existing_gust = existing.get("wind_gust")
+    gust_now = live.get("wind_gust")
+    wind_gust_max = (
+        max(existing_gust, gust_now) if (existing_gust is not None and gust_now is not None)
+        else (gust_now if gust_now is not None else existing_gust)
+    )
 
     hist[today] = {
         "date":  today,
@@ -476,16 +504,23 @@ def update_history(live):
         "avg":   t,
         "hi":    max(existing_hi, t) if (existing_hi is not None and t is not None) else (t if t is not None else existing_hi),
         "lo":    min(existing_lo, t) if (existing_lo is not None and t is not None) else (t if t is not None else existing_lo),
-        "hum":   live.get("hum"),
+        "hum":       hum_avg,
+        "_hum_sum":  hum_sum,
+        "_hum_n":    hum_n,
         "rain":      live.get("rain_daily"),
         "rain_rate_max": max(existing.get("rain_rate_max") or 0, rain_rate_now or 0),
         "solar":      solar_avg,
         "_solar_sum": solar_sum,
         "_solar_n":   solar_n,
-        "pres":      live.get("pressure"),
-        "wind":      live.get("wind_speed"),
-        "wind_gust": live.get("wind_gust"),
+        "pres":      pres_avg,
+        "_pres_sum": pres_sum,
+        "_pres_n":   pres_n,
+        "wind":      wind_avg,
+        "_wind_sum": wind_sum,
+        "_wind_n":   wind_n,
+        "wind_gust": wind_gust_max,
     }
+
 
     HIST_FILE.write_text(json.dumps(hist, ensure_ascii=False, indent=2))
     print(f"  → Historique : {len(hist)} jours")
@@ -962,13 +997,33 @@ def build_index(live, hourly, forecast, hourly_fc=None, records=None, hiking_htm
         return "☁️", "Nuageux"
 
     def trend_arrow(hourly):
-        """Tendance température sur les 3 dernières heures."""
+        """
+        Tendance température sur les dernières entrées du buffer horaire.
+        La durée réelle est calculée à partir des horodatages plutôt que
+        supposée fixe à "3h" : le workflow ajoute une entrée à CHAQUE
+        exécution (update_hourly), sans dédupliquer par heure. En cas de
+        déclenchements manuels rapprochés, les 3 dernières entrées peuvent
+        ne couvrir que quelques minutes — afficher "en 3h" dans ce cas
+        exagérerait fortement la tendance réelle.
+        """
         if len(hourly) < 3: return "", ""
-        temps = [h["temp"] for h in hourly[-3:] if h.get("temp") is not None]
-        if len(temps) < 2: return "", ""
-        diff = temps[-1] - temps[0]
-        if diff > 0.5:   return "↑", f"+{diff:.1f}°C en 3h"
-        if diff < -0.5:  return "↓", f"{diff:.1f}°C en 3h"
+        recent = [h for h in hourly[-3:] if h.get("temp") is not None and h.get("time")]
+        if len(recent) < 2: return "", ""
+        t0, t1 = recent[0], recent[-1]
+        diff = t1["temp"] - t0["temp"]
+        try:
+            dt0 = datetime.datetime.strptime(t0["time"], "%Y-%m-%d %H:%M")
+            dt1 = datetime.datetime.strptime(t1["time"], "%Y-%m-%d %H:%M")
+            minutes = max(1, round((dt1 - dt0).total_seconds() / 60))
+            if minutes >= 60:
+                h, m = divmod(minutes, 60)
+                duree = f"{h}h{m:02d}" if m else f"{h}h"
+            else:
+                duree = f"{minutes}min"
+        except (KeyError, ValueError, TypeError):
+            duree = "3h"  # repli si horodatage absent/invalide
+        if diff > 0.5:   return "↑", f"+{diff:.1f}°C en {duree}"
+        if diff < -0.5:  return "↓", f"{diff:.1f}°C en {duree}"
         return "→", "Stable"
 
     icon, condition = weather_icon(live.get("solar"), live.get("rain_rate"), live.get("hum"), live.get("temp"))
