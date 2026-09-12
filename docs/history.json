@@ -9534,15 +9534,15 @@
     "month": 9,
     "day": 12,
     "year": 2026,
-    "avg": 17.0,
-    "hi": 17.0,
+    "avg": 18.4,
+    "hi": 18.4,
     "lo": 11.2,
-    "hum": 57.0,
+    "hum": 53.0,
     "rain": 0.0,
     "rain_rate_max": 0,
-    "solar": 150.7,
+    "solar": 184.3,
     "pres": 1026.1,
-    "wind": 0.4,
-    "wind_gust": 1.8
+    "wind": 0.0,
+    "wind_gust": 0.0
   }
 }
