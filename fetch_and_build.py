@@ -1042,54 +1042,46 @@ def attach_anomaly_data(years, data_by_year, anomalies):
             })
         data_by_year[year]["anomaly_top"] = top
 
-def build_today_anomaly_html(hist_dict, anomalies):
-    """Encart 'Aujourd'hui' : reprend TOUJOURS le dernier jour de l'historique,
-    indépendamment de l'année choisie dans le sélecteur du dashboard."""
-    if not hist_dict:
-        return "<p class='anomaly-empty'>Pas encore de données.</p>"
-    latest = max(hist_dict.keys())
-    a = anomalies.get(latest)
-    first_year = min(int(d[:4]) for d in hist_dict)
+        # Détail complet par jour (tous les paramètres fiables, pas
+        # seulement l'indice) — permet au dashboard de naviguer entre les
+        # dates (boutons précédent/suivant, sélecteur de date) et de
+        # ré-afficher l'encart "Anomalies météorologiques" côté client,
+        # sans recharger la page ni recalculer quoi que ce soit en Python.
+        anomaly_full = {}
+        for d in daily:
+            a = anomalies.get(d["date"])
+            if not a or a.get("index") is None:
+                anomaly_full[d["date"]] = {"index": None}
+                continue
+            params_out = {
+                key: {
+                    "label": p["label"], "unit": p["unit"], "value": p["value"],
+                    "dec": p["dec"], "rarity": p["rarity"], "percentile": p["percentile"],
+                }
+                for key, p in a["params"].items() if p["reliable"]
+            }
+            anomaly_full[d["date"]] = {
+                "index": a["index"], "dominant": a["dominant"], "params": params_out,
+            }
+        data_by_year[year]["anomaly_full"] = anomaly_full
 
-    if not a or a.get("index") is None:
-        min_years_msg = ANOMALY_MIN_YEARS_REF if a and a.get("using_reference") else ANOMALY_MIN_YEARS
-        return f"""<div class="anomaly-today">
-  <div class="anomaly-today-date">{fmt_date_fr(latest)}</div>
-  <p class="anomaly-empty">Données historiques insuffisantes pour calculer un indice fiable pour cette date
-  (il faut au moins {min_years_msg} années comparables autour du {fmt_date_fr(latest)[:-5].strip()}).</p>
-</div>"""
-
-    idx, color, label = a["index"], rarity_color(a["index"]), rarity_label(a["index"])
-    icons = {"avg":"🌡️","hi":"🌡️","lo":"🌙","amplitude":"↕️","rain":"🌧️","rain7":"🌧️","dry_streak":"☀️","hum":"💧"}
-    rows = []
-    for key, p in sorted(a["params"].items(), key=lambda kv: -(kv[1]["rarity"] or -1)):
-        if not p["reliable"]:
-            continue
-        val_str = f"{p['value']:.{p['dec']}f}{p['unit']}"
-        qual = param_quality_word(key, p)
-        rows.append(
-            f'<div class="anomaly-param-row"><span>{icons.get(key,"•")} {p["label"]}</span>'
-            f'<span>{val_str}</span><span class="anomaly-qual" style="color:{rarity_color(p["rarity"])}">{qual}</span></div>'
-        )
-    rows_html = "".join(rows) if rows else "<p class='anomaly-empty'>Pas assez de paramètres fiables pour cette date.</p>"
-
-    if a.get("using_reference"):
+def build_anomaly_source_note(hist_dict, using_reference):
+    """Texte de bas d'encart expliquant à quoi une journée est comparée.
+    Ne dépend pas de la date affichée (juste de la méthode de comparaison
+    utilisée pour TOUTE la série) — calculé une seule fois ici, puis
+    réutilisé côté JS par l'encart "Anomalies météorologiques" navigable
+    du dashboard (voir build_dashboard / renderAnomalyToday), qui affiche
+    ce même texte quelle que soit la date sélectionnée par l'utilisateur.
+    (Remplace l'ancien build_today_anomaly_html, qui ne rendait qu'une
+    seule date — désormais le rendu HTML par date se fait en JS.)"""
+    if using_reference:
         dist = haversine_km(LAT, LON, REFERENCE_STATION_LAT, REFERENCE_STATION_LON)
-        source_note = (f"Comparé aux ±{ANOMALY_WINDOW_DAYS} jours autour de cette date dans l'historique officiel de "
-                        f"{REFERENCE_STATION_NAME}, à ~{dist} km (Météo-France, open data).")
-    else:
-        source_note = (f"Comparaison basée sur les journées situées à ±{ANOMALY_WINDOW_DAYS} jours de cette date dans "
-                        f"l'historique de Mittelharth lui-même (station active depuis {first_year} — résolution encore "
-                        f"limitée, voir la note en bas de section).")
-
-    return f"""<div class="anomaly-today">
-  <div class="anomaly-today-top">
-    <div class="anomaly-today-date">{fmt_date_fr(latest)}</div>
-    <div class="anomaly-badge" style="background:{color}22;color:{color};border-color:{color}55">Indice de rareté : {idx:.0f}/100 — {label}</div>
-  </div>
-  <div class="anomaly-params">{rows_html}</div>
-  <div class="anomaly-note">{source_note}</div>
-</div>"""
+        return (f"Comparé aux ±{ANOMALY_WINDOW_DAYS} jours autour de cette date dans l'historique officiel de "
+                f"{REFERENCE_STATION_NAME}, à ~{dist} km (Météo-France, open data).")
+    first_year = min(int(d[:4]) for d in hist_dict) if hist_dict else "?"
+    return (f"Comparaison basée sur les journées situées à ±{ANOMALY_WINDOW_DAYS} jours de cette date dans "
+            f"l'historique de Mittelharth lui-même (station active depuis {first_year} — résolution encore "
+            f"limitée, voir la note en bas de section).")
 
 def build_records_anomaly_html(anomalies):
     """Court encart pour la page Records : la journée la plus rare jamais
@@ -2117,7 +2109,7 @@ showDaysView();
     Path("docs/index.html").write_text(html, encoding="utf-8")
     print("  → index.html généré")
 
-def build_dashboard(years, data_by_year, today_anomaly_html="", using_reference=False):
+def build_dashboard(years, data_by_year, source_note="", min_years_msg=ANOMALY_MIN_YEARS, using_reference=False):
     """Dashboard avec sélecteur d'année."""
     if not years:
         return
@@ -2139,7 +2131,9 @@ def build_dashboard(years, data_by_year, today_anomaly_html="", using_reference=
         "n_days":  data_by_year[y]["n_days"],
         "anomaly_daily": data_by_year[y].get("anomaly_daily", []),
         "anomaly_top":   data_by_year[y].get("anomaly_top", []),
+        "anomaly_full":  data_by_year[y].get("anomaly_full", {}),
     } for y in years}, ensure_ascii=False)
+    source_note_js = json.dumps(source_note, ensure_ascii=False)
 
     html = """<!DOCTYPE html>
 <html lang="fr">
@@ -2231,6 +2225,12 @@ nav a.active{background:var(--accent-bg);color:var(--accent);border-color:var(--
 .anomaly-qual{font-weight:600;text-align:right;min-width:150px}
 .anomaly-note{font-size:11.5px;color:var(--text-muted);margin-top:.6rem}
 .anomaly-empty{font-size:13px;color:var(--text-muted)}
+.anomaly-nav{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
+.anomaly-nav-btn{font-size:15px;padding:6px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text-secondary);cursor:pointer;font-family:inherit}
+.anomaly-nav-btn:disabled{opacity:.35;cursor:default}
+.anomaly-nav-btn:not(:disabled):hover{border-color:var(--accent-border);color:var(--accent)}
+.anomaly-date-input{font-size:13px;padding:5px 10px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--surface-muted);color:var(--text);font-family:inherit}
+.anomaly-nav-today{font-size:12px;font-weight:500;padding:6px 14px;border-radius:99px;border:0.5px solid var(--accent-border);background:var(--accent-bg);color:var(--accent);cursor:pointer;font-family:inherit}
 .anomaly-year-title{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
 .anomaly-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-top:10px}
 .anomaly-legend-item{display:flex;align-items:center;gap:5px}
@@ -2349,7 +2349,13 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
       f", dans l'historique officiel de {REFERENCE_STATION_NAME} ({haversine_km(LAT, LON, REFERENCE_STATION_LAT, REFERENCE_STATION_LON)} km, Météo-France)"
       if using_reference else ", toutes années confondues de Mittelharth"
   ) + """ (et non à l'année entière). L'indice de rareté (0 à 100) reflète la position de la valeur la plus atypique du jour dans cette distribution — 0 = parfaitement dans la norme, 100 = jamais observé à cette période.</div>
-  """ + today_anomaly_html + """
+  <div class="anomaly-nav">
+    <button class="anomaly-nav-btn" id="anomalyPrev" title="Jour précédent">◀</button>
+    <input type="date" id="anomalyDateInput" class="anomaly-date-input">
+    <button class="anomaly-nav-btn" id="anomalyNext" title="Jour suivant">▶</button>
+    <button class="anomaly-nav-today" id="anomalyTodayBtn">Dernier jour</button>
+  </div>
+  <div id="anomalyTodayBox"></div>
   <div class="anomaly-year-block">
     <div class="anomaly-year-title">Indice de rareté par jour — <span id="anomalyYearLabel"></span></div>
     <div class="chart-wrap" style="height:160px"><canvas id="anomalyChart"></canvas></div>
@@ -2398,6 +2404,8 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 <script>
 const YEARS = """ + years_js + """;
 const DATA  = """ + data_js  + """;
+const SOURCE_NOTE = """ + source_note_js + """;
+const MIN_YEARS_MSG = """ + str(min_years_msg) + """;
 const MONTHS = ["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
 
 // ── Mode sombre / clair (bouton + mémorisation, partagé avec les autres pages) ─
@@ -2468,6 +2476,12 @@ function loadYear(year) {
   buildSecondaryCharts();
   buildAnomalyChart();
   buildAnomalyLeaderboard();
+
+  // Encart "Anomalies météorologiques" navigable : par défaut, le dernier
+  // jour de données de l'année sélectionnée (se recale automatiquement au
+  // changement d'année dans le menu déroulant).
+  const yearDates = d.daily.map(x => x.date);
+  if (yearDates.length) renderAnomalyToday(yearDates[yearDates.length - 1]);
 }
 
 // ── Anomalies météorologiques (indice de rareté) ──────────────────────────────
@@ -2489,6 +2503,96 @@ function anomalyLabel(score) {
   if (score <= 95) return 'exceptionnel';
   return 'extrêmement rare';
 }
+
+const ANOMALY_ICONS = {avg:"🌡️",hi:"🌡️",lo:"🌙",amplitude:"↕️",rain:"🌧️",rain7:"🌧️",dry_streak:"☀️",hum:"💧"};
+
+function fmtDateFr(dateStr) {
+  const dt = new Date(dateStr + 'T12:00:00');
+  const mn = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  return `${dt.getDate()} ${mn[dt.getMonth()]} ${dt.getFullYear()}`;
+}
+
+// Équivalent JS de param_quality_word (Python) — qualificatif court adapté
+// au sens du paramètre, ex. "nettement élevée", "légèrement longue".
+function paramQualityWord(key, p) {
+  if (p.rarity === null || p.rarity === undefined) return 'non évaluable';
+  const rarity = p.rarity, pct = p.percentile;
+  if (rarity <= 20) return 'normale';
+  const degree = rarity <= 40 ? 'légèrement' : (rarity <= 80 ? 'nettement' : 'exceptionnellement');
+  if (key === 'dry_streak') return `${degree} longue`;
+  const high = pct >= 50;
+  const direction = high ? 'élevée' : (key === 'rain' ? 'faible' : 'basse');
+  return `${degree} ${direction}`;
+}
+
+let anomalyCurrentDate = null;
+
+// Rendu de l'encart "Anomalies météorologiques" pour UNE date donnée —
+// remplace l'ancien rendu Python figé sur le dernier jour (build_today_anomaly_html) :
+// tout se recalcule côté client à partir de DATA[currentYear].anomaly_full,
+// déjà envoyé en entier avec la page, donc aucun aller-retour serveur.
+function renderAnomalyToday(dateStr) {
+  const box = document.getElementById('anomalyTodayBox');
+  const a = (DATA[currentYear].anomaly_full || {})[dateStr];
+  anomalyCurrentDate = dateStr;
+  document.getElementById('anomalyDateInput').value = dateStr;
+  updateAnomalyNavState();
+
+  if (!a || a.index === null || a.index === undefined) {
+    box.innerHTML = `<div class="anomaly-today">
+      <div class="anomaly-today-date">${fmtDateFr(dateStr)}</div>
+      <p class="anomaly-empty">Données historiques insuffisantes pour calculer un indice fiable pour cette date
+      (il faut au moins ${MIN_YEARS_MSG} années comparables autour de cette période de l'année).</p>
+    </div>`;
+    return;
+  }
+
+  const color = anomalyColor(a.index), label = anomalyLabel(a.index);
+  const entries = Object.entries(a.params).sort((x, y) => (y[1].rarity ?? -1) - (x[1].rarity ?? -1));
+  const rows = entries.map(([key, p]) => {
+    const valStr = p.value.toFixed(p.dec) + p.unit;
+    const qual = paramQualityWord(key, p);
+    return `<div class="anomaly-param-row"><span>${ANOMALY_ICONS[key] || '•'} ${p.label}</span>` +
+           `<span>${valStr}</span><span class="anomaly-qual" style="color:${anomalyColor(p.rarity)}">${qual}</span></div>`;
+  }).join('');
+  const rowsHtml = rows || '<p class="anomaly-empty">Pas assez de paramètres fiables pour cette date.</p>';
+
+  box.innerHTML = `<div class="anomaly-today">
+    <div class="anomaly-today-top">
+      <div class="anomaly-today-date">${fmtDateFr(dateStr)}</div>
+      <div class="anomaly-badge" style="background:${color}22;color:${color};border-color:${color}55">Indice de rareté : ${a.index.toFixed(0)}/100 — ${label}</div>
+    </div>
+    <div class="anomaly-params">${rowsHtml}</div>
+    <div class="anomaly-note">${SOURCE_NOTE}</div>
+  </div>`;
+}
+
+function updateAnomalyNavState() {
+  const dates = DATA[currentYear].daily.map(d => d.date);
+  const idx = dates.indexOf(anomalyCurrentDate);
+  document.getElementById('anomalyPrev').disabled = idx <= 0;
+  document.getElementById('anomalyNext').disabled = (idx === -1) || (idx >= dates.length - 1);
+  const dinput = document.getElementById('anomalyDateInput');
+  if (dates.length) { dinput.min = dates[0]; dinput.max = dates[dates.length - 1]; }
+}
+
+function anomalyStep(delta) {
+  const dates = DATA[currentYear].daily.map(d => d.date);
+  const idx = dates.indexOf(anomalyCurrentDate);
+  const newIdx = idx + delta;
+  if (newIdx >= 0 && newIdx < dates.length) renderAnomalyToday(dates[newIdx]);
+}
+
+document.getElementById('anomalyPrev').addEventListener('click', () => anomalyStep(-1));
+document.getElementById('anomalyNext').addEventListener('click', () => anomalyStep(1));
+document.getElementById('anomalyDateInput').addEventListener('change', (e) => {
+  const dates = DATA[currentYear].daily.map(d => d.date);
+  if (dates.includes(e.target.value)) renderAnomalyToday(e.target.value);
+});
+document.getElementById('anomalyTodayBtn').addEventListener('click', () => {
+  const dates = DATA[currentYear].daily.map(d => d.date);
+  if (dates.length) renderAnomalyToday(dates[dates.length - 1]);
+});
 
 function buildAnomalyChart() {
   const d = DATA[currentYear];
@@ -3205,12 +3309,14 @@ if __name__ == "__main__":
     # Colmar-Meyenheim si elle a été construite (fetch_reference_station.py),
     # sinon repli automatique sur l'historique de Mittelharth seul.
     reference_hist = load_reference_history()
+    using_reference = bool(reference_hist)
     anomalies = compute_all_anomalies(hist_dict, reference_hist)
     attach_anomaly_data(years, data_by_year, anomalies)
-    today_anomaly_html = build_today_anomaly_html(hist_dict, anomalies)
+    source_note = build_anomaly_source_note(hist_dict, using_reference)
+    min_years_msg = ANOMALY_MIN_YEARS_REF if using_reference else ANOMALY_MIN_YEARS
     records_anomaly_html = build_records_anomaly_html(anomalies)
 
-    build_dashboard(years, data_by_year, today_anomaly_html, using_reference=bool(reference_hist))
+    build_dashboard(years, data_by_year, source_note=source_note, min_years_msg=min_years_msg, using_reference=using_reference)
     build_climate(years, data_by_year)
     build_records(years, data_by_year, records, records_by_month, records_anomaly_html)
     print("✓ Site généré avec succès dans docs/")
