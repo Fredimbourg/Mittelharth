@@ -705,7 +705,13 @@ ANOMALY_PARAMS = [
     ("rain",       "Précipitations du jour",       " mm", "two",      1),
     ("rain7",      "Cumul de pluie sur 7 jours",   " mm", "two",      1),
     ("dry_streak", "Jours sans pluie consécutifs", " j",  "one_high", 0),
-    ("hum",        "Humidité moyenne",             " %",  "two",      0),
+    # "hum" (humidité) retirée de l'indice de rareté : le capteur Mittelharth
+    # affiche un biais systématique par rapport à la climatologie officielle
+    # de Colmar-Meyenheim (humidité dominante ~67% des jours, souvent >90/100
+    # de rareté), ce qui reflète un écart de calibration/exposition du capteur
+    # plutôt qu'une réelle rareté météorologique. L'humidité reste affichée
+    # normalement ailleurs sur le site (cartes en direct, dashboard mensuel),
+    # simplement plus utilisée pour juger si une journée est "inhabituelle".
 ]
 
 def _ordinal_md(month, day):
