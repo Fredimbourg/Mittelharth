@@ -690,6 +690,17 @@ ANOMALY_MIN_YEARS   = 2   # nb mini d'années distinctes — mode dégradé (Mit
 ANOMALY_MIN_POINTS_REF = 30
 ANOMALY_MIN_YEARS_REF  = 10
 
+CONCORDANCE_MIN_RARITY = 60   # seuil de rareté (par paramètre) à partir duquel
+                              # un paramètre "compte" comme corroborant
+CONCORDANCE_MIN_COUNT  = 2    # nombre de paramètres devant atteindre ce seuil
+                              # avant qu'une journée puisse être classée "très
+                              # inhabituelle" (>60) ou plus — évite qu'un seul
+                              # paramètre extrême (souvent un artefact de
+                              # comparaisons multiples : sur 7 paramètres testés
+                              # chaque jour, il est statistiquement probable
+                              # qu'au moins un ressorte "rare" par pur hasard)
+                              # ne fasse basculer tout l'indice du jour à lui seul.
+
 # (clé interne, libellé affiché, unité, type de test, décimales d'affichage)
 # type de test :
 #   "two"      → bilatéral : un écart vers le haut OU vers le bas est notable
@@ -930,7 +941,22 @@ def compute_all_anomalies(hist_dict, reference_dict=None):
             # rareté dans l'historique COMPLET du paramètre en second critère
             # — jamais l'inverse, et jamais utilisé pour calculer l'indice lui-même.
             dominant = max(reliable_keys, key=lambda k: (params_out[k]["rarity"], params_out[k]["global_rarity"]))
-            index = params_out[dominant]["rarity"]
+            raw_index = params_out[dominant]["rarity"]
+
+            # Corroboration : un seul paramètre extrême parmi les 7 testés
+            # chaque jour ressort statistiquement assez souvent par pur hasard
+            # (comparaisons multiples). On n'autorise donc une journée à
+            # dépasser le seuil "très inhabituel" que si au moins
+            # CONCORDANCE_MIN_COUNT paramètres atteignent chacun
+            # CONCORDANCE_MIN_RARITY — sinon on plafonne l'indice juste en
+            # dessous de ce seuil, plutôt que de perdre l'info : la journée
+            # reste visible comme "inhabituelle", simplement pas comme
+            # "très inhabituelle" ou plus sur la seule foi d'un signal isolé.
+            concordant = sum(1 for k in reliable_keys if params_out[k]["rarity"] >= CONCORDANCE_MIN_RARITY)
+            if concordant >= CONCORDANCE_MIN_COUNT:
+                index = raw_index
+            else:
+                index = min(raw_index, CONCORDANCE_MIN_RARITY - 0.1)
         else:
             dominant, index = None, None
 
