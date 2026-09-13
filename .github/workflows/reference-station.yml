@@ -1,0 +1,23 @@
+name: Reference Station
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 4 1 * *'   # le 1er de chaque mois à 4h30 UTC — l'historique officiel évolue très lentement
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Run
+        run: python fetch_reference_station.py
+      - name: Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/reference_history.json
+          git diff --staged --quiet || git commit -m "Update reference climatology $(date +'%Y-%m-%d')"
+          git push

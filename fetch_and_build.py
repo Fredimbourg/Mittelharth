@@ -31,6 +31,16 @@ PARIS_TZ = ZoneInfo("Europe/Paris")
 # Coordonnées de Colmar
 LAT, LON = 48.08, 7.36
 
+# Climatologie de référence officielle, utilisée par l'indice de rareté
+# (voir compute_all_anomalies) pour comparer Mittelharth à un historique
+# BEAUCOUP plus long que ses ~2 ans de mesures propres. Construite à part
+# par fetch_reference_station.py dans docs/reference_history.json — absente
+# tant que ce script n'a pas encore tourné (mode dégradé, voir load_reference_history).
+REFERENCE_FILE = Path("docs/reference_history.json")
+REFERENCE_STATION_NAME = "Colmar-Meyenheim (Météo-France)"
+REFERENCE_STATION_LAT, REFERENCE_STATION_LON = 47.9286, 7.4078  # base militaire, poste 68205001
+REFERENCE_STATION_SOURCE_URL = "https://www.data.gouv.fr/datasets/donnees-climatologiques-de-base-quotidiennes"
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def api_get(endpoint, params):
     params.update({"application_key": APP_KEY, "api_key": API_KEY, "mac": MAC})
@@ -671,8 +681,14 @@ def aggregate_by_year(hist_dict):
 # un indice de rareté 0-100. Aucun seuil arbitraire (ex. "> 35°C") n'intervient :
 # tout est relatif au climat réellement mesuré à Mittelharth.
 ANOMALY_WINDOW_DAYS = 7   # fenêtre calendaire (± jours) définissant "la même période de l'année"
-ANOMALY_MIN_POINTS  = 15  # nb mini de journées comparables pour un indice jugé fiable
-ANOMALY_MIN_YEARS   = 2   # nb mini d'années distinctes représentées dans l'échantillon
+ANOMALY_MIN_POINTS  = 15  # nb mini de journées comparables — mode dégradé (Mittelharth seul)
+ANOMALY_MIN_YEARS   = 2   # nb mini d'années distinctes — mode dégradé (Mittelharth seul)
+# Seuils utilisés quand une climatologie de référence longue durée est
+# disponible (Colmar-Meyenheim, décennies de mesures) : on peut alors exiger
+# beaucoup plus de recul avant de qualifier un résultat de "fiable", ce que
+# l'historique propre de Mittelharth ne permettrait pas encore.
+ANOMALY_MIN_POINTS_REF = 30
+ANOMALY_MIN_YEARS_REF  = 10
 
 # (clé interne, libellé affiché, unité, type de test, décimales d'affichage)
 # type de test :
@@ -765,8 +781,59 @@ def _rarity_one_tailed_high(p):
         return None
     return round(max(0.0, 2 * (p - 50)), 1)
 
-def compute_all_anomalies(hist_dict):
-    """Calcule l'indice de rareté de chaque journée de l'historique.
+def load_reference_history():
+    """Charge la climatologie de référence officielle (Colmar-Meyenheim),
+    construite séparément par fetch_reference_station.py. Si le fichier
+    n'existe pas encore (script jamais lancé) ou est vide/corrompu, retourne
+    {} : compute_all_anomalies retombe alors automatiquement sur l'historique
+    de Mittelharth seul (mode dégradé, moins fiable mais fonctionnel)."""
+    if REFERENCE_FILE.exists():
+        try:
+            data = json.loads(REFERENCE_FILE.read_text(encoding="utf-8"))
+            return data if isinstance(data, dict) else {}
+        except (json.JSONDecodeError, OSError):
+            return {}
+    return {}
+
+def haversine_km(lat1, lon1, lat2, lon2):
+    """Distance à vol d'oiseau (km) — sert uniquement à afficher la distance
+    entre Mittelharth et la station de référence."""
+    r = 6371.0
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dp, dl = math.radians(lat2 - lat1), math.radians(lon2 - lon1)
+    a = math.sin(dp/2)**2 + math.cos(p1)*math.cos(p2)*math.sin(dl/2)**2
+    return round(r * 2 * math.asin(math.sqrt(a)), 1)
+
+def _build_enriched(hist_dict):
+    """Construit, pour un historique {date: {avg,hi,lo,rain,hum,...}} donné,
+    le dict enrichi (amplitude, dry_streak, rain7, doy) utilisé par le calcul
+    de rareté. Factorisé pour être appliqué aussi bien à Mittelharth qu'à une
+    éventuelle climatologie de référence, sans dupliquer la logique."""
+    dry_streak, rain7 = compute_derived_series(hist_dict)
+    enriched = {}
+    for date_str, d in hist_dict.items():
+        if d.get("month") is None or d.get("day") is None:
+            continue
+        amplitude = round(d["hi"] - d["lo"], 1) if (d.get("hi") is not None and d.get("lo") is not None) else None
+        enriched[date_str] = {
+            "year": d.get("year"), "doy": _ordinal_md(d["month"], d["day"]),
+            "avg": d.get("avg"), "hi": d.get("hi"), "lo": d.get("lo"),
+            "amplitude": amplitude, "rain": d.get("rain"), "hum": d.get("hum"),
+            "dry_streak": dry_streak.get(date_str), "rain7": rain7.get(date_str),
+        }
+    return enriched
+
+def compute_all_anomalies(hist_dict, reference_dict=None):
+    """Calcule l'indice de rareté de chaque journée de Mittelharth.
+
+    Si `reference_dict` est fourni (climatologie longue durée d'une station
+    officielle proche, ex. Colmar-Meyenheim — voir fetch_reference_station.py
+    et load_reference_history), chaque valeur de Mittelharth est comparée à
+    CET historique plutôt qu'à lui-même : on peut alors exiger beaucoup plus
+    de recul (ANOMALY_MIN_POINTS_REF / ANOMALY_MIN_YEARS_REF) et obtenir un
+    indice bien mieux résolu que ce que ~2 ans de mesures propres permettent.
+    Sans référence, la fonction retombe sur l'ancien mode dégradé (Mittelharth
+    comparé à lui-même).
 
     Retourne { date_str: { "index": float|None, "dominant": clé|None,
                             "params": { clé: {label, unit, value, percentile,
@@ -780,24 +847,21 @@ def compute_all_anomalies(hist_dict):
     "données insuffisantes" plutôt qu'un chiffre qui suggérerait une
     précision non justifiée par l'échantillon.
     """
-    enriched = {}
-    dry_streak, rain7 = compute_derived_series(hist_dict)
-    for date_str, d in hist_dict.items():
-        if d.get("month") is None or d.get("day") is None:
-            continue
-        amplitude = round(d["hi"] - d["lo"], 1) if (d.get("hi") is not None and d.get("lo") is not None) else None
-        enriched[date_str] = {
-            "year": d.get("year"), "doy": _ordinal_md(d["month"], d["day"]),
-            "avg": d.get("avg"), "hi": d.get("hi"), "lo": d.get("lo"),
-            "amplitude": amplitude, "rain": d.get("rain"), "hum": d.get("hum"),
-            "dry_streak": dry_streak.get(date_str), "rain7": rain7.get(date_str),
-        }
-
+    enriched = _build_enriched(hist_dict)
     entries = list(enriched.items())
+
+    using_reference = bool(reference_dict)
+    if using_reference:
+        ref_entries = list(_build_enriched(reference_dict).items())
+        min_points, min_years = ANOMALY_MIN_POINTS_REF, ANOMALY_MIN_YEARS_REF
+    else:
+        # Mode dégradé : Mittelharth comparé à lui-même (voir compute_all_anomalies.__doc__).
+        ref_entries = entries
+        min_points, min_years = ANOMALY_MIN_POINTS, ANOMALY_MIN_YEARS
 
     # Échantillon GLOBAL (toute l'année, pas seulement la fenêtre saisonnière)
     # par paramètre — sert uniquement de critère de départage secondaire (voir
-    # plus bas) : avec un historique encore court, plusieurs jours atteignent
+    # plus bas) : sans une référence longue, plusieurs jours atteignent
     # souvent le même plafond de rareté SAISONNIÈRE simplement parce qu'ils
     # sont "le plus extrême de leur petite fenêtre de ±N jours" (effet de
     # comparaisons multiples sur un petit échantillon). Comparer en plus leur
@@ -805,7 +869,7 @@ def compute_all_anomalies(hist_dict):
     # record absolu (ex. 44°C, jamais revu) d'une simple pointe locale sans
     # rien changer à l'indice saisonnier affiché, qui reste la seule mesure
     # officielle de "rareté pour la période de l'année".
-    global_samples = {key: [v[key] for _, v in entries if v.get(key) is not None]
+    global_samples = {key: [v[key] for _, v in ref_entries if v.get(key) is not None]
                        for key, *_ in ANOMALY_PARAMS}
 
     results = {}
@@ -813,11 +877,13 @@ def compute_all_anomalies(hist_dict):
         target_doy = values["doy"]
 
         # Échantillon de comparaison : mêmes ± N jours calendaires, toutes
-        # années confondues, jour lui-même exclu. Calculé une seule fois par
-        # date (indépendamment du paramètre) pour rester rapide.
+        # années confondues. Avec une référence externe (station différente),
+        # aucune circularité possible : on garde tout. En mode dégradé
+        # (Mittelharth comparé à lui-même), le jour évalué est exclu de son
+        # propre échantillon pour ne pas se comparer partiellement à lui-même.
         window = []
-        for ds2, v2 in entries:
-            if ds2 == date_str:
+        for ds2, v2 in ref_entries:
+            if not using_reference and ds2 == date_str:
                 continue
             dist = abs(v2["doy"] - target_doy)
             dist = min(dist, 365 - dist)
@@ -848,7 +914,7 @@ def compute_all_anomalies(hist_dict):
                 "percentile": round(p, 1), "rarity": rarity,
                 "global_rarity": global_rarity,
                 "n": n, "years": len(years_seen),
-                "reliable": n >= ANOMALY_MIN_POINTS and len(years_seen) >= ANOMALY_MIN_YEARS,
+                "reliable": n >= min_points and len(years_seen) >= min_years,
             }
 
         reliable_keys = [k for k, p in params_out.items() if p["reliable"]]
@@ -862,7 +928,8 @@ def compute_all_anomalies(hist_dict):
         else:
             dominant, index = None, None
 
-        results[date_str] = {"index": index, "dominant": dominant, "params": params_out}
+        results[date_str] = {"index": index, "dominant": dominant, "params": params_out,
+                              "using_reference": using_reference}
 
     return results
 
@@ -953,10 +1020,11 @@ def build_today_anomaly_html(hist_dict, anomalies):
     first_year = min(int(d[:4]) for d in hist_dict)
 
     if not a or a.get("index") is None:
+        min_years_msg = ANOMALY_MIN_YEARS_REF if a and a.get("using_reference") else ANOMALY_MIN_YEARS
         return f"""<div class="anomaly-today">
   <div class="anomaly-today-date">{fmt_date_fr(latest)}</div>
   <p class="anomaly-empty">Données historiques insuffisantes pour calculer un indice fiable pour cette date
-  (il faut au moins {ANOMALY_MIN_YEARS} années comparables autour du {fmt_date_fr(latest)[:-5].strip()} — station active depuis {first_year}).</p>
+  (il faut au moins {min_years_msg} années comparables autour du {fmt_date_fr(latest)[:-5].strip()}).</p>
 </div>"""
 
     idx, color, label = a["index"], rarity_color(a["index"]), rarity_label(a["index"])
@@ -973,13 +1041,22 @@ def build_today_anomaly_html(hist_dict, anomalies):
         )
     rows_html = "".join(rows) if rows else "<p class='anomaly-empty'>Pas assez de paramètres fiables pour cette date.</p>"
 
+    if a.get("using_reference"):
+        dist = haversine_km(LAT, LON, REFERENCE_STATION_LAT, REFERENCE_STATION_LON)
+        source_note = (f"Comparé aux ±{ANOMALY_WINDOW_DAYS} jours autour de cette date dans l'historique officiel de "
+                        f"{REFERENCE_STATION_NAME}, à ~{dist} km (Météo-France, open data).")
+    else:
+        source_note = (f"Comparaison basée sur les journées situées à ±{ANOMALY_WINDOW_DAYS} jours de cette date dans "
+                        f"l'historique de Mittelharth lui-même (station active depuis {first_year} — résolution encore "
+                        f"limitée, voir la note en bas de section).")
+
     return f"""<div class="anomaly-today">
   <div class="anomaly-today-top">
     <div class="anomaly-today-date">{fmt_date_fr(latest)}</div>
     <div class="anomaly-badge" style="background:{color}22;color:{color};border-color:{color}55">Indice de rareté : {idx:.0f}/100 — {label}</div>
   </div>
   <div class="anomaly-params">{rows_html}</div>
-  <div class="anomaly-note">Comparaison basée sur les journées situées à ±{ANOMALY_WINDOW_DAYS} jours de cette date, toutes années confondues (station active depuis {first_year}).</div>
+  <div class="anomaly-note">{source_note}</div>
 </div>"""
 
 def build_records_anomaly_html(anomalies):
@@ -993,13 +1070,16 @@ def build_records_anomaly_html(anomalies):
     p = a["params"][dom]
     val_str = f"{p['value']:.{p['dec']}f}{p['unit']}"
     color = rarity_color(a["index"])
+    source_note = (f" Comparé à l'historique officiel de {REFERENCE_STATION_NAME}."
+                    if a.get("using_reference") else
+                    " Comparé à l'historique propre de Mittelharth (encore court).")
     return f"""<div class="section" style="border-left:3px solid {color}">
   <div class="section-title">🔎 Journée la plus rare enregistrée</div>
   <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:8px">
     <span style="font-size:22px;font-weight:600;color:{color}">{a['index']:.0f}/100</span>
     <span style="font-size:14px;color:var(--text-secondary)">{rarity_label(a['index'])} · {fmt_date_fr(ds)}</span>
   </div>
-  <div style="font-size:13px;color:var(--text-secondary)">{p['label']} : <b>{val_str}</b> — {build_anomaly_sentence(p)}</div>
+  <div style="font-size:13px;color:var(--text-secondary)">{p['label']} : <b>{val_str}</b> — {build_anomaly_sentence(p)}{source_note}</div>
 </div>"""
 
 # ── 4c. Alertes météo ─────────────────────────────────────────────────────────
@@ -2005,7 +2085,7 @@ showDaysView();
     Path("docs/index.html").write_text(html, encoding="utf-8")
     print("  → index.html généré")
 
-def build_dashboard(years, data_by_year, today_anomaly_html=""):
+def build_dashboard(years, data_by_year, today_anomaly_html="", using_reference=False):
     """Dashboard avec sélecteur d'année."""
     if not years:
         return
@@ -2233,7 +2313,10 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
 
 <div class="section">
   <div class="section-title">🔎 Anomalies météorologiques</div>
-  <div class="anomaly-intro">Chaque journée est comparée aux journées situées à ±""" + str(ANOMALY_WINDOW_DAYS) + """ jours de la même date calendaire, toutes années confondues (et non à l'année entière). L'indice de rareté (0 à 100) reflète la position de la valeur la plus atypique du jour dans cette distribution — 0 = parfaitement dans la norme, 100 = jamais observé à cette période.</div>
+  <div class="anomaly-intro">Chaque journée est comparée aux journées situées à ±""" + str(ANOMALY_WINDOW_DAYS) + """ jours de la même date calendaire""" + (
+      f", dans l'historique officiel de {REFERENCE_STATION_NAME} ({haversine_km(LAT, LON, REFERENCE_STATION_LAT, REFERENCE_STATION_LON)} km, Météo-France)"
+      if using_reference else ", toutes années confondues de Mittelharth"
+  ) + """ (et non à l'année entière). L'indice de rareté (0 à 100) reflète la position de la valeur la plus atypique du jour dans cette distribution — 0 = parfaitement dans la norme, 100 = jamais observé à cette période.</div>
   """ + today_anomaly_html + """
   <div class="anomaly-year-block">
     <div class="anomaly-year-title">Indice de rareté par jour — <span id="anomalyYearLabel"></span></div>
@@ -3085,16 +3168,17 @@ if __name__ == "__main__":
 
     years, data_by_year = aggregate_by_year(hist_dict)
 
-    # Anomalies météorologiques (indice de rareté) — calculées une fois sur
-    # tout l'historique, puis réparties par année et exposées dans le
-    # dashboard (jour du jour + graphique/palmarès par année) et en aperçu
-    # sur la page Records (journée la plus rare jamais enregistrée).
-    anomalies = compute_all_anomalies(hist_dict)
+    # Anomalies météorologiques (indice de rareté) — calculées sur tout
+    # l'historique de Mittelharth, comparé à la climatologie officielle de
+    # Colmar-Meyenheim si elle a été construite (fetch_reference_station.py),
+    # sinon repli automatique sur l'historique de Mittelharth seul.
+    reference_hist = load_reference_history()
+    anomalies = compute_all_anomalies(hist_dict, reference_hist)
     attach_anomaly_data(years, data_by_year, anomalies)
     today_anomaly_html = build_today_anomaly_html(hist_dict, anomalies)
     records_anomaly_html = build_records_anomaly_html(anomalies)
 
-    build_dashboard(years, data_by_year, today_anomaly_html)
+    build_dashboard(years, data_by_year, today_anomaly_html, using_reference=bool(reference_hist))
     build_climate(years, data_by_year)
     build_records(years, data_by_year, records, records_by_month, records_anomaly_html)
     print("✓ Site généré avec succès dans docs/")
