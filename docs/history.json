@@ -9744,5 +9744,29 @@
     "_wind_sum": 32.800000000000004,
     "_wind_n": 30,
     "wind_gust": 7.2
+  },
+  "2026-09-21": {
+    "date": "2026-09-21",
+    "month": 9,
+    "day": 21,
+    "year": 2026,
+    "avg": 17.8,
+    "hi": 17.8,
+    "lo": 17.8,
+    "hum": 72.0,
+    "_hum_sum": 72.0,
+    "_hum_n": 1,
+    "rain": 0.0,
+    "rain_rate_max": 0,
+    "solar": 0.0,
+    "_solar_sum": 0.0,
+    "_solar_n": 1,
+    "pres": 1030.3,
+    "_pres_sum": 1030.3,
+    "_pres_n": 1,
+    "wind": 3.6,
+    "_wind_sum": 3.6,
+    "_wind_n": 1,
+    "wind_gust": 5.4
   }
 }
