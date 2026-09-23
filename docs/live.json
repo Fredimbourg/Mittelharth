@@ -1,19 +1,19 @@
 {
-  "updated_at": "23/09/2026 23:40",
-  "temp": 14.9,
-  "temp_feels": 14.9,
-  "hum": 49.0,
-  "dew": 4.3,
-  "pressure": 1024.9,
+  "updated_at": "24/09/2026 00:40",
+  "temp": 14.1,
+  "temp_feels": 14.1,
+  "hum": 51.0,
+  "dew": 4.1,
+  "pressure": 1024.5,
   "wind_speed": 0.0,
   "wind_gust": 0.0,
-  "wind_dir": 134.0,
+  "wind_dir": 136.0,
   "rain_rate": 0.0,
   "rain_daily": 0.0,
   "rain_monthly": 7.1,
   "rain_yearly": 275.3,
   "solar": 0.0,
   "uvi": 0.0,
-  "temp_in": 22.9,
-  "hum_in": 30.0
+  "temp_in": 22.7,
+  "hum_in": 29.0
 }
