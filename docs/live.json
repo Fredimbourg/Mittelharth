@@ -1,5 +1,5 @@
 {
-  "updated_at": "01/10/2026 21:33",
+  "updated_at": "01/10/2026 21:40",
   "temp": 15.8,
   "temp_feels": 15.8,
   "hum": 91.0,
@@ -7,13 +7,13 @@
   "pressure": 1029.3,
   "wind_speed": 0.0,
   "wind_gust": 0.0,
-  "wind_dir": 115.0,
+  "wind_dir": 117.0,
   "rain_rate": 0.0,
   "rain_daily": 3.0,
   "rain_monthly": 3.0,
   "rain_yearly": 278.3,
   "solar": 0.0,
   "uvi": 0.0,
-  "temp_in": 23.3,
-  "hum_in": 46.0
+  "temp_in": 23.2,
+  "hum_in": 47.0
 }
