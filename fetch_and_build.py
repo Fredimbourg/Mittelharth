@@ -6,7 +6,7 @@ fetch_and_build.py — Station Colmar-Mittelharth
 - Génère les pages HTML avec sélecteur d'année
 """
 
-import os, json, math, datetime, requests, sys
+import os, json, math, datetime, requests, sys, time
 from collections import defaultdict
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -431,79 +431,73 @@ def get_year_month_records(daily):
 
     return records
 
+def fetch_day_solar_max(day):
+    """Rayonnement solaire MAX d'un jour (YYYY-MM-DD) d'après l'historique
+    fin Ecowitt (pas de 5 min). Retourne None si indisponible."""
+    try:
+        data = api_get("device/history", {
+            "start_date": f"{day} 00:00:00",
+            "end_date":   f"{day} 23:59:59",
+            "cycle_type": "5min",
+            "call_back":  "solar_and_uvi",
+            "solar_irradiance_unitid": 16,
+        })
+        series = data["data"]["solar_and_uvi"]["solar"]["list"]
+        vals = [float(v) for v in series.values() if v not in (None, "-")]
+        return max(vals) if vals else None
+    except Exception as e:
+        print(f"  → solar history {day} : {e}")
+        return None
 
 def update_history(live):
-    """Ajoute/met à jour la journée d'aujourd'hui dans history.json."""
+    """Ajoute/met à jour la journée d'aujourd'hui dans history.json.
+    Rayonnement solaire = MAXIMUM journalier (même grandeur que l'Excel)."""
     today = datetime.datetime.now(PARIS_TZ).strftime("%Y-%m-%d")
 
-    # Charger historique existant
     if HIST_FILE.exists():
         hist = json.loads(HIST_FILE.read_text())
     else:
         hist = {}
 
-    # Données Excel
+    # Données Excel : seulement les jours absents, + rain_rate_max manquant
     excel = read_excel_files()
     for date_str, d in excel.items():
         if date_str not in hist:
             hist[date_str] = d
         elif hist[date_str].get("rain_rate_max") is None and d.get("rain_rate_max") is not None:
-            # Complète les jours déjà présents avec ce champ ajouté après coup,
-            # sans toucher au reste de leurs données déjà enregistrées.
             hist[date_str]["rain_rate_max"] = d["rain_rate_max"]
 
     # Données d'aujourd'hui depuis l'API temps réel
     t = live.get("temp")
     existing = hist.get(today, {})
     rain_rate_now = live.get("rain_rate")
-    # NB: on teste "t is not None" plutôt que "if t" — une température
-    # exactement à 0.0°C est une valeur valide (fréquente à Colmar en hiver)
-    # mais serait considérée comme "absente" par un simple "if t" en Python,
-    # ce qui aurait empêché la mise à jour du min/max du jour.
     existing_hi, existing_lo = existing.get("hi"), existing.get("lo")
-    # Moyenne glissante pour les grandeurs dont l'API ne renvoie qu'un
-    # relevé INSTANTANÉ (rayonnement solaire, humidité, pression, vitesse du
-    # vent) — voir "solar" ci-dessous pour l'explication détaillée du
-    # problème. Cette fonction factorise le calcul somme+compteur pour ne
-    # pas le dupliquer quatre fois.
+
     def running_avg(field_key, current_val):
         s = existing.get(f"_{field_key}_sum", 0.0) + (current_val or 0.0)
         n = existing.get(f"_{field_key}_n", 0) + (1 if current_val is not None else 0)
         avg = round(s / n, 1) if n > 0 else existing.get(field_key)
         return avg, s, n
 
-    # "solar" côté API est une mesure INSTANTANÉE (W/m² à l'instant T), qui
-    # retombe à 0 la nuit — normal en soi. Mais comme cette entrée du jour
-    # est réécrite en entier à chaque exécution du workflow (toutes les
-    # heures), une simple affectation "solar": live.get("solar") ferait
-    # retomber la valeur du jour à ~0 dès que le run du soir/de la nuit
-    # s'exécute, écrasant les relevés ensoleillés enregistrés plus tôt dans
-    # la journée — biaisant tout le mois en cours vers des valeurs proches
-    # de zéro. On accumule donc somme + nombre de relevés (comme un
-    # compteur qui persiste d'un run à l'autre) pour obtenir une vraie
-    # moyenne journalière, cohérente avec les données Excel historiques
-    # (déjà des moyennes journalières). Même traitement appliqué à
-    # l'humidité, la pression et la vitesse du vent, qui souffrent du même
-    # défaut de fond (simple "dernier relevé gagne" au lieu d'une moyenne).
-    solar_avg, solar_sum, solar_n = running_avg("solar", live.get("solar"))
-    hum_avg,   hum_sum,   hum_n   = running_avg("hum",   live.get("hum"))
-    pres_avg,  pres_sum,  pres_n  = running_avg("pres",  live.get("pressure"))
-    wind_avg,  wind_sum,  wind_n  = running_avg("wind",  live.get("wind_speed"))
+    hum_avg,  hum_sum,  hum_n  = running_avg("hum",  live.get("hum"))
+    pres_avg, pres_sum, pres_n = running_avg("pres", live.get("pressure"))
+    wind_avg, wind_sum, wind_n = running_avg("wind", live.get("wind_speed"))
 
-    # Rafale MAX du jour, glissante — même défaut que ci-dessus, mais pour
-    # une rafale on veut le MAXIMUM du jour, pas une moyenne : "wind_gust"
-    # côté API est un relevé instantané, réécrit en entier à chaque run.
-    # Sans max glissant, une forte rafale survenue en milieu de journée
-    # serait écrasée par un relevé plus calme au run suivant, et un record
-    # de vent pourrait passer inaperçu (records station + page Records qui
-    # s'appuient tous deux sur ce champ pour trouver le maximum du jour).
-    # On applique donc le même traitement que hi/lo pour la température :
-    # conserver le plus grand des deux relevés.
+    # Rafale max glissante
     existing_gust = existing.get("wind_gust")
     gust_now = live.get("wind_gust")
     wind_gust_max = (
         max(existing_gust, gust_now) if (existing_gust is not None and gust_now is not None)
         else (gust_now if gust_now is not None else existing_gust)
+    )
+
+    # Rayonnement MAX glissant. Si l'entrée du jour vient de l'ancienne
+    # méthode (clé _solar_n = moyenne), on repart de zéro.
+    existing_solar = None if "_solar_n" in existing else existing.get("solar")
+    solar_now = live.get("solar")
+    solar_max = (
+        max(existing_solar, solar_now) if (existing_solar is not None and solar_now is not None)
+        else (solar_now if solar_now is not None else existing_solar)
     )
 
     hist[today] = {
@@ -519,9 +513,8 @@ def update_history(live):
         "_hum_n":    hum_n,
         "rain":      live.get("rain_daily"),
         "rain_rate_max": max(existing.get("rain_rate_max") or 0, rain_rate_now or 0),
-        "solar":      solar_avg,
-        "_solar_sum": solar_sum,
-        "_solar_n":   solar_n,
+        "solar":      solar_max,
+        "_solar_src": "live",          # max glissant, à corriger via device/history
         "pres":      pres_avg,
         "_pres_sum": pres_sum,
         "_pres_n":   pres_n,
@@ -531,6 +524,28 @@ def update_history(live):
         "wind_gust": wind_gust_max,
     }
 
+    # Correction des jours passés : remplace le solaire (ancienne moyenne ou
+    # max glissant) par le vrai maximum de l'historique fin Ecowitt.
+    # Plafonné par exécution pour ne pas dépasser quota/durée ; le reste
+    # sera rattrapé aux exécutions suivantes.
+    MAX_FIXES_PER_RUN = 45
+    to_fix = sorted(
+        ds for ds, h in hist.items()
+        if ds != today and ("_solar_n" in h or h.get("_solar_src") == "live")
+    )
+    fixed = 0
+    for ds in to_fix[:MAX_FIXES_PER_RUN]:
+        m = fetch_day_solar_max(ds)
+        if m is not None:
+            h = hist[ds]
+            h["solar"] = m
+            h["_solar_src"] = "hist"
+            h.pop("_solar_sum", None)
+            h.pop("_solar_n", None)
+            fixed += 1
+        time.sleep(1)
+    if to_fix:
+        print(f"  → Solaire : {fixed}/{len(to_fix[:MAX_FIXES_PER_RUN])} jours corrigés, {max(0, len(to_fix) - MAX_FIXES_PER_RUN)} restants")
 
     HIST_FILE.write_text(json.dumps(hist, ensure_ascii=False, indent=2))
     print(f"  → Historique : {len(hist)} jours")
