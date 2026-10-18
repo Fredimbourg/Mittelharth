@@ -1,5 +1,5 @@
 {
-  "updated_at": "18/10/2026 23:40",
+  "updated_at": "19/10/2026 00:40",
   "temp": 9.0,
   "temp_feels": 9.0,
   "hum": 97.0,
@@ -9,11 +9,11 @@
   "wind_gust": 0.0,
   "wind_dir": 152.0,
   "rain_rate": 0.0,
-  "rain_daily": 13.4,
+  "rain_daily": 0.0,
   "rain_monthly": 42.4,
   "rain_yearly": 317.7,
   "solar": 0.0,
   "uvi": 0.0,
-  "temp_in": 20.6,
+  "temp_in": 19.9,
   "hum_in": 44.0
 }
