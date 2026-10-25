@@ -705,16 +705,8 @@ ANOMALY_MIN_YEARS   = 2   # nb mini d'années distinctes — mode dégradé (Mit
 ANOMALY_MIN_POINTS_REF = 30
 ANOMALY_MIN_YEARS_REF  = 10
 
-CONCORDANCE_MIN_RARITY = 60   # seuil de rareté (par paramètre) à partir duquel
-                              # un paramètre "compte" comme corroborant
-CONCORDANCE_MIN_COUNT  = 2    # nombre de paramètres devant atteindre ce seuil
-                              # avant qu'une journée puisse être classée "très
-                              # inhabituelle" (>60) ou plus — évite qu'un seul
-                              # paramètre extrême (souvent un artefact de
-                              # comparaisons multiples : sur 7 paramètres testés
-                              # chaque jour, il est statistiquement probable
-                              # qu'au moins un ressorte "rare" par pur hasard)
-                              # ne fasse basculer tout l'indice du jour à lui seul.
+ANOMALY_EFFECTIVE_TESTS = 4   # nb effectif de tests indépendants (temp ≈2, pluie ≈2)
+ANOMALY_LOG_SCALE = 50        # q=0.1 → 50 ; q=0.01 → 100
 
 # (clé interne, libellé affiché, unité, type de test, décimales d'affichage)
 # type de test :
@@ -728,8 +720,8 @@ ANOMALY_PARAMS = [
     ("hi",         "Température maximale",         " °C", "two",      1),
     ("lo",         "Température minimale",         " °C", "two",      1),
     ("amplitude",  "Amplitude thermique",          " °C", "two",      1),
-    ("rain",       "Précipitations du jour",       " mm", "two",      1),
-    ("rain7",      "Cumul de pluie sur 7 jours",   " mm", "two",      1),
+    ("rain",       "Précipitations du jour",       " mm", "one_high", 1),
+    ("rain7",      "Cumul de pluie sur 7 jours",   " mm", "one_high", 1),
     ("dry_streak", "Jours sans pluie consécutifs", " j",  "one_high", 0),
     # "hum" (humidité) retirée de l'indice de rareté : le capteur Mittelharth
     # affiche un biais systématique par rapport à la climatologie officielle
@@ -800,18 +792,23 @@ def percentile_rank(value, sample):
     rank = less + 0.5 * equal + 0.5
     return rank / (n + 1) * 100
 
-def _rarity_two_tailed(p):
-    """0 au centre de la distribution (médiane), 100 aux deux extrêmes."""
+def tail_prob(p, tail):
+    """Probabilité d'observer une valeur au moins aussi extrême (p-value).
+    p est le rang percentile (0-100) renvoyé par percentile_rank."""
     if p is None:
         return None
-    return round(100 - 2 * min(p, 100 - p), 1)
+    if tail == "one_high":
+        q = (100 - p) / 100          # seule la queue haute compte
+    else:
+        q = 2 * min(p, 100 - p) / 100  # bilatéral : haut OU bas
+    return min(1.0, max(q, 1e-6))
 
-def _rarity_one_tailed_high(p):
-    """0 tant qu'on est sous la médiane (ou dessus mais pas extrême dans le
-    sens qui nous intéresse), monte vers 100 seulement pour la queue haute."""
-    if p is None:
+def rarity_from_q(q):
+    """Convertit une probabilité de queue en indice 0-100 (échelle log).
+    q=1 → 0 ; q=0.1 → 50 ; q=0.01 → 100."""
+    if q is None:
         return None
-    return round(max(0.0, 2 * (p - 50)), 1)
+    return round(min(100.0, ANOMALY_LOG_SCALE * -math.log10(q)), 1)
 
 def load_reference_history():
     """Charge la climatologie de référence officielle (Colmar-Meyenheim),
@@ -932,46 +929,29 @@ def compute_all_anomalies(hist_dict, reference_dict=None):
             n = len(sample)
             if n == 0:
                 continue
-            p = percentile_rank(val, sample)
-            rarity = _rarity_one_tailed_high(p) if tail == "one_high" else _rarity_two_tailed(p)
-            # Écart-type de l'échantillon : sert UNIQUEMENT à départager deux
-            # jours à rareté quasi identique (cas fréquent avec un historique
-            # court : plusieurs jours peuvent chacun être "le plus extrême de
-            # leur petite fenêtre" sans être comparables en intensité réelle).
-            # L'indice affiché reste basé sur le percentile, jamais sur ce z.
+                        p = percentile_rank(val, sample)
+            q = tail_prob(p, tail)
+            rarity = rarity_from_q(q)
             gp = percentile_rank(val, global_samples[key])
-            global_rarity = _rarity_one_tailed_high(gp) if tail == "one_high" else _rarity_two_tailed(gp)
+            global_rarity = rarity_from_q(tail_prob(gp, tail))
             params_out[key] = {
                 "label": label, "unit": unit, "value": val, "dec": dec,
-                "percentile": round(p, 1), "rarity": rarity,
+                "percentile": round(p, 1), "q": q, "rarity": rarity,
                 "global_rarity": global_rarity,
                 "n": n, "years": len(years_seen),
                 "reliable": n >= min_points and len(years_seen) >= min_years,
             }
-
+            
         reliable_keys = [k for k, p in params_out.items() if p["reliable"]]
         if reliable_keys:
-            # Départage : rareté SAISONNIÈRE d'abord (c'est la mesure
-            # officielle, comparée aux dates voisines) ; en cas d'égalité,
-            # rareté dans l'historique COMPLET du paramètre en second critère
-            # — jamais l'inverse, et jamais utilisé pour calculer l'indice lui-même.
-            dominant = max(reliable_keys, key=lambda k: (params_out[k]["rarity"], params_out[k]["global_rarity"]))
-            raw_index = params_out[dominant]["rarity"]
-
-            # Corroboration : un seul paramètre extrême parmi les 7 testés
-            # chaque jour ressort statistiquement assez souvent par pur hasard
-            # (comparaisons multiples). On n'autorise donc une journée à
-            # dépasser le seuil "très inhabituel" que si au moins
-            # CONCORDANCE_MIN_COUNT paramètres atteignent chacun
-            # CONCORDANCE_MIN_RARITY — sinon on plafonne l'indice juste en
-            # dessous de ce seuil, plutôt que de perdre l'info : la journée
-            # reste visible comme "inhabituelle", simplement pas comme
-            # "très inhabituelle" ou plus sur la seule foi d'un signal isolé.
-            concordant = sum(1 for k in reliable_keys if params_out[k]["rarity"] >= CONCORDANCE_MIN_RARITY)
-            if concordant >= CONCORDANCE_MIN_COUNT:
-                index = raw_index
-            else:
-                index = min(raw_index, CONCORDANCE_MIN_RARITY - 0.1)
+            # Paramètre dominant = celui dont la probabilité de queue q est la plus
+            # faible ; en cas d'égalité, celui qui est le plus rare sur tout l'historique.
+            dominant = min(reliable_keys,
+                           key=lambda k: (params_out[k]["q"], -params_out[k]["global_rarity"]))
+            # Correction des comparaisons multiples : on multiplie q par le nombre
+            # effectif de tests indépendants (Bonferroni), puis on convertit en indice.
+            q_day = min(1.0, params_out[dominant]["q"] * ANOMALY_EFFECTIVE_TESTS)
+            index = rarity_from_q(q_day)
         else:
             dominant, index = None, None
 
