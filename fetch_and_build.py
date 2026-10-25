@@ -2335,7 +2335,8 @@ footer{text-align:center;font-size:12px;color:var(--text-muted);margin-top:2rem;
     <tbody id="jours-tbody"></tbody>
     <tfoot><tr class="totaux"><td>Total</td><td id="t-gel"></td><td id="t-chaud"></td><td id="t-canicule"></td><td id="t-pluie"></td><td id="t-nuits"></td></tr></tfoot>
   </table>
-  <div class="chart-note" style="text-align:left;margin-top:10px">🔥 Canicule : critère officiel Haut-Rhin (max ≥ 35°C et min ≥ 19°C, 3 jours consécutifs), avec une marge de ±1°C pour absorber l'incertitude de mesure de la station.</div>
+  <div class="chart-note" style="text-align:left;margin-top:10px">❄ Gel : min &lt; 0°C · 🌡 Chaud : max ≥ 30°C · 🌧 Pluie : ≥ 1 mm · 🌙 Nuit tropicale : min ≥ 20°C.</div>
+  <div class="chart-note" style="text-align:left;margin-top:4px">🔥 Canicule : critère officiel Haut-Rhin (max ≥ 35°C et min ≥ 19°C, 3 jours consécutifs), avec une marge de ±1°C pour absorber l'incertitude de mesure de la station.</div>
 </div>
 
 <div class="section">
