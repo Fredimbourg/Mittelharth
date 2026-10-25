@@ -929,7 +929,7 @@ def compute_all_anomalies(hist_dict, reference_dict=None):
             n = len(sample)
             if n == 0:
                 continue
-                        p = percentile_rank(val, sample)
+            p = percentile_rank(val, sample)
             q = tail_prob(p, tail)
             rarity = rarity_from_q(q)
             gp = percentile_rank(val, global_samples[key])
