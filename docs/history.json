@@ -10641,19 +10641,19 @@
     "avg": 4.4,
     "hi": 6.3,
     "lo": 4.4,
-    "hum": 92.8,
-    "_hum_sum": 557.0,
-    "_hum_n": 6,
+    "hum": 93.1,
+    "_hum_sum": 652.0,
+    "_hum_n": 7,
     "rain": 0.3,
     "rain_rate_max": 0,
     "solar": 0.0,
     "_solar_src": "live",
     "pres": 1027.8,
-    "_pres_sum": 6166.6,
-    "_pres_n": 6,
-    "wind": 0.0,
-    "_wind_sum": 0.0,
-    "_wind_n": 6,
-    "wind_gust": 0.0
+    "_pres_sum": 7194.6,
+    "_pres_n": 7,
+    "wind": 0.1,
+    "_wind_sum": 0.7,
+    "_wind_n": 7,
+    "wind_gust": 1.8
   }
 }
