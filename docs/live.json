@@ -1,9 +1,9 @@
 {
-  "updated_at": "07/11/2026 21:40",
-  "temp": 6.6,
-  "temp_feels": 6.6,
+  "updated_at": "07/11/2026 21:54",
+  "temp": 6.7,
+  "temp_feels": 6.7,
   "hum": 97.0,
-  "dew": 6.2,
+  "dew": 6.3,
   "pressure": 1024.8,
   "wind_speed": 0.0,
   "wind_gust": 0.0,
@@ -14,6 +14,6 @@
   "rain_yearly": 337.5,
   "solar": 0.0,
   "uvi": 0.0,
-  "temp_in": 19.3,
-  "hum_in": 40.0
+  "temp_in": 19.6,
+  "hum_in": 39.0
 }
