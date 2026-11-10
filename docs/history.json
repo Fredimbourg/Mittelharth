@@ -10895,18 +10895,18 @@
     "hi": 9.0,
     "lo": 6.5,
     "hum": 97.9,
-    "_hum_sum": 2055.0,
-    "_hum_n": 21,
+    "_hum_sum": 2153.0,
+    "_hum_n": 22,
     "rain": 5.3,
     "rain_rate_max": 3.0,
     "solar": 131.4,
     "_solar_src": "live",
     "pres": 1012.4,
-    "_pres_sum": 21261.000000000004,
-    "_pres_n": 21,
+    "_pres_sum": 22271.900000000005,
+    "_pres_n": 22,
     "wind": 0.2,
     "_wind_sum": 4.7,
-    "_wind_n": 21,
+    "_wind_n": 22,
     "wind_gust": 3.6
   }
 }
