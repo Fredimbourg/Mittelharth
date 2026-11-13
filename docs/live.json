@@ -1,10 +1,10 @@
 {
-  "updated_at": "13/11/2026 05:40",
-  "temp": 1.5,
-  "temp_feels": 1.5,
-  "hum": 92.0,
-  "dew": 0.3,
-  "pressure": 1009.6,
+  "updated_at": "13/11/2026 06:40",
+  "temp": 0.9,
+  "temp_feels": 0.9,
+  "hum": 95.0,
+  "dew": 0.2,
+  "pressure": 1010.7,
   "wind_speed": 0.0,
   "wind_gust": 0.0,
   "wind_dir": 105.0,
@@ -14,6 +14,6 @@
   "rain_yearly": 366.0,
   "solar": 0.0,
   "uvi": 0.0,
-  "temp_in": 17.5,
-  "hum_in": 43.0
+  "temp_in": 18.3,
+  "hum_in": 42.0
 }
