@@ -11245,7 +11245,7 @@
     "rain": 0.5,
     "rain_rate_max": 1.2,
     "solar": 189.8,
-    "_solar_src": "live",
+    "_solar_src": "hist",
     "pres": 1014.4,
     "_pres_sum": 26375.100000000002,
     "_pres_n": 26,
@@ -11253,5 +11253,28 @@
     "_wind_sum": 15.200000000000001,
     "_wind_n": 26,
     "wind_gust": 3.6
+  },
+  "2026-11-26": {
+    "date": "2026-11-26",
+    "month": 11,
+    "day": 26,
+    "year": 2026,
+    "avg": 0.5,
+    "hi": 0.5,
+    "lo": 0.5,
+    "hum": 91.0,
+    "_hum_sum": 91.0,
+    "_hum_n": 1,
+    "rain": 0.2,
+    "rain_rate_max": 0,
+    "solar": 0.0,
+    "_solar_src": "live",
+    "pres": 1013.8,
+    "_pres_sum": 1013.8,
+    "_pres_n": 1,
+    "wind": 0.0,
+    "_wind_sum": 0.0,
+    "_wind_n": 1,
+    "wind_gust": 0.0
   }
 }
